@@ -1,0 +1,47 @@
+{
+  "name": "revolut-stoplost-clicker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "html-evaluate-utils": "^1.0.6",
+    "clicker-common":"^1.0.44",
+    "jquery": "^3.7.0",
+    "jquery-ui": "^1.13.2",
+    "mobx": "^6.10.0",
+    "mobx-react": "^9.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "react-validation": "^3.0.7"
+  },
+  "scripts": {
+    "build": "yarn install && webpack --env production",
+    "start": "yarn install && webpack --watch --env development",
+    "build-dev": "webpack --env production"
+  },
+  "author": "laimis.milasius@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.22.10",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-proposal-decorators": "^7.16.7",
+    "@babel/preset-env": "^7.22.10",
+    "@babel/preset-react": "^7.22.3",
+    "@types/jquery": "^3.5.16",
+    "babel-jest": "^29.6.2",
+    "babel-loader": "^9.1.2",
+    "css-loader": "^6.5.1",
+    "jest": "^29.6.2",
+    "jsdom": "^15.2.1",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.86.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./test/Setup-tests.js"
+    ]
+  }
+}

@@ -1,0 +1,170 @@
+
+
+.console-box{
+    position: fixed;
+    right: 0px;
+    top: -2px;
+    z-index: 100000000;
+    padding: 15px;
+    width: 200px;
+    border-radius: 0.8rem !important;
+    background-color: #fff;
+    font-weight: var(--artdeco-reset-typography-font-weight-normal);
+    font-size: 1.4rem;
+    line-height: 1.42857;
+}  
+
+.console-box button {
+     margin-left: 3px;
+     font-size: 14px;
+     border-radius: 0.8rem !important;
+}
+
+.tab-container{
+    
+}
+
+.checkbox-row{
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-row label{
+    width: 130px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.checkbox-row input{
+    opacity: unset;
+    margin: 0; 
+    position: inherit; 
+    pointer-events: auto;
+    width: 130px;
+}
+
+.apply-button{
+    border: 1px solid #71b7fb;
+    padding: 3px;
+    margin-left: 75px; 
+    width: 130px;
+    background: snow;
+}
+
+.stop-button{
+    border: 1px solid #71b7fb;
+    padding: 3px;
+    margin-left: 75px;
+    width: 130px;
+    background: snow;
+}
+
+.apply-button-save{
+    border: 1px solid #71b7fb;
+    background-color: #ffaaff;
+    padding: 3px;
+    margin-left: 75px;
+    width: 130px;
+}
+.apply-button-apply{
+    border: 1px solid #71b7fb;
+    background-color: #009baa;
+    padding: 3px;
+    margin-left: 75px;
+    width: 130px;
+}
+.badge{
+    font-size: 11px;
+    color:  #cb112d;
+    position: relative;
+    top: -6px;
+    left: 1px;
+    width: 15px;
+    font-weight: 900;
+    text-align: center;
+    border-radius: 0.8rem !important;
+}
+
+.activeTime{
+    font-size: 13px;
+    font-weight: 400;
+}
+
+
+.exit-button{
+    font-size: x-small;
+    width: 13px;
+    margin-top: 0;
+    padding: 0;
+    margin-right: 13px;
+    color: #71b7fb;
+}
+
+.notification-badge2 {
+    text-align: center;
+    border: none;
+    box-shadow: none;
+    top: -2px;
+    left: 14px;
+    background-color: rgb(203, 17, 45);
+    font-family: var(--artdeco-reset-typography-font-family-sans);
+}
+.notification-badge--show2 {
+    transition-timing-function: cubic-bezier(0,0,.2,1);
+    transition-duration: 167ms;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.notification-badge__count2 {
+    font-family: var(--artdeco-typography-sans);
+    color: #fff;
+    font-weight: var(--artdeco-reset-typography-font-weight-bold);
+    --artdeco-reset-typography_getFontSize: 1.2rem;
+    font-size: var(--artdeco-reset-typography_getFontSize);
+    --artdeco-reset-typography_getLineHeight: 1.33333;
+    line-height: var(--artdeco-reset-typography_getLineHeight);
+    position: relative;
+    display: block;
+    white-space: nowrap;
+}
+
+.rule-intent-dropDown {
+    width: 167px;
+    margin-left: 3px;
+    height: 25px;
+    padding-left: 12px;
+    padding-right: 0;
+    background-position-x: 140px;
+    background-position-y: 4px;
+    border-radius: 0.8rem !important;
+}
+
+.stop-all-action-true{
+    background-color: rgba(203, 17, 45, 0.11);
+}
+
+.user-line {
+    width: auto;
+    height: 30px;
+}
+
+.user-line label{
+    width: 50px;
+    padding-left: 15px;
+    /* padding-right: 26px; */
+    /* height: 25px; */
+    float: left;
+    margin-top: 0;
+}
+
+.user-line a{
+    font-weight: 500;
+    font-size: 1.4rem;
+    float: right;
+    display: block;
+    line-height: 1.42857;
+    /*width: 50px; */
+    /* height: 25px; */
+    margin-top: 0;
+}
