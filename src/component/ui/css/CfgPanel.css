@@ -6,16 +6,14 @@
     top: -2px;
     z-index: 100000000;
     padding: 15px;
-    width: 200px;
     border-radius: 0.8rem !important;
-    background-color: #fff;
+    background-color: black;
     font-weight: var(--artdeco-reset-typography-font-weight-normal);
     font-size: 1.4rem;
     line-height: 1.42857;
 }  
 
 .console-box button {
-     margin-left: 3px;
      font-size: 14px;
      border-radius: 0.8rem !important;
 }
@@ -46,33 +44,30 @@
 .apply-button{
     border: 1px solid #71b7fb;
     padding: 3px;
-    margin-left: 75px; 
     width: 130px;
-    background: snow;
+}
+
+.apply-button-apply{
+    border: 1px solid #71b7fb;
+    background-color: #009baa;
+    padding: 3px;
+    width: 130px;
 }
 
 .stop-button{
     border: 1px solid #71b7fb;
     padding: 3px;
-    margin-left: 75px;
     width: 130px;
-    background: snow;
+    margin-left: 14px;
 }
 
 .apply-button-save{
     border: 1px solid #71b7fb;
     background-color: #ffaaff;
     padding: 3px;
-    margin-left: 75px;
     width: 130px;
 }
-.apply-button-apply{
-    border: 1px solid #71b7fb;
-    background-color: #009baa;
-    padding: 3px;
-    margin-left: 75px;
-    width: 130px;
-}
+
 .badge{
     font-size: 11px;
     color:  #cb112d;

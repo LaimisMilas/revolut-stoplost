@@ -2,15 +2,7 @@ import React from 'react';
 import {Provider} from "mobx-react";
 import CfgPanel from "./component/ui/CfgPanel";
 import {RootStore} from "./state/RootStore";
-import ConnectClicker from "./component/jobs/ConnectClicker";
-import FollowClicker from "./component/jobs/FollowClicker";
-import LikeClicker from "./component/jobs/LikeClicker";
-import Scroll from "./component/jobs/Scroll";
-import SiteNavigation from "./component/jobs/SiteNavigation";
-import NewPostClicker from "./component/jobs/NewPostClicker";
-import LinkedInLike from "./component/jobs/LinkedInLike";
-import AcceptClicker from "./component/jobs/AcceptClicker";
-import RepostClicker from "./component/jobs/RePostClicker";
+import StopLostClicker from "./component/jobs/StopLostClicker";
 
 const rootState = new RootStore();
 
@@ -30,14 +22,7 @@ const App = () => {
         >
             <div className="App">
                 <CfgPanel/>
-                <Scroll/>
-                <RepostClicker/>
-                <LikeClicker/>
-                <NewPostClicker/>
-                <LinkedInLike/>
-                <ConnectClicker/>
-                <FollowClicker/>
-                <AcceptClicker/>
+                <StopLostClicker/>
             </div>
         </Provider>
     );

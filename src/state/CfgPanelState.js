@@ -50,21 +50,21 @@ export class CfgPanelState {
             },
             repost: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.repost.run,
-                label: "Repost" ,
+                label: "Exch. pare" ,
                 id: "repost_id",
                 name: "repost_name",
                 key: "repost"
             },
             follower: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.follower.run,
-                label: "Follower",
+                label: "Stop-lost %",
                 id: "follower_id",
                 name: "follower_name",
                 key: "follower"
             },
             subscriber: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.subscriber.run,
-                label: "Subscriber",
+                label: "Wait sec.",
                 id: "subscriber_id",
                 name: "subscriber_name",
                 key: "subscriber"

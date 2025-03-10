@@ -26,8 +26,8 @@ export class NavigationState {
         this.elementXPath = lc_element_xpath;
         this.nav = lc_nav_cfg;
         this.intervalGetNavCfgTimeOut = lc_nav_cfg.rootTimeout;
-        this.syncCurrentPageByWindowLocation();
-        this.setIntervalGetNavCfg();
+     //   this.syncCurrentPageByWindowLocation();
+    //    this.setIntervalGetNavCfg();
     }
 
     setIntervalGetNavCfg(){

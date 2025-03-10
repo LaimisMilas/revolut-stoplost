@@ -1,8 +1,6 @@
 import {inject, observer} from 'mobx-react';
 import React, {useState} from 'react';
 import './css/CfgPanel.css';
-import {DEV_LOGIN_PAGE, LOGIN_PAGE} from "clicker-common/src/Config";
-import {DEV_MODE} from "../../state/Config";
 import {CustomTimeout} from "../../utils/CustomTimeout";
 
 const CfgPanel =
@@ -10,11 +8,12 @@ const CfgPanel =
         observer(({navigationState, cfgState, ruleState, scrollState, cfgPanelState, authState, timeOutState}) => {
 
             const handleCheckboxChange = (event, key) => {
+                console.log("handleCheckboxChange", event, key);
                 if (key in cfgPanelState.rowConfig) {
                     if (key === "scroll") {
                         scrollState.cfg.root.run = event.target.checked;
                     } else {
-                        cfgState.setRunEntityCfg(key, event.target.checked);
+                        cfgState.setRunEntityCfg(key, event.target.value);
                     }
                     setApplyButtonStyle({className: "apply-button-save"});
                     cfgState.updateSystemCfg = false;
@@ -70,22 +69,6 @@ const CfgPanel =
                 return sum > 0 ? sum: ''
             }
 
-            const userLoginInfo = () => {
-                let isLoggedIn = (authState.user !== null);
-                const loginUrl = DEV_MODE ? DEV_LOGIN_PAGE : LOGIN_PAGE;
-                return (
-                    <div className="user-line">
-                        <label>User:</label>
-                        {isLoggedIn ?
-                            <a target={"_blank"}
-                                     href={loginUrl + ""}>{authState.user.displayName}</a>                            :
-                            <a target={"_blank"}
-                               href={loginUrl + ""}>Login</a>
-                        }
-                    </div>
-                )
-            }
-
             return (
                 <div className="console-box" id="labas_as_krabas" hidden={cfgPanelState.stopAllAction}>
                     <div className="tab-container">
@@ -109,7 +92,7 @@ const CfgPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.repost.id}
                                     name={cfgPanelState.rowConfig.repost.name}
-                                    checked={cfgState.userCfg.cfg.linkedInLike.repost.run}
+                                    value={cfgState.userCfg.cfg.linkedInLike.repost.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.repost.key)}
                                 />
                             </div>
@@ -122,7 +105,7 @@ const CfgPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.follower.id}
                                     name={cfgPanelState.rowConfig.follower.name}
-                                    checked={cfgState.userCfg.cfg.linkedInLike.follower.run}
+                                    value={cfgState.userCfg.cfg.linkedInLike.follower.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.follower.key)}
                                 />
                             </div>
@@ -135,7 +118,7 @@ const CfgPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.subscriber.id}
                                     name={cfgPanelState.rowConfig.subscriber.name}
-                                    checked={cfgState.userCfg.cfg.linkedInLike.subscriber.run}
+                                    value={cfgState.userCfg.cfg.linkedInLike.subscriber.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.subscriber.key)}
                                 />
                             </div>

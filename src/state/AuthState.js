@@ -20,8 +20,8 @@ export class AuthState {
 
     setup(caller) {
         this.user = lc_user;
-        this.addEventListener(" AuthState.setup() <-" + caller)
-        this.setIntervalGetAuth(" AuthState.setup() <-" + caller);
+      //  this.addEventListener(" AuthState.setup() <-" + caller)
+       // this.setIntervalGetAuth(" AuthState.setup() <-" + caller);
     }
 
     getUser(caller) {

@@ -12,7 +12,7 @@ export var lc_element_xpath = {
         elementTagName: "a",
         xPath: "//nav/ul/li[1]/a",
         windowLocation: "",
-        attributes: {href: "https://www.linkedin.com/feed/", className: "", id: ""}
+        attributes: {href: "https://exchange.revolut.com/trade/", className: "", id: ""}
     },
     mynetwork: {
         isClickable: true,

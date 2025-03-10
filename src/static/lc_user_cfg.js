@@ -99,6 +99,7 @@ export var lc_user_cfg = {
                 "key":"repost",
                 "validate":false,
                 "likeCounterValue": 100,
+                "value":"SOL-USD",
                 "range":[
                     2215,
                     3215
@@ -164,6 +165,7 @@ export var lc_user_cfg = {
                 "path":"//button//span[text() = \"Follow\"]",
                 "key":"follower",
                 "validate":false,
+                "value":-1,
                 "range":[
                     9056,
                     10055
@@ -226,6 +228,7 @@ export var lc_user_cfg = {
                 "path":"//button/span[text() = \"Subscribe\"]",
                 "key":"subscriber",
                 "validate":false,
+                "value":5,
                 "range":[
                     9056,
                     10055
