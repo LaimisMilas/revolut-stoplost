@@ -11,7 +11,7 @@ export var lc_user_cfg = {
             "currentIntent": "it_sector",
             "root":{
                 "logPrefix":"LI_1 def",
-                "run":true,
+                "run":false,
                 "log":true,
                 "range":[
                     22000,
@@ -43,6 +43,7 @@ export var lc_user_cfg = {
                 "log":false,
                 "path":"",
                 "key":"like",
+                "value":0,
                 "validate":true,
                 "range":[
                     9056,
@@ -278,6 +279,7 @@ export var lc_user_cfg = {
                 "log":false,
                 "path":"//button//span[text() = \"Accept\"]",
                 "key":"accepter",
+                "value":5,
                 "validate":false,
                 "range":[
                     2456,

@@ -85,6 +85,19 @@ const CfgPanel =
                         <div hidden={checkBoxContainerState}>
                             <div className="checkbox-row">
                                 <span
+                                    className="badge notification-badge__count">{cfgPanelState.badge.like > 0 ? (cfgPanelState.badge.like > 99 ? "99+" : cfgPanelState.badge.like) : ''}</span>
+                                <label
+                                    htmlFor={cfgPanelState.rowConfig.like.id}>{cfgPanelState.rowConfig.like.label}</label>
+                                <input
+                                    type="text"
+                                    id={cfgPanelState.rowConfig.like.id}
+                                    name={cfgPanelState.rowConfig.like.name}
+                                    value={cfgState.userCfg.cfg.linkedInLike.like.value}
+                                    onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.like.key)}
+                                />
+                            </div>
+                            <div className="checkbox-row">
+                                <span
                                     className="badge notification-badge__count">{cfgPanelState.badge.repost > 0 ? (cfgPanelState.badge.repost > 99 ? "99+" : cfgPanelState.badge.repost) : ''}</span>
                                 <label
                                     htmlFor={cfgPanelState.rowConfig.repost.id}>{cfgPanelState.rowConfig.repost.label}</label>
@@ -96,6 +109,7 @@ const CfgPanel =
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.repost.key)}
                                 />
                             </div>
+
                             <div className="checkbox-row">
                                 <span
                                     className="badge notification-badge__count">{cfgPanelState.badge.follower > 0 ? (cfgPanelState.badge.follower > 99 ? "99+" : cfgPanelState.badge.follower) : ''}</span>
@@ -107,6 +121,19 @@ const CfgPanel =
                                     name={cfgPanelState.rowConfig.follower.name}
                                     value={cfgState.userCfg.cfg.linkedInLike.follower.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.follower.key)}
+                                />
+                            </div>
+                            <div className="checkbox-row">
+                                <span
+                                    className="badge">{cfgPanelState.badge.subscriber > 0 ? (cfgPanelState.badge.accepter > 99 ? "99+" : cfgPanelState.badge.accepter) : ''}</span>
+                                <label
+                                    htmlFor={cfgPanelState.rowConfig.accepter.id}>{cfgPanelState.rowConfig.accepter.label}</label>
+                                <input
+                                    type="text"
+                                    id={cfgPanelState.rowConfig.accepter.id}
+                                    name={cfgPanelState.rowConfig.accepter.name}
+                                    value={cfgState.userCfg.cfg.linkedInLike.accepter.value}
+                                    onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.accepter.key)}
                                 />
                             </div>
                             <div className="checkbox-row">

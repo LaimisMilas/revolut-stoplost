@@ -1,7 +1,7 @@
 import {DateFormat} from "html-evaluate-utils/DateFormat";
 import { makeAutoObservable} from "mobx";
 
-export class CfgPanelState {
+export class CfgBuyPanelState {
 
     rootStore = null;
 
@@ -43,7 +43,7 @@ export class CfgPanelState {
             },
             like: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.like.run,
-                label: "Price:" ,
+                label: "Target price:" ,
                 id: "like_id",
                 name: "like_name",
                 key: "like"
@@ -57,14 +57,14 @@ export class CfgPanelState {
             },
             follower: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.follower.run,
-                label: "Stop-lost %",
+                label: "RSI 14",
                 id: "follower_id",
                 name: "follower_name",
                 key: "follower"
             },
             subscriber: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.subscriber.run,
-                label: "Sell qntty.?",
+                label: "Buy qntty.?",
                 id: "subscriber_id",
                 name: "subscriber_name",
                 key: "subscriber"

@@ -14,18 +14,10 @@
     "16": "images/icon_16.png",
     "48": "images/icon_48.png"
   },
-  "permissions": ["declarativeNetRequest"],
-  "background": {
-    "service_worker": "./serviceworker.js"
-  },
   "content_scripts": [
     {
       "matches": ["https://exchange.revolut.com/*"],
       "js": ["revolut-stoplost-click.js"]
-    },
-    {
-      "matches": ["https://clicker.lt/exchange-revolut/*", "https://exchange.revolut.com/*"],
-      "js": ["content.js"]
     }
   ],
   "web_accessible_resources": [

@@ -3,6 +3,8 @@ import {Provider} from "mobx-react";
 import CfgPanel from "./component/ui/CfgPanel";
 import {RootStore} from "./state/RootStore";
 import StopLostClicker from "./component/jobs/StopLostClicker";
+import BuyPanel from "./component/ui/BuyPanel";
+import BuyClicker from "./component/jobs/BuyClicker";
 
 const rootState = new RootStore();
 
@@ -14,7 +16,9 @@ const App = () => {
             navigationState={rootState.navigationState} 
             scrollState={rootState.scrollState}
             cfgState={rootState.cfgState}
+            buyState={rootState.buyState}
             cfgPanelState={rootState.cfgPanelState}
+            cfgBuyPanelState={rootState.cfgBuyPanelState}
             ruleState={rootState.ruleState}
             authState={rootState.authState}
             actorState={rootState.actorState}
@@ -22,7 +26,9 @@ const App = () => {
         >
             <div className="App">
                 <CfgPanel/>
+                <BuyPanel/>
                 <StopLostClicker/>
+                <BuyClicker/>
             </div>
         </Provider>
     );

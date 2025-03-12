@@ -1,10 +1,13 @@
-export var lc_system_cfg = {
+export var lc_buy_cfg = {
     "uid":0,
-    "cfgHosting": "clicker-commons",
     "cfg":{
         "linkedInLike":{
-            "ignoredActor": [],
-            "friendActor": [],
+            "ignoredActor": [
+                {"firstName": "followers", "id": 0}
+            ],
+            "friendActor": [
+                {"firstName": "lighthouse hub", "id": 0}
+            ],
             "currentIntent": "it_sector",
             "root":{
                 "logPrefix":"LI_1 def",
@@ -34,11 +37,13 @@ export var lc_system_cfg = {
                 "buttonXPath":"//div/*/button[contains(string(), \"Like\")]",
                 "validateElXPath":"/span/*/*",
                 "validateValue":"svg",
+                "likeCounterValue": 100,
                 "enable":true,
                 "run":true,
                 "log":false,
                 "path":"",
                 "key":"like",
+                "value":0,
                 "validate":true,
                 "range":[
                     9056,
@@ -79,8 +84,7 @@ export var lc_system_cfg = {
                     "description":"/../../../..//div[contains(@class, 'update-components-actor')]/div/div/a/span[2]/span",
                     "text":"/../../../..//div[contains(@class, 'update-components-actor')]/div/div/a/span[2]/span",
                     "href":"/../../../..//a",
-                    "dataUrn":"/../../../../../../..",
-                    "likeCounter":"/../../..//ul/li/button/span"
+                    "dataUrn":"/../../../../../../.."
                 },
                 "interacted":[
                     "Senior Software Developer"
@@ -95,6 +99,8 @@ export var lc_system_cfg = {
                 "postsXPath":"//div[contains(@data-id, 'urn:li:activity')]",
                 "key":"repost",
                 "validate":false,
+                "likeCounterValue": 100,
+                "value":"SOL-USD",
                 "range":[
                     2215,
                     3215
@@ -134,8 +140,7 @@ export var lc_system_cfg = {
                     "description":"/../../../..//div[contains(@class, 'update-components-actor')]/div/div/a/span[2]/span",
                     "text":"/../../../..//div[contains(@class, 'update-components-actor')]/div/div/a/span[2]/span",
                     "href":"/../../../..//a",
-                    "dataUrn":"/../../../../../../..",
-                    "likeCounter":"/../../..//ul/li/button/span"
+                    "dataUrn":"/../../../../../../.."
                 },
             },
             "newPoster":{
@@ -161,6 +166,7 @@ export var lc_system_cfg = {
                 "path":"//button//span[text() = \"Follow\"]",
                 "key":"follower",
                 "validate":false,
+                "value":-1,
                 "range":[
                     9056,
                     10055
@@ -223,6 +229,7 @@ export var lc_system_cfg = {
                 "path":"//button/span[text() = \"Subscribe\"]",
                 "key":"subscriber",
                 "validate":false,
+                "value":5,
                 "range":[
                     9056,
                     10055
@@ -272,6 +279,7 @@ export var lc_system_cfg = {
                 "log":false,
                 "path":"//button//span[text() = \"Accept\"]",
                 "key":"accepter",
+                "value":5,
                 "validate":false,
                 "range":[
                     2456,
@@ -320,7 +328,7 @@ export var lc_system_cfg = {
             "connector":{
                 "run":false,
                 "log":false,
-                "path":"//button//span[text() = \"Connect\"]",
+                "path":"//button/span[text() = \"Connect\"]",
                 "key":"connector",
                 "validate":false,
                 "range":[
@@ -411,9 +419,7 @@ export var lc_system_cfg = {
                 "counter":0
             },
             "rootTimeout":5000,
-            "rootInterval":481,
-            "intervalGetSystemCfgTimeOut": 10000,
-            "intervalGetCfgTimeOut": 10000
+            "rootInterval":481
         },
         "panel":{
             "consoleOutId":"console_out_id",

@@ -8,11 +8,15 @@ import {SessionStorageManager} from "../storage/SessionStorageManager";
 import {ActorState} from "./ActorState";
 import {AuthState} from "./AuthState";
 import {TimeOutState} from "./TimeOutState";
+import {BuyState} from "./BuyState";
+import {CfgBuyPanelState} from "./CfgBuyPanelState";
 export class RootStore {
 
     actorState = null;
     cfgState = null;
+    buyState = null;
     cfgPanelState = null;
+    cfgBuyPanelState = null;
     ruleState = null;
     scrollState = null;
     navigationState = null;
@@ -27,7 +31,9 @@ export class RootStore {
         this.actorState = new ActorState();
         this.ruleState = new RuleState();
         this.cfgState = new CfgState();
+        this.buyState = new BuyState();
         this.cfgPanelState = new CfgPanelState();
+        this.cfgBuyPanelState = new CfgBuyPanelState();
         this.scrollState = new ScrollState();
         this.navigationState = new NavigationState();
         this.timeOutState = new TimeOutState();
@@ -37,11 +43,13 @@ export class RootStore {
     setupStoreRelationships(caller) {
         this.authState.setup(" RootStore.setupStoreRelationships() <-" + caller);
         this.cfgState.setup(this, this.authState, this.cfgPanelState);
+        this.buyState.setup(this, this.authState, this.cfgBuyPanelState);
         this.actorState.setup(this.cfgState, " RootStore.setupStoreRelationships() <-" + caller);
         this.ruleState.setup(this);
         this.scrollState.setup(this, " RootStore.setupStoreRelationships() <-" + caller);
         this.navigationState.setup(this, " RootStore.setupStoreRelationships() <-" + caller);
         this.cfgPanelState.setup(this, this.cfgState);
+        this.cfgBuyPanelState.setup(this, this.buyState);
         this.timeOutState.setup();
 
         if(window.location.href.includes("http://localhost:8083")) {
@@ -70,10 +78,14 @@ export class RootStore {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
         this.cfgState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.cfgState.userCfg};
         this.cfgState.systemCfg = {...LocalStorageManager.getStorage("lc_systemCfg"), ...this.cfgState.systemCfg};
+        this.buyState.userCfg = {...LocalStorageManager.getStorage("lc_buy_cfg"), ...this.buyState.userCfg};
+        this.buyState.systemCfg = {...LocalStorageManager.getStorage("lc_buy_systemCfg"), ...this.buyState.systemCfg};
         this.cfgPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_rowConfig"), ...this.cfgPanelState.rowConfig};
+        this.cfgBuyPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_buy_rowConfig"), ...this.cfgBuyPanelState.rowConfig};
         this.scrollState.cfg = {...LocalStorageManager.getStorage("lc_scrollCfg"), ...this.scrollState.cfg};
         this.navigationState.nav = {...LocalStorageManager.getStorage("lc_navCfg"), ...this.navigationState.nav};
         this.cfgPanelState.badge = {...SessionStorageManager.getStorage("lc_badgeLc"), ...this.cfgPanelState.badge};
+        this.cfgBuyPanelState.badge = {...SessionStorageManager.getStorage("lc_buy_badgeLc"), ...this.cfgBuyPanelState.badge};
         this.ruleState.ruleSets = this.reduce(LocalStorageManager.getStorage("lc_ruleSets"), this.ruleState.ruleSets);
         this.ruleState.currentIntent = LocalStorageManager.getStorage("lc_currentIntent");
         this.authState.user = {...SessionStorageManager.getStorage("lc_user"), ...this.authState.user};
@@ -88,10 +100,14 @@ export class RootStore {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
         this.cfgState.userCfg = {...this.cfgState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
         this.cfgState.systemCfg = {...this.cfgState.systemCfg, ...LocalStorageManager.getStorage("lc_systemCfg")};
+        this.buyState.userCfg = {...this.buyState.userCfg, ...LocalStorageManager.getStorage("lc_buy_cfg")};
+        this.buyState.systemCfg = {...this.buyState.systemCfg, ...LocalStorageManager.getStorage("lc_buy_systemCfg")};
         this.cfgPanelState.rowConfig = {...this.cfgPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_rowConfig")};
+        this.cfgBuyPanelState.rowConfig = {...this.cfgBuyPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_buy_rowConfig")};
         this.scrollState.cfg = {...this.scrollState.cfg, ...LocalStorageManager.getStorage("lc_scrollCfg")};
         this.navigationState.nav = {...this.navigationState.nav, ...LocalStorageManager.getStorage("lc_navCfg")};
         this.cfgPanelState.badge = {...this.cfgPanelState.badge, ...SessionStorageManager.getStorage("lc_badgeLc")};
+        this.cfgBuyPanelState.badge = {...this.cfgBuyPanelState.badge, ...SessionStorageManager.getStorage("lc_buy_badgeLc")};
         this.ruleState.ruleSets = this.reduce(this.ruleState.ruleSets, LocalStorageManager.getStorage("lc_ruleSets"));
         this.ruleState.currentIntent = LocalStorageManager.getStorage("lc_currentIntent");
         this.authState.user = LocalStorageManager.getStorage("lc_user");
@@ -101,10 +117,14 @@ export class RootStore {
     saveStorage() {
         LocalStorageManager.flash("lc_cfg", this.cfgState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.cfgState.systemCfg);
+        LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
+        LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);
+        LocalStorageManager.flash("lc_buy_rowConfig", this.cfgBuyPanelState.rowConfig);
         LocalStorageManager.flash("lc_scrollCfg", this.scrollState.cfg);
         LocalStorageManager.flash("lc_navCfg", this.navigationState.nav);
         SessionStorageManager.flash("lc_badgeLc", this.cfgPanelState.badge);
+        SessionStorageManager.flash("lc_buy_badgeLc", this.cfgBuyPanelState.badge);
         LocalStorageManager.flash("lc_ruleSets", this.ruleState.ruleSets);
         LocalStorageManager.flash("lc_store_state", 1);
         LocalStorageManager.flash("lc_currentIntent", this.ruleState.currentIntent);
@@ -116,10 +136,14 @@ export class RootStore {
     initializeLocalStorage() {
         LocalStorageManager.flash("lc_cfg", this.cfgState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.cfgState.systemCfg);
+        LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
+        LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);
+        LocalStorageManager.flash("lc_buy_rowConfig", this.cfgBuyPanelState.rowConfig);
         LocalStorageManager.flash("lc_scrollCfg", this.scrollState.cfg);
         LocalStorageManager.flash("lc_navCfg", this.navigationState.nav);
         SessionStorageManager.flash("lc_badgeLc", this.cfgPanelState.badge);
+        SessionStorageManager.flash("lc_buy_badgeLc", this.cfgBuyPanelState.badge);
         LocalStorageManager.flash("lc_ruleSets", this.ruleState.ruleSets);
         LocalStorageManager.flash("lc_store_state", 1);
         LocalStorageManager.flash("lc_currentIntent", this.ruleState.currentIntent);
@@ -133,10 +157,14 @@ export class RootStore {
         LocalStorageManager.removeStorageItem("lc_friend_actor");
         LocalStorageManager.removeStorageItem("lc_cfg");
         LocalStorageManager.removeStorageItem("lc_systemCfg");
+        LocalStorageManager.removeStorageItem("lc_buy_cfg");
+        LocalStorageManager.removeStorageItem("lc_buy_systemCfg");
         LocalStorageManager.removeStorageItem("lc_rowConfig");
+        LocalStorageManager.removeStorageItem("lc_buy_rowConfig");
         LocalStorageManager.removeStorageItem("lc_scrollCfg");
         LocalStorageManager.removeStorageItem("lc_navCfg");
         SessionStorageManager.removeStorageItem("lc_badgeLc");
+        SessionStorageManager.removeStorageItem("lc_buy_badgeLc");
         LocalStorageManager.removeStorageItem("lc_ruleSets");
         LocalStorageManager.removeStorageItem("lc_store_state");
         LocalStorageManager.removeStorageItem("lc_currentIntent");

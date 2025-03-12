@@ -11,7 +11,11 @@
     font-weight: var(--artdeco-reset-typography-font-weight-normal);
     font-size: 1.4rem;
     line-height: 1.42857;
-}  
+}
+
+#buy-panel{
+    right: 310px;
+}
 
 .console-box button {
      font-size: 14px;

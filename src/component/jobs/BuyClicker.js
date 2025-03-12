@@ -1,0 +1,127 @@
+import {inject, observer} from "mobx-react";
+import {useEffect} from "react";
+import {
+    clickBuy,
+    convertToNumber, getRSIIndicator, readLastPrice, selectBuySwitch,
+    selectSellSum,
+    writeQuantity
+} from "../../utils/RevolutUtils";
+import {Utils} from "html-evaluate-utils/Utils";
+
+const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
+    "timeOutState", "actorState")(
+    observer(({
+                  buyState, navigationState, cfgPanelState,
+                  timeOutState, actorState
+              }) => {
+
+        let logging = false;
+        let logPrefix = " BuyClicker";
+
+        useEffect(() => {
+            const executeWithInterval = async () => {
+                await run();
+                let intervalTime = buyState.systemCfg.cfg.linkedInLike.rootTimeout;
+                buyState.localInterval = setTimeout(executeWithInterval, intervalTime);
+            };
+            executeWithInterval().then();
+            return () => {
+                if (buyState.localInterval) {
+                    clearInterval(buyState.localInterval);
+                }
+            }
+        }, [buyState.reset]);
+
+        const run = async () => {
+            let cfg = buyState.systemCfg.cfg.linkedInLike.like;
+            let root = buyState.systemCfg.cfg.linkedInLike.root;
+            logging = cfg.log;
+            if (window.location.href.includes("http://localhost:8083")) {
+                logging = true;
+                actorState.resetAllInteracted();
+            }
+            navigationState.syncCurrentPageByWindowLocation();
+            if (root.run && navigationState.nav.currentPage === navigationState.pages.feed) {
+                let hasActiveTimeOut = timeOutState.hasActiveTimeOut(cfg.key);
+                if (!hasActiveTimeOut && buyState.userCfg.cfg.linkedInLike[cfg.key].run) {
+                    timeOutState.clearTimeOutsByKey(cfg.key);
+                    await doBuy(cfg, callback);
+                }
+            }
+        }
+
+        const isBuyReached = () => {
+            let lastPrice = readLastPrice();
+            let buyPrice = convertToNumber(buyState.userCfg.cfg.linkedInLike.like.value);
+            return lastPrice <= buyPrice;
+        }
+
+        const doBuy = async (cfg, callback) => {
+            let tradeName = buyState.userCfg.cfg.linkedInLike.repost.value.split("-")[0];
+            if(isBuyReached() && await getRSI()){
+                console.log("Buy Reached do Run BUY");
+                const result = await buyOperation(tradeName);
+                if(result === 400){
+                    callback({key: cfg.key, result: result, parentId: 0, cover: 100});
+                }
+            }
+        }
+
+        const buyOperation = async (tradeName) => {
+            let result = await selectBuySwitch();
+            if(result === 100){
+                let quantityValue = buyState.userCfg.cfg.linkedInLike.subscriber.value;
+                if(quantityValue.includes('%')){
+                    quantityValue = quantityValue.toString()
+                    if(quantityValue === '100%'){
+                        result += await selectSellSum(100);
+                    }
+                    if(quantityValue === '75%'){
+                        result += await selectSellSum(75);
+                    }
+                    if(quantityValue === '50%'){
+                        result += await selectSellSum(50);
+                    }
+                    if(quantityValue === '25%'){
+                        result += await selectSellSum(25);
+                    }
+                } else {
+                    let quantity = convertToNumber(quantityValue);
+                    result += await writeQuantity(quantity);
+                }
+            }
+
+            if(result === 200){
+                result += await clickBuy(tradeName);
+            }
+
+            if(result === 300){
+                buyState.systemCfg.cfg.linkedInLike.root.run = false;
+                result += 100;
+            }
+
+            console.log("buyOperation done status: " + result);
+
+            return result;
+        }
+
+        const getRSI = async () => {
+            if(Utils.getElByXPath("//iframe")){
+                let quantityValue = buyState.userCfg.cfg.linkedInLike.follower.value;
+                let indicatorValue = await getRSIIndicator();
+                return indicatorValue <= convertToNumber(quantityValue);
+            }
+            return false;
+        }
+
+        const callback = (result) => {
+            logging && console.log(logPrefix + " callback result: " + JSON.stringify(result));
+            if (result.result) {
+                cfgPanelState.updateBadge(result.key, cfgPanelState.badge[result.key] + 1);
+            }
+        }
+
+    }));
+
+export default BuyClicker;
+
