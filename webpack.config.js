@@ -4,7 +4,7 @@ module.exports = {
     entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, './package'),
-        filename: 'revolut-stoplost-click.js',
+        filename: 'revolut-click.js',
     },
     mode: 'development', // arba 'production' development
     devtool: 'inline-source-map',

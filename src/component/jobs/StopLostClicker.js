@@ -38,10 +38,6 @@ const StopLostClicker = inject("cfgState", "navigationState", "cfgPanelState",
             let cfg = cfgState.systemCfg.cfg.linkedInLike.like;
             let root = cfgState.systemCfg.cfg.linkedInLike.root;
             logging = cfg.log;
-            if (window.location.href.includes("http://localhost:8083")) {
-                logging = true;
-                actorState.resetAllInteracted();
-            }
             navigationState.syncCurrentPageByWindowLocation();
             if (root.run && navigationState.nav.currentPage === navigationState.pages.feed) {
                 let hasActiveTimeOut = timeOutState.hasActiveTimeOut(cfg.key);
@@ -56,14 +52,14 @@ const StopLostClicker = inject("cfgState", "navigationState", "cfgPanelState",
             let tradeName = cfgState.userCfg.cfg.linkedInLike.repost.value.split("-")[0];
 
             if(isStopLostReached()){
-                console.log("Stop Lost Reached do Run SELL");
+                console.log("Stop Lost Reached do Run SELL " + tradeName);
                 const result = await sellOperation(tradeName);
                 if(result === 400){
                     callback({key: cfg.key, result: result, parentId: 0, cover: 100});
                 }
             } else {
                 if(isTakeProfReached() && await isRSIUp()){
-                    console.log("Take Prof Reached do Run SELL");
+                    console.log("Take Prof Reached do Run SELL " + tradeName);
                     const result = await sellOperation(tradeName);
                     if(result === 400){
                         callback({key: cfg.key, result: result, parentId: 0, cover: 100});
@@ -74,9 +70,14 @@ const StopLostClicker = inject("cfgState", "navigationState", "cfgPanelState",
 
         const isRSIUp = async () => {
             if(Utils.getElByXPath("//iframe")){
-                let quantityValue = cfgState.userCfg.cfg.linkedInLike.connector.value;
+                let assetValue = cfgState.userCfg.cfg.linkedInLike.connector.value;
                 let indicatorValue = await getRSIIndicator();
-                return indicatorValue >= convertToNumber(quantityValue);
+                let isRSIUp = indicatorValue >= convertToNumber(assetValue)
+                console.log("StopLostClicker isRSIUp "
+                    + ", assetValue: " + assetValue
+                    + ", indicatorValue: " + indicatorValue
+                    + ", isRSIUp: " + isRSIUp);
+                return isRSIUp;
             }
             return false;
         }
@@ -128,7 +129,7 @@ const StopLostClicker = inject("cfgState", "navigationState", "cfgPanelState",
                 result += 100;
             }
 
-            console.log("sellOperation done status: " + result);
+            console.log("StopLostClicker sellOperation "+ tradeName + " done status: " + result);
 
             return result;
         }

@@ -53,7 +53,12 @@ const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
         const isBuyReached = () => {
             let lastPrice = readLastPrice();
             let buyPrice = convertToNumber(buyState.userCfg.cfg.linkedInLike.like.value);
-            return lastPrice <= buyPrice;
+            let isBuyReached = lastPrice <= buyPrice;
+            console.log("isBuyReached "
+                + ", lastPrice: " + lastPrice
+                + ", buyPrice: " + buyPrice
+                + ", isBuyReached: " + isBuyReached);
+            return isBuyReached;
         }
 
         const doBuy = async (cfg, callback) => {
@@ -90,26 +95,27 @@ const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
                     result += await writeQuantity(quantity);
                 }
             }
-
             if(result === 200){
                 result += await clickBuy(tradeName);
             }
-
             if(result === 300){
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
             }
-
             console.log("buyOperation done status: " + result);
-
             return result;
         }
 
         const isRSIDown = async () => {
             if(Utils.getElByXPath("//iframe")){
-                let quantityValue = buyState.userCfg.cfg.linkedInLike.follower.value;
+                let assetValue = buyState.userCfg.cfg.linkedInLike.follower.value;
                 let indicatorValue = await getRSIIndicator();
-                return indicatorValue <= convertToNumber(quantityValue);
+                let isRSIDown = indicatorValue <= convertToNumber(assetValue);
+                console.log("BuyClicker isRSIDown "
+                    + ", assetValue: " + assetValue
+                    + ", indicatorValue: " + indicatorValue
+                    + ", isRSIDown: " + isRSIDown);
+                return isRSIDown;
             }
             return false;
         }

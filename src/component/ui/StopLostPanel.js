@@ -5,8 +5,8 @@ import {CustomTimeout} from "../../utils/CustomTimeout";
 import {convertToNumber} from "../../utils/RevolutUtils";
 
 const StopLostPanel =
-    inject("navigationState","cfgState", "ruleState", "scrollState", "cfgPanelState", "authState", "timeOutState")(
-        observer(({navigationState, cfgState, ruleState, scrollState, cfgPanelState, authState, timeOutState}) => {
+    inject("navigationState","cfgState", "scrollState", "cfgPanelState", "authState", "timeOutState")(
+        observer(({navigationState, cfgState, scrollState, cfgPanelState, authState, timeOutState}) => {
 
             const handleCheckboxChange = (event, key) => {
                 console.log("handleCheckboxChange", event, key);

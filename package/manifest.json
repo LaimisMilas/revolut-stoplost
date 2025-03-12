@@ -16,8 +16,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://exchange.revolut.com/*"],
-      "js": ["revolut-stoplost-click.js"]
+      "matches": ["https://exchange.revolut.com/trade/*"],
+      "js": ["revolut-click.js"]
     }
   ],
   "web_accessible_resources": [
