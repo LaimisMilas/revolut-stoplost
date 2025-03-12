@@ -15,7 +15,7 @@ const App = () => {
             rootState={rootState}
             navigationState={rootState.navigationState} 
             scrollState={rootState.scrollState}
-            cfgState={rootState.cfgState}
+            stopLostState={rootState.stopLostState}
             buyState={rootState.buyState}
             cfgPanelState={rootState.cfgPanelState}
             cfgBuyPanelState={rootState.cfgBuyPanelState}

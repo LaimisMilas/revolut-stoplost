@@ -1,4 +1,4 @@
-import {CfgState} from './CfgState';
+import {StopLostState} from './StopLostState';
 import {CfgPanelState} from './CfgPanelState';
 import {RuleState} from './RuleState';
 import {LocalStorageManager} from "../storage/LocalStorageManager";
@@ -13,7 +13,7 @@ import {CfgBuyPanelState} from "./CfgBuyPanelState";
 export class RootStore {
 
     actorState = null;
-    cfgState = null;
+    stopLostState = null;
     buyState = null;
     cfgPanelState = null;
     cfgBuyPanelState = null;
@@ -30,7 +30,7 @@ export class RootStore {
         this.authState = new AuthState();
         this.actorState = new ActorState();
         this.ruleState = new RuleState();
-        this.cfgState = new CfgState();
+        this.stopLostState = new StopLostState();
         this.buyState = new BuyState();
         this.cfgPanelState = new CfgPanelState();
         this.cfgBuyPanelState = new CfgBuyPanelState();
@@ -42,13 +42,13 @@ export class RootStore {
 
     setupStoreRelationships(caller) {
         this.authState.setup(" RootStore.setupStoreRelationships() <-" + caller);
-        this.cfgState.setup(this, this.authState, this.cfgPanelState);
+        this.stopLostState.setup(this, this.authState, this.cfgPanelState);
         this.buyState.setup(this, this.authState, this.cfgBuyPanelState);
-        this.actorState.setup(this.cfgState, " RootStore.setupStoreRelationships() <-" + caller);
+        this.actorState.setup(this.stopLostState, " RootStore.setupStoreRelationships() <-" + caller);
         this.ruleState.setup(this);
         this.scrollState.setup(this, " RootStore.setupStoreRelationships() <-" + caller);
         this.navigationState.setup(this, " RootStore.setupStoreRelationships() <-" + caller);
-        this.cfgPanelState.setup(this, this.cfgState);
+        this.cfgPanelState.setup(this, this.stopLostState);
         this.cfgBuyPanelState.setup(this, this.buyState);
         this.timeOutState.setup();
 
@@ -76,8 +76,8 @@ export class RootStore {
 
     loudLocalStorage() {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
-        this.cfgState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.cfgState.userCfg};
-        this.cfgState.systemCfg = {...LocalStorageManager.getStorage("lc_systemCfg"), ...this.cfgState.systemCfg};
+        this.stopLostState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.stopLostState.userCfg};
+        this.stopLostState.systemCfg = {...LocalStorageManager.getStorage("lc_systemCfg"), ...this.stopLostState.systemCfg};
         this.buyState.userCfg = {...LocalStorageManager.getStorage("lc_buy_cfg"), ...this.buyState.userCfg};
         this.buyState.systemCfg = {...LocalStorageManager.getStorage("lc_buy_systemCfg"), ...this.buyState.systemCfg};
         this.cfgPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_rowConfig"), ...this.cfgPanelState.rowConfig};
@@ -98,8 +98,8 @@ export class RootStore {
 
     reverseLoudLocalStorage() {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
-        this.cfgState.userCfg = {...this.cfgState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
-        this.cfgState.systemCfg = {...this.cfgState.systemCfg, ...LocalStorageManager.getStorage("lc_systemCfg")};
+        this.stopLostState.userCfg = {...this.stopLostState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
+        this.stopLostState.systemCfg = {...this.stopLostState.systemCfg, ...LocalStorageManager.getStorage("lc_systemCfg")};
         this.buyState.userCfg = {...this.buyState.userCfg, ...LocalStorageManager.getStorage("lc_buy_cfg")};
         this.buyState.systemCfg = {...this.buyState.systemCfg, ...LocalStorageManager.getStorage("lc_buy_systemCfg")};
         this.cfgPanelState.rowConfig = {...this.cfgPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_rowConfig")};
@@ -115,8 +115,8 @@ export class RootStore {
     }
 
     saveStorage() {
-        LocalStorageManager.flash("lc_cfg", this.cfgState.userCfg);
-        LocalStorageManager.flash("lc_systemCfg", this.cfgState.systemCfg);
+        LocalStorageManager.flash("lc_cfg", this.stopLostState.userCfg);
+        LocalStorageManager.flash("lc_systemCfg", this.stopLostState.systemCfg);
         LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);
@@ -134,8 +134,8 @@ export class RootStore {
 
 
     initializeLocalStorage() {
-        LocalStorageManager.flash("lc_cfg", this.cfgState.userCfg);
-        LocalStorageManager.flash("lc_systemCfg", this.cfgState.systemCfg);
+        LocalStorageManager.flash("lc_cfg", this.stopLostState.userCfg);
+        LocalStorageManager.flash("lc_systemCfg", this.stopLostState.systemCfg);
         LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);

@@ -5,8 +5,8 @@ import {CustomTimeout} from "../../utils/CustomTimeout";
 import {convertToNumber} from "../../utils/RevolutUtils";
 
 const StopLostPanel =
-    inject("navigationState","cfgState", "scrollState", "cfgPanelState", "authState", "timeOutState")(
-        observer(({navigationState, cfgState, scrollState, cfgPanelState, authState, timeOutState}) => {
+    inject("navigationState","stopLostState", "scrollState", "cfgPanelState", "authState", "timeOutState")(
+        observer(({navigationState, stopLostState, scrollState, cfgPanelState, authState, timeOutState}) => {
 
             const handleCheckboxChange = (event, key) => {
                 console.log("handleCheckboxChange", event, key);
@@ -14,22 +14,22 @@ const StopLostPanel =
                     if (key === "scroll") {
                         scrollState.cfg.root.run = event.target.checked;
                     } else {
-                        cfgState.setRunEntityCfg(key, event.target.value);
+                        stopLostState.setRunEntityCfg(key, event.target.value);
                     }
                     setApplyButtonStyle({className: "apply-button-save"});
                     setTakeProfPrice(calcTakeProfPrice());
                     setStopLostPrice(calcStopLostPrice());
-                    cfgState.updateSystemCfg = false;
+                    stopLostState.updateSystemCfg = false;
                 }
             };
 
             const calcTakeProfPrice = () => {
-                let value = convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) + ((convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) * cfgState.userCfg.cfg.linkedInLike.accepter.value) / 100);
+                let value = convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) + ((convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) * stopLostState.userCfg.cfg.linkedInLike.accepter.value) / 100);
                 return value.toPrecision(4);
             };
 
             const calcStopLostPrice = () => {
-                let value = convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) - ((convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) * (cfgState.userCfg.cfg.linkedInLike.follower.value) * (-1))  / 100);
+                let value = convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) - ((convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) * (stopLostState.userCfg.cfg.linkedInLike.follower.value) * (-1))  / 100);
                 return value.toPrecision(4);
             };
 
@@ -42,15 +42,13 @@ const StopLostPanel =
             const [takeProfPrice, setTakeProfPrice] = useState(calcTakeProfPrice());
             const [stopLostPrice, setStopLostPrice] = useState(calcStopLostPrice());
 
-
-
             const handleApplyButtonClick = () => {
                 setApplyButtonStyle({className: "apply-button-apply"});
-                cfgState.save(cfgState.userCfg.cfg, authState.user.uid," CfgPanelState.handleApplyButtonClick()");
+                stopLostState.save(stopLostState.userCfg.cfg, authState.user.uid," CfgPanelState.handleApplyButtonClick()");
                 setTimeout(
                     () => setApplyButtonStyle({className: "apply-button"}), 700
                 )
-                cfgState.updateSystemCfg = true;
+                stopLostState.updateSystemCfg = true;
             };
 
             const handleCollapseButtonClick = () => {
@@ -59,7 +57,7 @@ const StopLostPanel =
 
             const handleStopButtonClick = () => {
                 stopAllAction === false ? setStopAllAction(true) : setStopAllAction(false);
-                cfgState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
+                stopLostState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
                 timeOutState.resetAllTimeOuts();
                 if (stopAllAction) {
                     timeOutState.saveTimeOut(
@@ -109,7 +107,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.like.id}
                                     name={cfgPanelState.rowConfig.like.name}
-                                    value={cfgState.userCfg.cfg.linkedInLike.like.value}
+                                    value={stopLostState.userCfg.cfg.linkedInLike.like.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.like.key)}
                                 />
                             </div>
@@ -122,7 +120,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.repost.id}
                                     name={cfgPanelState.rowConfig.repost.name}
-                                    value={cfgState.userCfg.cfg.linkedInLike.repost.value}
+                                    value={stopLostState.userCfg.cfg.linkedInLike.repost.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.repost.key)}
                                 />
                             </div>
@@ -136,7 +134,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.follower.id}
                                     name={cfgPanelState.rowConfig.follower.name}
-                                    value={cfgState.userCfg.cfg.linkedInLike.follower.value}
+                                    value={stopLostState.userCfg.cfg.linkedInLike.follower.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.follower.key)}
                                 />
                             </div>
@@ -155,7 +153,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.accepter.id}
                                     name={cfgPanelState.rowConfig.accepter.name}
-                                    value={cfgState.userCfg.cfg.linkedInLike.accepter.value}
+                                    value={stopLostState.userCfg.cfg.linkedInLike.accepter.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.accepter.key)}
                                 />
                             </div>
@@ -174,7 +172,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.connector.id}
                                     name={cfgPanelState.rowConfig.connector.name}
-                                    value={cfgState.userCfg.cfg.linkedInLike.connector.value}
+                                    value={stopLostState.userCfg.cfg.linkedInLike.connector.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.connector.key)}
                                 />
                             </div>
@@ -187,7 +185,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.subscriber.id}
                                     name={cfgPanelState.rowConfig.subscriber.name}
-                                    value={cfgState.userCfg.cfg.linkedInLike.subscriber.value}
+                                    value={stopLostState.userCfg.cfg.linkedInLike.subscriber.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.subscriber.key)}
                                 />
                             </div>

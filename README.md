@@ -14,5 +14,5 @@ ClickActionState.timeOuts - saugo sukurtus CustomTimeout objektus pagal konfigur
 Objekto paskirtis suvaldyti kad CustomTimeout pasileidimo seka butu nuosekli. Kad CustomTimeout pasileistu tik
 puslapije kur gali veikti. Pasikeitus puslapiui yra išvalomas. SiteNavigation.changePath kviečia metodą clickActionState.resetTimeOuts(); kuris išvalo objektą.
 
-CfgState.timeOuts - saugo sukurtus CustomTimeout objektus, masyve.
+StopLostState.timeOuts - saugo sukurtus CustomTimeout objektus, masyve.
 SiteNavigation.changePath kviečia metodą cfgState.reset(); kuris išvalo objektą.
