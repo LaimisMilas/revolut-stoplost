@@ -2,6 +2,7 @@ import {inject, observer} from 'mobx-react';
 import React, {useState} from 'react';
 import './css/CfgPanel.css';
 import {CustomTimeout} from "../../utils/CustomTimeout";
+import {convertToNumber} from "../../utils/RevolutUtils";
 
 const StopLostPanel =
     inject("navigationState","cfgState", "ruleState", "scrollState", "cfgPanelState", "authState", "timeOutState")(
@@ -16,8 +17,14 @@ const StopLostPanel =
                         cfgState.setRunEntityCfg(key, event.target.value);
                     }
                     setApplyButtonStyle({className: "apply-button-save"});
+                    setTakeProfPrice(calcTakeProfPrice());
                     cfgState.updateSystemCfg = false;
                 }
+            };
+
+            const calcTakeProfPrice = () => {
+                let value = ((convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) * cfgState.userCfg.cfg.linkedInLike.accepter.value) / 100) + convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value);
+                return value.toPrecision(4);
             };
 
             const [applyButtonStyle, setApplyButtonStyle] = useState({
@@ -26,6 +33,8 @@ const StopLostPanel =
 
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(cfgPanelState.getIsActionsStop());
+            const [takeProfPrice, setTakeProfPrice] = useState(calcTakeProfPrice());
+
 
             const handleApplyButtonClick = () => {
                 setApplyButtonStyle({className: "apply-button-apply"});
@@ -135,6 +144,12 @@ const StopLostPanel =
                                     value={cfgState.userCfg.cfg.linkedInLike.accepter.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.accepter.key)}
                                 />
+                            </div>
+                            <div className="checkbox-row">
+                                <span
+                                    className="badge notification-badge__count"> </span>
+                                <label>TP price</label>
+                                <span>{takeProfPrice}</span>
                             </div>
                             <div className="checkbox-row">
                                 <span

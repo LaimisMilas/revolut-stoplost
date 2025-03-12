@@ -91,7 +91,10 @@ export const readLastPrice = () => {
 }
 
 export const convertToNumber = (s) => {
-    return parseFloat(s.replace(",","."));
+    if(typeof s === "string"){
+        return parseFloat(s.replace(",","."));
+    }
+    return s;
 }
 
 export const getTradeOrderValue = (tradeName) => {

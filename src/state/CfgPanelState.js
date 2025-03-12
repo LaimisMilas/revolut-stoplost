@@ -1,5 +1,6 @@
 import {DateFormat} from "html-evaluate-utils/DateFormat";
 import { makeAutoObservable} from "mobx";
+import {readLastPrice} from "../utils/RevolutUtils";
 
 export class CfgPanelState {
 
@@ -133,5 +134,15 @@ export class CfgPanelState {
 
     getIsActionsStop() {
         return this.cfgState.systemCfg.cfg.linkedInLike.root.run === false;
+    }
+
+    updateStopLostPrice() {
+        let lastPrice = readLastPrice();
+        this.stopLostPrice = lastPrice;
+    }
+
+    setIntervalUpdate(){
+        this.intervalUpdateTimeDiff = setInterval(
+            this.updateStopLostPrice.bind(this), 4000);
     }
 }
