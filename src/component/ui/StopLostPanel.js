@@ -18,12 +18,18 @@ const StopLostPanel =
                     }
                     setApplyButtonStyle({className: "apply-button-save"});
                     setTakeProfPrice(calcTakeProfPrice());
+                    setStopLostPrice(calcStopLostPrice());
                     cfgState.updateSystemCfg = false;
                 }
             };
 
             const calcTakeProfPrice = () => {
-                let value = ((convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) * cfgState.userCfg.cfg.linkedInLike.accepter.value) / 100) + convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value);
+                let value = convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) + ((convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) * cfgState.userCfg.cfg.linkedInLike.accepter.value) / 100);
+                return value.toPrecision(4);
+            };
+
+            const calcStopLostPrice = () => {
+                let value = convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) - ((convertToNumber(cfgState.userCfg.cfg.linkedInLike.like.value) * (cfgState.userCfg.cfg.linkedInLike.follower.value) * (-1))  / 100);
                 return value.toPrecision(4);
             };
 
@@ -34,6 +40,8 @@ const StopLostPanel =
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(cfgPanelState.getIsActionsStop());
             const [takeProfPrice, setTakeProfPrice] = useState(calcTakeProfPrice());
+            const [stopLostPrice, setStopLostPrice] = useState(calcStopLostPrice());
+
 
 
             const handleApplyButtonClick = () => {
@@ -131,6 +139,12 @@ const StopLostPanel =
                                     value={cfgState.userCfg.cfg.linkedInLike.follower.value}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.follower.key)}
                                 />
+                            </div>
+                            <div className="checkbox-row">
+                                <span
+                                    className="badge notification-badge__count"> </span>
+                                <label>SL price</label>
+                                <span>{stopLostPrice}</span>
                             </div>
                             <div className="checkbox-row">
                                 <span
