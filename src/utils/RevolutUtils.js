@@ -40,7 +40,6 @@ export const getRSIIndicator = async () => {
     return false;
 }
 
-
 const getElByXPathIframe = (path, document) => {
     let result;
     let headings = document.evaluate(path, document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
@@ -49,7 +48,6 @@ const getElByXPathIframe = (path, document) => {
     }
     return result;
 }
-
 
 export const clickSell = async (tradeName) => {
     let el = Utils.getElByXPath("//button/span[contains(text(), 'Sell " + tradeName + "')][1]");
