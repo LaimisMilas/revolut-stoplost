@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import './css/CfgPanel.css';
 import {CustomTimeout} from "../../utils/CustomTimeout";
 
-const CfgPanel =
+const StopLostPanel =
     inject("navigationState","cfgState", "ruleState", "scrollState", "cfgPanelState", "authState", "timeOutState")(
         observer(({navigationState, cfgState, ruleState, scrollState, cfgPanelState, authState, timeOutState}) => {
 
@@ -138,6 +138,19 @@ const CfgPanel =
                             </div>
                             <div className="checkbox-row">
                                 <span
+                                    className="badge notification-badge__count">{cfgPanelState.badge.connector > 0 ? (cfgPanelState.badge.connector > 99 ? "99+" : cfgPanelState.badge.connector) : ''}</span>
+                                <label
+                                    htmlFor={cfgPanelState.rowConfig.connector.id}>{cfgPanelState.rowConfig.connector.label}</label>
+                                <input
+                                    type="text"
+                                    id={cfgPanelState.rowConfig.connector.id}
+                                    name={cfgPanelState.rowConfig.connector.name}
+                                    value={cfgState.userCfg.cfg.linkedInLike.connector.value}
+                                    onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.connector.key)}
+                                />
+                            </div>
+                            <div className="checkbox-row">
+                                <span
                                     className="badge">{cfgPanelState.badge.subscriber > 0 ? (cfgPanelState.badge.subscriber > 99 ? "99+" : cfgPanelState.badge.subscriber) : ''}</span>
                                 <label
                                     htmlFor={cfgPanelState.rowConfig.subscriber.id}>{cfgPanelState.rowConfig.subscriber.label}</label>
@@ -164,4 +177,4 @@ const CfgPanel =
             );
         }));
 
-export default CfgPanel;
+export default StopLostPanel;

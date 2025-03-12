@@ -58,7 +58,7 @@ const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
 
         const doBuy = async (cfg, callback) => {
             let tradeName = buyState.userCfg.cfg.linkedInLike.repost.value.split("-")[0];
-            if(isBuyReached() && await getRSI()){
+            if(isBuyReached() && await isRSIDown()){
                 console.log("Buy Reached do Run BUY");
                 const result = await buyOperation(tradeName);
                 if(result === 400){
@@ -105,7 +105,7 @@ const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
             return result;
         }
 
-        const getRSI = async () => {
+        const isRSIDown = async () => {
             if(Utils.getElByXPath("//iframe")){
                 let quantityValue = buyState.userCfg.cfg.linkedInLike.follower.value;
                 let indicatorValue = await getRSIIndicator();

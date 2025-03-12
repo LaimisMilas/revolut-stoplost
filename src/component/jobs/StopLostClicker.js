@@ -62,7 +62,7 @@ const StopLostClicker = inject("cfgState", "navigationState", "cfgPanelState",
                     callback({key: cfg.key, result: result, parentId: 0, cover: 100});
                 }
             } else {
-                if(isTakeProfReached()){
+                if(isTakeProfReached() && await isRSIUp()){
                     console.log("Take Prof Reached do Run SELL");
                     const result = await sellOperation(tradeName);
                     if(result === 400){
@@ -70,6 +70,15 @@ const StopLostClicker = inject("cfgState", "navigationState", "cfgPanelState",
                     }
                 }
             }
+        }
+
+        const isRSIUp = async () => {
+            if(Utils.getElByXPath("//iframe")){
+                let quantityValue = cfgState.userCfg.cfg.linkedInLike.connector.value;
+                let indicatorValue = await getRSIIndicator();
+                return indicatorValue >= convertToNumber(quantityValue);
+            }
+            return false;
         }
 
         const isTakeProfReached = () => {

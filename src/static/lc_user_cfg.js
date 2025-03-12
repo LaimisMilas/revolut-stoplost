@@ -331,6 +331,7 @@ export var lc_user_cfg = {
                 "path":"//button/span[text() = \"Connect\"]",
                 "key":"connector",
                 "validate":false,
+                "value":70,
                 "range":[
                     12465,
                     16123

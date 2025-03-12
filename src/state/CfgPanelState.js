@@ -78,7 +78,7 @@ export class CfgPanelState {
             },
             connector: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.connector.run,
-                label: "Connector",
+                label: "RSI 14",
                 id: "connector_id",
                 name: "connector_name",
                 key: "connector"

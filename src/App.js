@@ -1,6 +1,6 @@
 import React from 'react';
 import {Provider} from "mobx-react";
-import CfgPanel from "./component/ui/CfgPanel";
+import StopLostPanel from "./component/ui/StopLostPanel";
 import {RootStore} from "./state/RootStore";
 import StopLostClicker from "./component/jobs/StopLostClicker";
 import BuyPanel from "./component/ui/BuyPanel";
@@ -25,7 +25,7 @@ const App = () => {
             timeOutState={rootState.timeOutState}
         >
             <div className="App">
-                <CfgPanel/>
+                <StopLostPanel/>
                 <BuyPanel/>
                 <StopLostClicker/>
                 <BuyClicker/>
