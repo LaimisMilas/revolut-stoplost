@@ -35,33 +35,23 @@ export class CfgPanelState {
 
     initializeRowConfig() {
         this.rowConfig = {
-            newPoster: {
-                checkValue: this.cfgState.systemCfg.cfg.linkedInLike.newPoster.run,
-                label: "New poster",
-                id: "newPoster_id",
-                name: "newPoster_name",
-                key: "newPoster"
+            price: {
+                label: "Price" ,
+                id: "price_id",
+                name: "price_name",
+                key: "price"
             },
-            like: {
-                checkValue: this.cfgState.systemCfg.cfg.linkedInLike.like.run,
-                label: "Price:" ,
-                id: "like_id",
-                name: "like_name",
-                key: "like"
-            },
-            repost: {
-                checkValue: this.cfgState.systemCfg.cfg.linkedInLike.repost.run,
+            exchPare: {
                 label: "Exch. pare" ,
-                id: "repost_id",
-                name: "repost_name",
-                key: "repost"
+                id: "exchPare_id",
+                name: "exchPare_name",
+                key: "name"
             },
-            follower: {
-                checkValue: this.cfgState.systemCfg.cfg.linkedInLike.follower.run,
+            stopLost: {
                 label: "Stop-lost %",
-                id: "follower_id",
-                name: "follower_name",
-                key: "follower"
+                id: "stopLost_id",
+                name: "stopLost_name",
+                key: "stopLost"
             },
             quantity: {
                 label: "Sell qntty.?",
@@ -69,22 +59,19 @@ export class CfgPanelState {
                 name: "quantity_name",
                 key: "quantity"
             },
-            accepter: {
-                checkValue: this.cfgState.systemCfg.cfg.linkedInLike.accepter.run,
+            takeProf: {
                 label: "Take-prof %" ,
-                id: "saccepter_id",
-                name: "accepter_name",
-                key: "accepter"
+                id: "takeProf_id",
+                name: "takeProf_name",
+                key: "takeProf"
             },
-            connector: {
-                checkValue: this.cfgState.systemCfg.cfg.linkedInLike.connector.run,
+            takeProfRsi: {
                 label: "RSI 14",
-                id: "connector_id",
-                name: "connector_name",
-                key: "connector"
+                id: "takeProfRsi_id",
+                name: "takeProfRsi_name",
+                key: "takeProfRsi"
             },
             scroll: {
-                checkValue : true,
                 label: "Scroller" ,
                 id: "scroll_id",
                 name: "scroll_name",
@@ -92,13 +79,12 @@ export class CfgPanelState {
             }
         };
         this.badge = {
-            newPoster: 0,
-            like: 0,
-            follower: 0,
+            price: 0,
+            stopLost: 0,
             quantity: 0,
-            accepter: 0,
-            connector: 0,
-            repost: 0,
+            takeProf: 0,
+            rsi14: 0,
+            exchPare: 0,
         };
         this.active = {
             fromDate: DateFormat.formatDate(new Date()),

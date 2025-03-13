@@ -1,5 +1,6 @@
 export var trade_pares = {
     "SOL":{
+        "key": "SOL",
         "name": "SOL-USD",
         "price": 123,
         "stopLost": -1,
@@ -8,6 +9,7 @@ export var trade_pares = {
         "quantity": "25%"
     },
     "RSI":{
+        "key": "RSI",
         "name": "RSI-USD",
         "price": 123,
         "stopLost": -1,

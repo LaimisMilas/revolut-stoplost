@@ -6,7 +6,6 @@ import {lc_system_cfg} from "../static/lc_system_cfg";
 export class StopLostState {
 
     rootStore = null;
-    authState = null;
     cfgPanelState = null;
     userCfg = null;
     systemCfg = null;
@@ -27,39 +26,35 @@ export class StopLostState {
         makeAutoObservable(this);
     }
 
-    getTradePareDataByKey(key){
-        return this.tradePares[key];
-    }
-
-    saveTradePareData(key, tradeDate){
-        let data = this.getTradePareDataByKey(key);
-        if(data){
-            data.stopLost = tradeDate.stopLost;
-            data.takeProf = tradeDate.takeProf;
-            data.takeProfRsi = tradeDate.takeProfRsi;
-            data.price = tradeDate.price;
-            this.tradePares.add(tradeDate);
-        } else {
-            this.tradePares.add(key, tradeDate);
-        }
-        return this.getTradePareDataByKey(key);
-    }
-
-    setup(rootStore, authState, cfgPanelState) {
+    setup(rootStore, cfgPanelState) {
         this.rootStore = rootStore;
-        this.authState = authState;
         this.cfgPanelState = cfgPanelState;
         this.setUserCfg(lc_user_cfg);
         this.setSystemCfg(lc_system_cfg);
         this.setTradePares(trade_pares);
     }
 
-    setUserCfg(rootCfg){
-        this.userCfg = rootCfg;
+    getTradePareDataByKey(key){
+        return this.tradePares[key];
     }
 
-    setRunEntityCfg(key, value){
-        this.userCfg.cfg.linkedInLike[key].value = value;
+    saveTradePareData(tradeDate){
+        let data = this.getTradePareDataByKey(tradeDate.key);
+        if(data){
+            data.stopLost = tradeDate.stopLost;
+            data.takeProf = tradeDate.takeProf;
+            data.takeProfRsi = tradeDate.takeProfRsi;
+            data.price = tradeDate.price;
+            this.tradePares[tradeDate.key] = data;
+        } else {
+            this.tradePares[tradeDate.key] = tradeDate;
+        }
+        this.rootStore.saveStorage();
+        return this.getTradePareDataByKey(tradeDate.key);
+    }
+
+    setUserCfg(rootCfg){
+        this.userCfg = rootCfg;
     }
 
     setSystemCfg(systemCfg){
@@ -68,11 +63,5 @@ export class StopLostState {
 
     setTradePares(tradePares){
         this.tradePares = tradePares;
-    }
-
-    save(updatedCfg, uid, caller) {
-        if(uid === 0){
-            this.rootStore.saveStorage();
-        }
     }
 }
