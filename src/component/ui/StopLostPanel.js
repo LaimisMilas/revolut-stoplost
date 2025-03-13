@@ -9,7 +9,7 @@ const StopLostPanel =
         observer(({navigationState, stopLostState, scrollState, cfgPanelState, authState, timeOutState}) => {
 
             const handleCheckboxChange = (event, key) => {
-                console.log("handleCheckboxChange", event, key);
+                console.log("StopLostPanel handleCheckboxChange", event, key);
                 if (key in cfgPanelState.rowConfig) {
                     if (key === "scroll") {
                         scrollState.cfg.root.run = event.target.checked;
@@ -24,14 +24,19 @@ const StopLostPanel =
             };
 
             const calcTakeProfPrice = () => {
-                let value = convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) + ((convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) * stopLostState.userCfg.cfg.linkedInLike.accepter.value) / 100);
+                let value = convertToNumber(tradePare.price) + ((convertToNumber(tradePare.price) * tradePare.takeProf) / 100);
                 return value.toPrecision(4);
             };
 
             const calcStopLostPrice = () => {
-                let value = convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) - ((convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value) * (stopLostState.userCfg.cfg.linkedInLike.follower.value) * (-1))  / 100);
+                let value = convertToNumber(tradePare.price) - ((convertToNumber(tradePare.price) * (tradePare.stopLost) * (-1))  / 100);
                 return value.toPrecision(4);
             };
+
+            const parsePareFromURL = () => {
+                let tmp = window.location.href.split("/trade/");
+                return tmp[1].split("-")[0];
+            }
 
             const [applyButtonStyle, setApplyButtonStyle] = useState({
                 className: "apply-button",
@@ -41,10 +46,11 @@ const StopLostPanel =
             const [stopAllAction, setStopAllAction] = useState(cfgPanelState.getIsActionsStop());
             const [takeProfPrice, setTakeProfPrice] = useState(calcTakeProfPrice());
             const [stopLostPrice, setStopLostPrice] = useState(calcStopLostPrice());
+            const [tradePare, setTradePare] = useState(stopLostState.getTradePareDataByKey(parsePareFromURL()));
 
             const handleApplyButtonClick = () => {
                 setApplyButtonStyle({className: "apply-button-apply"});
-                stopLostState.save(stopLostState.userCfg.cfg, authState.user.uid," CfgPanelState.handleApplyButtonClick()");
+                stopLostState.save(stopLostState.userCfg.cfg, authState.user.uid," StopLostPanel.handleApplyButtonClick()");
                 setTimeout(
                     () => setApplyButtonStyle({className: "apply-button"}), 700
                 )
@@ -69,7 +75,7 @@ const StopLostPanel =
                 const sum = (cfgPanelState.badge.like
                     + cfgPanelState.badge.follower
                     + cfgPanelState.badge.repost
-                    + cfgPanelState.badge.subscriber
+                    + cfgPanelState.badge.quantity
                     + cfgPanelState.badge.accepter
                     + cfgPanelState.badge.connector);
                 return sum > 0 ? (sum > 99 ? "99+": sum) : ''
@@ -78,7 +84,7 @@ const StopLostPanel =
             const totalBadgeTitle = () => {
                 const sum = (cfgPanelState.badge.like
                     + cfgPanelState.badge.follower
-                    + cfgPanelState.badge.subscriber
+                    + cfgPanelState.badge.quantity
                     + cfgPanelState.badge.accepter
                     + cfgPanelState.badge.connector);
                 return sum > 0 ? sum: ''
@@ -107,7 +113,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.like.id}
                                     name={cfgPanelState.rowConfig.like.name}
-                                    value={stopLostState.userCfg.cfg.linkedInLike.like.value}
+                                    value={tradePare.price}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.like.key)}
                                 />
                             </div>
@@ -120,7 +126,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.repost.id}
                                     name={cfgPanelState.rowConfig.repost.name}
-                                    value={stopLostState.userCfg.cfg.linkedInLike.repost.value}
+                                    value={tradePare.stopLost}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.repost.key)}
                                 />
                             </div>
@@ -134,7 +140,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.follower.id}
                                     name={cfgPanelState.rowConfig.follower.name}
-                                    value={stopLostState.userCfg.cfg.linkedInLike.follower.value}
+                                    value={tradePare.stopLost}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.follower.key)}
                                 />
                             </div>
@@ -153,7 +159,7 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.accepter.id}
                                     name={cfgPanelState.rowConfig.accepter.name}
-                                    value={stopLostState.userCfg.cfg.linkedInLike.accepter.value}
+                                    value={tradePare.takeProf}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.accepter.key)}
                                 />
                             </div>
@@ -172,21 +178,21 @@ const StopLostPanel =
                                     type="text"
                                     id={cfgPanelState.rowConfig.connector.id}
                                     name={cfgPanelState.rowConfig.connector.name}
-                                    value={stopLostState.userCfg.cfg.linkedInLike.connector.value}
+                                    value={tradePare.takeProfRsi}
                                     onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.connector.key)}
                                 />
                             </div>
                             <div className="checkbox-row">
                                 <span
-                                    className="badge">{cfgPanelState.badge.subscriber > 0 ? (cfgPanelState.badge.subscriber > 99 ? "99+" : cfgPanelState.badge.subscriber) : ''}</span>
+                                    className="badge">{cfgPanelState.badge.quantity > 0 ? (cfgPanelState.badge.quantity > 99 ? "99+" : cfgPanelState.badge.quantity) : ''}</span>
                                 <label
-                                    htmlFor={cfgPanelState.rowConfig.subscriber.id}>{cfgPanelState.rowConfig.subscriber.label}</label>
+                                    htmlFor={cfgPanelState.rowConfig.quantity.id}>{cfgPanelState.rowConfig.quantity.label}</label>
                                 <input
                                     type="text"
-                                    id={cfgPanelState.rowConfig.subscriber.id}
-                                    name={cfgPanelState.rowConfig.subscriber.name}
-                                    value={stopLostState.userCfg.cfg.linkedInLike.subscriber.value}
-                                    onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.subscriber.key)}
+                                    id={cfgPanelState.rowConfig.quantity.id}
+                                    name={cfgPanelState.rowConfig.quantity.name}
+                                    value={tradePare.quantity}
+                                    onChange={(event) => handleCheckboxChange(event, cfgPanelState.rowConfig.quantity.key)}
                                 />
                             </div>
                             <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Apply

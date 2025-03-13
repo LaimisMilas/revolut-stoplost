@@ -1,6 +1,6 @@
 import {makeAutoObservable} from 'mobx';
 import {TimeoutStatus} from "../utils/CustomTimeout";
-import {lc_user_cfg} from "../static/lc_user_cfg";
+import {lc_user_cfg, trade_pares} from "../static/lc_user_cfg";
 import {lc_system_cfg} from "../static/lc_system_cfg";
 
 export class StopLostState {
@@ -21,30 +21,28 @@ export class StopLostState {
     intervalGetCfgTimeOut = 11100;
     intervalGetSystemCfgTimeOut = 12200;
     updateSystemCfg = true;
-    tradePares = [
-        {
-        pare: "SOL-USD",
-        price: 123,
-        stopLost: -1,
-        takeProf: 5,
-        takeProfRsi: 70
-        },
-        {
-            pare: "RSI-USD",
-            price: 123,
-            stopLost: -1,
-            takeProf: 5,
-            takeProfRsi: 70
-        }
-    ]
+    tradePares = null;
 
-    getTradePareDataByName(name){
-        for(let i = 0; i < this.tradePares.length; i++) {
-            if(this.tradePares[i].pare === name) {
-                return this.tradePares[i];
-            }
+    constructor() {
+        makeAutoObservable(this);
+    }
+
+    getTradePareDataByKey(key){
+        return this.tradePares[key];
+    }
+
+    saveTradePareData(key, tradeDate){
+        let data = this.getTradePareDataByKey(key);
+        if(data){
+            data.stopLost = tradeDate.stopLost;
+            data.takeProf = tradeDate.takeProf;
+            data.takeProfRsi = tradeDate.takeProfRsi;
+            data.price = tradeDate.price;
+            this.tradePares.add(tradeDate);
+        } else {
+            this.tradePares.add(key, tradeDate);
         }
-        return null;
+        return this.getTradePareDataByKey(key);
     }
 
     setup(rootStore, authState, cfgPanelState) {
@@ -53,6 +51,7 @@ export class StopLostState {
         this.cfgPanelState = cfgPanelState;
         this.setUserCfg(lc_user_cfg);
         this.setSystemCfg(lc_system_cfg);
+        this.setTradePares(trade_pares);
     }
 
     setUserCfg(rootCfg){
@@ -65,6 +64,10 @@ export class StopLostState {
 
     setSystemCfg(systemCfg){
         this.systemCfg = systemCfg;
+    }
+
+    setTradePares(tradePares){
+        this.tradePares = tradePares;
     }
 
     save(updatedCfg, uid, caller) {

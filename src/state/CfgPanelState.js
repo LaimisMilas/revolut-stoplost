@@ -63,12 +63,11 @@ export class CfgPanelState {
                 name: "follower_name",
                 key: "follower"
             },
-            subscriber: {
-                checkValue: this.cfgState.systemCfg.cfg.linkedInLike.subscriber.run,
+            quantity: {
                 label: "Sell qntty.?",
-                id: "subscriber_id",
-                name: "subscriber_name",
-                key: "subscriber"
+                id: "quantity_id",
+                name: "quantity_name",
+                key: "quantity"
             },
             accepter: {
                 checkValue: this.cfgState.systemCfg.cfg.linkedInLike.accepter.run,
@@ -96,7 +95,7 @@ export class CfgPanelState {
             newPoster: 0,
             like: 0,
             follower: 0,
-            subscriber: 0,
+            quantity: 0,
             accepter: 0,
             connector: 0,
             repost: 0,

@@ -1,3 +1,22 @@
+export var trade_pares = {
+    "SOL":{
+        "name": "SOL-USD",
+        "price": 123,
+        "stopLost": -1,
+        "takeProf": 5,
+        "takeProfRsi": 70,
+        "quantity": "25%"
+    },
+    "RSI":{
+        "name": "RSI-USD",
+        "price": 123,
+        "stopLost": -1,
+        "takeProf": 5,
+        "takeProfRsi": 70,
+        "quantity": "25%"
+    }
+};
+
 export var lc_user_cfg = {
     "uid":0,
     "cfg":{
@@ -223,56 +242,18 @@ export var lc_user_cfg = {
 
                 ]
             },
-            "subscriber":{
+            "quantity":{
                 "run":true,
                 "log":false,
                 "path":"//button/span[text() = \"Subscribe\"]",
-                "key":"subscriber",
+                "key":"quantity",
                 "validate":false,
                 "value":5,
                 "range":[
                     9056,
                     10055
                 ],
-                "counter":0,
-                "wit":{
-                    "run":true,
-                    "ruleSet":{
-                        "id":3,
-                        "key":"subscriber",
-                        "rules":[
-                            {
-                                "id":1,
-                                "action":"Subscribe",
-                                "actionKey":"subscriber",
-                                "conjunction":"if",
-                                "ruleTarget":"description",
-                                "ruleOperator":"is",
-                                "ruleIntent":"it_sector",
-                                "confidence":0.99
-                            },
-                            {
-                                "id":2,
-                                "action":"Subscribe",
-                                "actionKey":"subscriber",
-                                "conjunction":"if",
-                                "ruleTarget":"description",
-                                "ruleOperator":"is",
-                                "ruleIntent":"business_owner",
-                                "confidence":0.99
-                            }
-                        ]
-                    }
-                },
-                "paths":{
-                    "name":null,
-                    "description":"/../../..//span[contains(@class, 'discover-series-card__info')][2]",
-                    "text":null,
-                    "href":"/../../..//a"
-                },
-                "interacted":[
-
-                ]
+                "counter":0
             },
             "accepter":{
                 "run":false,
