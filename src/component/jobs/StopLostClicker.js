@@ -10,12 +10,8 @@ import {
 } from "../../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
 
-const StopLostClicker = inject("stopLostState", "navigationState", "cfgPanelState",
-    "timeOutState")(
-    observer(({
-                  stopLostState, navigationState, cfgPanelState,
-                  timeOutState
-              }) => {
+const StopLostClicker = inject("stopLostState")(
+    observer(({stopLostState}) => {
 
         let logging = false;
         let logPrefix = " StopLostClicker";
@@ -35,42 +31,30 @@ const StopLostClicker = inject("stopLostState", "navigationState", "cfgPanelStat
         }, [stopLostState.reset]);
 
         const run = async () => {
-            let cfg = stopLostState.systemCfg.cfg.linkedInLike.like;
             let root = stopLostState.systemCfg.cfg.linkedInLike.root;
-            logging = cfg.log;
-            navigationState.syncCurrentPageByWindowLocation();
-            if (root.run && navigationState.nav.currentPage === navigationState.pages.feed) {
-                let hasActiveTimeOut = timeOutState.hasActiveTimeOut(cfg.key);
-                if (!hasActiveTimeOut && stopLostState.userCfg.cfg.linkedInLike[cfg.key].run) {
-                    timeOutState.clearTimeOutsByKey(cfg.key);
-                    await doStopLost(cfg, callback);
-                }
+            if (root.run) {
+                await doStopLost();
             }
         }
 
-        const doStopLost = async (cfg, callback) => {
-            let tradeName = stopLostState.userCfg.cfg.linkedInLike.repost.value.split("-")[0];
+        const doStopLost = async () => {
 
-            if(isStopLostReached()){
-                console.log("Stop Lost Reached do Run SELL " + tradeName);
-                const result = await sellOperation(tradeName);
-                if(result === 400){
-                    callback({key: cfg.key, result: result, parentId: 0, cover: 100});
-                }
+            let tradePare = stopLostState.currentTradePare;
+
+            if(isStopLostReached(tradePare)){
+                console.log("Stop Lost Reached do Run SELL " + tradePare.name);
+                await sellOperation(tradePare);
             } else {
-                if(isTakeProfReached() && await isRSIUp()){
-                    console.log("Take Prof Reached do Run SELL " + tradeName);
-                    const result = await sellOperation(tradeName);
-                    if(result === 400){
-                        callback({key: cfg.key, result: result, parentId: 0, cover: 100});
-                    }
+                if(isTakeProfReached(tradePare) && await isRSIUp(tradePare)){
+                    console.log("Take Prof Reached do Run SELL " + tradePare.name);
+                    await sellOperation(tradePare);
                 }
             }
         }
 
-        const isRSIUp = async () => {
+        const isRSIUp = async (tradePare) => {
             if(Utils.getElByXPath("//iframe")){
-                let assetValue = stopLostState.userCfg.cfg.linkedInLike.connector.value;
+                let assetValue = tradePare.takeProfRsi;
                 let indicatorValue = await getRSIIndicator();
                 let isRSIUp = indicatorValue >= convertToNumber(assetValue)
                 console.log("StopLostClicker isRSIUp "
@@ -82,24 +66,24 @@ const StopLostClicker = inject("stopLostState", "navigationState", "cfgPanelStat
             return false;
         }
 
-        const isTakeProfReached = () => {
+        const isTakeProfReached = (tradePare) => {
             let lastPrice = readLastPrice();
-            let buyPrice = convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value);
+            let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
-            return currentProfit > convertToNumber(stopLostState.userCfg.cfg.linkedInLike.accepter.value);
+            return currentProfit > convertToNumber(tradePare.takeProf);
         }
 
-        const isStopLostReached = () => {
+        const isStopLostReached = (tradePare) => {
             let lastPrice = readLastPrice();
-            let buyPrice = convertToNumber(stopLostState.userCfg.cfg.linkedInLike.like.value);
+            let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
-            return currentProfit < convertToNumber(stopLostState.userCfg.cfg.linkedInLike.follower.value);
+            return currentProfit < convertToNumber(tradePare.stopLost);
         }
 
-        const sellOperation = async (tradeName) => {
+        const sellOperation = async (tradePare) => {
             let result = await selectSellSwitch();
             if(result === 100){
-                let quantityValue = stopLostState.userCfg.cfg.linkedInLike.subscriber.value;
+                let quantityValue = tradePare.quantity;
                 if(quantityValue.includes('%')){
                     quantityValue = quantityValue.toString()
                     if(quantityValue === '100%'){
@@ -121,7 +105,7 @@ const StopLostClicker = inject("stopLostState", "navigationState", "cfgPanelStat
             }
 
             if(result === 200){
-                result += await clickSell(tradeName);
+                result += await clickSell(tradePare.key);
             }
 
             if(result === 300){
@@ -129,16 +113,9 @@ const StopLostClicker = inject("stopLostState", "navigationState", "cfgPanelStat
                 result += 100;
             }
 
-            console.log("StopLostClicker sellOperation "+ tradeName + " done status: " + result);
+            console.log("StopLostClicker sellOperation "+ tradePare.name + " done status: " + result);
 
             return result;
-        }
-
-        const callback = (result) => {
-            logging && console.log(logPrefix + " callback result: " + JSON.stringify(result));
-            if (result.result) {
-                cfgPanelState.updateBadge(result.key, cfgPanelState.badge[result.key] + 1);
-            }
         }
 
     }));

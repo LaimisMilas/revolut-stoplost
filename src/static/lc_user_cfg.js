@@ -8,10 +8,10 @@ export var trade_pares = {
         "takeProfRsi": 70,
         "quantity": "25%"
     },
-    "RSI":{
-        "key": "RSI",
-        "name": "RSI-USD",
-        "price": 123,
+    "XRP":{
+        "key": "XRP",
+        "name": "XRP-USD",
+        "price": 2.32,
         "stopLost": -1,
         "takeProf": 5,
         "takeProfRsi": 70,

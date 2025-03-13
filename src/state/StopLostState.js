@@ -21,6 +21,7 @@ export class StopLostState {
     intervalGetSystemCfgTimeOut = 12200;
     updateSystemCfg = true;
     tradePares = null;
+    currentTradePare  = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -35,7 +36,8 @@ export class StopLostState {
     }
 
     getTradePareDataByKey(key){
-        return this.tradePares[key];
+        this.currentTradePare = this.tradePares[key]
+        return this.currentTradePare;
     }
 
     saveTradePareData(tradeDate){
