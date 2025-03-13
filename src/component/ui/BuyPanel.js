@@ -1,5 +1,5 @@
 import {inject, observer} from 'mobx-react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {CustomTimeout} from "../../utils/CustomTimeout";
 
@@ -26,6 +26,10 @@ const BuyPanel =
 
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(cfgBuyPanelState.getIsActionsStop());
+
+            useEffect(() => {
+                setStopAllAction(cfgBuyPanelState.getIsActionsStop());
+            }, [buyState.systemCfg.cfg.linkedInLike.root.run]);
 
             const handleApplyButtonClick = () => {
                 setApplyButtonStyle({className: "apply-button-apply"});

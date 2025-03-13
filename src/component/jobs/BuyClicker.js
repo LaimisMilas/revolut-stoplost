@@ -2,17 +2,17 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {
     clickBuy,
-    convertToNumber, getRSIIndicator, readLastPrice, selectBuySwitch,
+    convertToNumber, getBuyPrice, getRSIIndicator, readLastPrice, selectBuySwitch,
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
 
 const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
-    "timeOutState", "actorState")(
+    "timeOutState", "actorState", "stopLostState")(
     observer(({
                   buyState, navigationState, cfgPanelState,
-                  timeOutState, actorState
+                  timeOutState, actorState, stopLostState
               }) => {
 
         let logging = false;
@@ -95,11 +95,18 @@ const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
                     result += await writeQuantity(quantity);
                 }
             }
+            let buyPrice = 0;
             if(result === 200){
-                result += await clickBuy(tradeName);
+                buyPrice =  readLastPrice();
+                //result += await clickBuy(tradeName);
+                result += 100;
             }
             if(result === 300){
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
+                result += 100;
+                stopLostState.currentTradePare.price = buyPrice;
+                result += 100;
+                stopLostState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
             }
             console.log("buyOperation done status: " + result);

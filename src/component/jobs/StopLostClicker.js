@@ -10,8 +10,8 @@ import {
 } from "../../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
 
-const StopLostClicker = inject("stopLostState")(
-    observer(({stopLostState}) => {
+const StopLostClicker = inject("stopLostState", "buyState")(
+    observer(({stopLostState, buyState}) => {
 
         let logging = false;
         let logPrefix = " StopLostClicker";
@@ -103,18 +103,19 @@ const StopLostClicker = inject("stopLostState")(
                     result += await writeQuantity(quantity);
                 }
             }
-
             if(result === 200){
-                result += await clickSell(tradePare.key);
+               //result += await clickSell(tradePare.key);
+                result += 100;
             }
-
             if(result === 300){
                 stopLostState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
+                buyState.userCfg.cfg.linkedInLike.like.value = readLastPrice();
+                result += 100;
+                buyState.systemCfg.cfg.linkedInLike.root.run = true;
+                result += 100;
             }
-
             console.log("StopLostClicker sellOperation "+ tradePare.name + " done status: " + result);
-
             return result;
         }
 

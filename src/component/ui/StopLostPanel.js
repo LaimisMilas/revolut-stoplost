@@ -1,5 +1,5 @@
 import {inject, observer} from 'mobx-react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {CustomTimeout} from "../../utils/CustomTimeout";
 import {convertToNumber} from "../../utils/RevolutUtils";
@@ -19,6 +19,10 @@ const StopLostPanel =
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(cfgPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(stopLostState.getTradePareDataByKey(parsePareFromURL()));
+
+            useEffect(() => {
+                setStopAllAction(cfgPanelState.getIsActionsStop());
+            }, [stopLostState.systemCfg.cfg.linkedInLike.root.run]);
 
             const calcTakeProfPrice = () => {
                 let value = convertToNumber(tradePare.price) + ((convertToNumber(tradePare.price) * convertToNumber(tradePare.takeProf)) / 100);

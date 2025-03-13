@@ -59,6 +59,15 @@ export const clickSell = async (tradeName) => {
     return 0;
 }
 
+export const getBuyPrice = async (tradeName) => {
+    let el = Utils.getElByXPath("//button/span[contains(text(), 'Buy " + tradeName + "')][1]");
+    if(el){
+        let text = el.innerText;
+        return convertToNumber(text.replace("$", "").trim());
+    }
+    return 0;
+}
+
 export const clickBuy = async (tradeName) => {
     let el = Utils.getElByXPath("//button/span[contains(text(), 'Buy " + tradeName + "')][1]");
     if(el){
