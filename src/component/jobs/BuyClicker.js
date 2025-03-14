@@ -2,7 +2,7 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {
     clickBuy,
-    convertToNumber, getRSIIndicator, readLastPrice, selectBuySwitch,
+    convertToNumber, getNowDate, getRSIIndicator, readLastPrice, selectBuySwitch,
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
@@ -70,7 +70,7 @@ const BuyClicker = inject("buyState", "stopLostState")(
                     + ", readLastPrice: " + buyPrice
                     + ", RSI 14: " + await getRSIIndicator()
                     + ", price: " + tradePare.targetPrice
-                    + ", time: " + Date.now());
+                    + ", time: " + getNowDate());
             }
             if(result === 300){
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
