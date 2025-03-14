@@ -21,6 +21,7 @@ const BuyPanel =
 
             useEffect(() => {
                 setStopAllAction(cfgBuyPanelState.getIsActionsStop());
+                setTradePare(buyState.getTradePareDataByKey(parsePareFromURL()))
             }, [buyState.systemCfg.cfg.linkedInLike.root.run]);
 
             const handleOnChangeEvent = (event, key) => {
@@ -60,16 +61,14 @@ const BuyPanel =
                         </button>
                         <div hidden={checkBoxContainerState}>
                             <div className="checkbox-row">
-                                <span
-                                    className="badge notification-badge__count">{cfgBuyPanelState.badge.like > 0 ? (cfgBuyPanelState.badge.like > 99 ? "99+" : cfgBuyPanelState.badge.like) : ''}</span>
                                 <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.like.id}>{cfgBuyPanelState.rowConfig.like.label}</label>
+                                    htmlFor={cfgBuyPanelState.rowConfig.targetPrice.id}>{cfgBuyPanelState.rowConfig.targetPrice.label}</label>
                                 <input
                                     type="text"
-                                    id={cfgBuyPanelState.rowConfig.like.id}
-                                    name={cfgBuyPanelState.rowConfig.like.name}
+                                    id={cfgBuyPanelState.rowConfig.targetPrice.id}
+                                    name={cfgBuyPanelState.rowConfig.targetPrice.name}
                                     value={tradePare.targetPrice}
-                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.like.key)}
+                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.targetPrice.key)}
                                 />
                             </div>
                             <div className="checkbox-row">
@@ -83,16 +82,15 @@ const BuyPanel =
                                     onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.exchPare.key)}
                                 />
                             </div>
-
                             <div className="checkbox-row">
                                 <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.targetPrice.id}>{cfgBuyPanelState.rowConfig.targetPrice.label}</label>
+                                    htmlFor={cfgBuyPanelState.rowConfig.rsi.id}>{cfgBuyPanelState.rowConfig.rsi.label}</label>
                                 <input
                                     type="text"
-                                    id={cfgBuyPanelState.rowConfig.targetPrice.id}
-                                    name={cfgBuyPanelState.rowConfig.targetPrice.name}
-                                    value={tradePare.takeProfRsi}
-                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.targetPrice.key)}
+                                    id={cfgBuyPanelState.rowConfig.rsi.id}
+                                    name={cfgBuyPanelState.rowConfig.rsi.name}
+                                    value={tradePare.rsi}
+                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.rsi.key)}
                                 />
                             </div>
                             <div className="checkbox-row">

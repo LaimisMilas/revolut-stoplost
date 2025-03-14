@@ -34,7 +34,7 @@ const BuyClicker = inject("buyState", "stopLostState")(
 
         const doBuy = async () => {
             let tradePare = buyState.currentTradePare;
-            if(isBuyReached() && await isRSIDown()){
+            if(await isBuyReached(tradePare) && await isRSIDown(tradePare)){
                 await buyOperation(tradePare);
             }
         }
@@ -70,8 +70,8 @@ const BuyClicker = inject("buyState", "stopLostState")(
                 console.log("BuyClicker clickBuy "
                     + ", readLastPrice: " + buyPrice
                     + ", RSI 14: " + await getRSIIndicator()
-                    + ", price: " + tradePare.price
-                    + ", time: " + new Date().getTime());
+                    + ", price: " + tradePare.targetPrice
+                    + ", time: " + Date.now());
             }
             if(result === 300){
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
@@ -85,9 +85,9 @@ const BuyClicker = inject("buyState", "stopLostState")(
             return result;
         }
 
-        const isBuyReached = () => {
-            let lastPrice = readLastPrice();
-            let buyPrice = convertToNumber(buyState.userCfg.cfg.linkedInLike.like.value);
+        const isBuyReached = async (tradePare) => {
+            let lastPrice = await readLastPrice();
+            let buyPrice = convertToNumber(tradePare.targetPrice);
             let isBuyReached = lastPrice <= buyPrice;
             console.log("isBuyReached "
                 + ", lastPrice: " + lastPrice
@@ -96,9 +96,9 @@ const BuyClicker = inject("buyState", "stopLostState")(
             return isBuyReached;
         }
 
-        const isRSIDown = async () => {
+        const isRSIDown = async (tradePare) => {
             if(Utils.getElByXPath("//iframe")){
-                let assetValue = buyState.userCfg.cfg.linkedInLike.follower.value;
+                let assetValue = tradePare.rsi;
                 let indicatorValue = await getRSIIndicator();
                 let isRSIDown = indicatorValue <= convertToNumber(assetValue);
                 console.log("BuyClicker isRSIDown "
