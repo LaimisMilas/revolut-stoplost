@@ -13,9 +13,6 @@ import {Utils} from "html-evaluate-utils/Utils";
 const StopLostClicker = inject("stopLostState", "buyState")(
     observer(({stopLostState, buyState}) => {
 
-        let logging = false;
-        let logPrefix = " StopLostClicker";
-
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
@@ -38,18 +35,59 @@ const StopLostClicker = inject("stopLostState", "buyState")(
         }
 
         const doStopLost = async () => {
-
             let tradePare = stopLostState.currentTradePare;
-
             if(isStopLostReached(tradePare)){
-                console.log("Stop Lost Reached do Run SELL " + tradePare.name);
                 await sellOperation(tradePare);
             } else {
                 if(isTakeProfReached(tradePare) && await isRSIUp(tradePare)){
-                    console.log("Take Prof Reached do Run SELL " + tradePare.name);
                     await sellOperation(tradePare);
                 }
             }
+        }
+
+        const sellOperation = async (tradePare) => {
+            let result = await selectSellSwitch();
+            if(result === 100){
+                let quantityValue = tradePare.quantity;
+                if(quantityValue.includes('%')){
+                    quantityValue = quantityValue.toString()
+                    if(quantityValue === '100%'){
+                        result += await selectSellSum(100);
+                    }
+                    if(quantityValue === '75%'){
+                        result += await selectSellSum(75);
+                    }
+                    if(quantityValue === '50%'){
+                        result += await selectSellSum(50);
+                    }
+                    if(quantityValue === '25%'){
+                        result += await selectSellSum(25);
+                    }
+                } else {
+                    let quantity = convertToNumber(quantityValue);
+                    result += await writeQuantity(quantity);
+                }
+            }
+            let sellPrice = 0;
+            if(result === 200){
+                sellPrice =  readLastPrice();
+               result += await clickSell(tradePare.key);
+                console.log("StopLostClicker clickSell "
+                    + ", readLastPrice: " + sellPrice
+                    + ", RSI 14: " + await getRSIIndicator()
+                    + ", price: " + tradePare.price
+                    + ", time: " + new Date().getTime());
+            }
+            if(result === 300){
+                stopLostState.systemCfg.cfg.linkedInLike.root.run = false;
+                result += 100;
+                stopLostState.currentTradePare.targetPrice = sellPrice;
+                result += 100;
+                buyState.systemCfg.cfg.linkedInLike.root.run = true;
+                result += 100;
+            }
+            console.log("StopLostClicker sellOperation "+ tradePare.name + " done status: " + result);
+            return result;
         }
 
         const isRSIUp = async (tradePare) => {
@@ -78,49 +116,6 @@ const StopLostClicker = inject("stopLostState", "buyState")(
             let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
             return currentProfit < convertToNumber(tradePare.stopLost);
-        }
-
-        const sellOperation = async (tradePare) => {
-            let result = await selectSellSwitch();
-            if(result === 100){
-                let quantityValue = tradePare.quantity;
-                if(quantityValue.includes('%')){
-                    quantityValue = quantityValue.toString()
-                    if(quantityValue === '100%'){
-                        result += await selectSellSum(100);
-                    }
-                    if(quantityValue === '75%'){
-                        result += await selectSellSum(75);
-                    }
-                    if(quantityValue === '50%'){
-                        result += await selectSellSum(50);
-                    }
-                    if(quantityValue === '25%'){
-                        result += await selectSellSum(25);
-                    }
-                } else {
-                    let quantity = convertToNumber(quantityValue);
-                    result += await writeQuantity(quantity);
-                }
-            }
-            if(result === 200){
-               result += await clickSell(tradePare.key);
-                console.log("StopLostClicker clickSell "
-                    + ", readLastPrice: " + readLastPrice()
-                    + ", RSI 14: " + await getRSIIndicator()
-                    + ", price: " + tradePare.price
-                    + ", time: " + new Date().getTime());
-            }
-            if(result === 300){
-                stopLostState.systemCfg.cfg.linkedInLike.root.run = false;
-                result += 100;
-                buyState.userCfg.cfg.linkedInLike.like.value = readLastPrice();
-                result += 100;
-                buyState.systemCfg.cfg.linkedInLike.root.run = true;
-                result += 100;
-            }
-            console.log("StopLostClicker sellOperation "+ tradePare.name + " done status: " + result);
-            return result;
         }
 
     }));

@@ -47,6 +47,7 @@ export class StopLostState {
             data.takeProf = tradeDate.takeProf;
             data.takeProfRsi = tradeDate.takeProfRsi;
             data.price = tradeDate.price;
+            data.quantity = tradeDate.quantity;
             this.tradePares[tradeDate.key] = data;
         } else {
             this.tradePares[tradeDate.key] = tradeDate;

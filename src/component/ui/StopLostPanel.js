@@ -40,7 +40,6 @@ const StopLostPanel =
             const handleOnChangeEvent = (event, key) => {
                 console.log("StopLostPanel handleOnChangeEvent", event, key);
                 tradePare[key] = event.target.value;
-                //setTradePare(tradePare);
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setApplyButtonStyle({className: "apply-button-save"});

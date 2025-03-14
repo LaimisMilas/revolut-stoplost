@@ -79,6 +79,7 @@ export class RootStore {
         this.stopLostState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.stopLostState.userCfg};
         this.stopLostState.systemCfg = {...LocalStorageManager.getStorage("lc_systemCfg"), ...this.stopLostState.systemCfg};
         this.stopLostState.tradePares = {...LocalStorageManager.getStorage("lc_tradePares"), ...this.stopLostState.tradePares};
+        this.buyState.tradePares = {...LocalStorageManager.getStorage("lc_buy_tradePares"), ...this.buyState.tradePares};
         this.buyState.userCfg = {...LocalStorageManager.getStorage("lc_buy_cfg"), ...this.buyState.userCfg};
         this.buyState.systemCfg = {...LocalStorageManager.getStorage("lc_buy_systemCfg"), ...this.buyState.systemCfg};
         this.cfgPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_rowConfig"), ...this.cfgPanelState.rowConfig};
@@ -102,6 +103,7 @@ export class RootStore {
         this.stopLostState.userCfg = {...this.stopLostState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
         this.stopLostState.systemCfg = {...this.stopLostState.systemCfg, ...LocalStorageManager.getStorage("lc_systemCfg")};
         this.stopLostState.tradePares = {...this.stopLostState.tradePares, ...LocalStorageManager.getStorage("lc_tradePares")};
+        this.buyState.tradePares = {...this.buyState.tradePares, ...LocalStorageManager.getStorage("lc_buy_tradePares")};
         this.buyState.userCfg = {...this.buyState.userCfg, ...LocalStorageManager.getStorage("lc_buy_cfg")};
         this.buyState.systemCfg = {...this.buyState.systemCfg, ...LocalStorageManager.getStorage("lc_buy_systemCfg")};
         this.cfgPanelState.rowConfig = {...this.cfgPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_rowConfig")};
@@ -120,6 +122,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_cfg", this.stopLostState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.stopLostState.systemCfg);
         LocalStorageManager.flash("lc_tradePares", this.stopLostState.tradePares);
+        LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
         LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);
@@ -140,6 +143,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_cfg", this.stopLostState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.stopLostState.systemCfg);
         LocalStorageManager.flash("lc_tradePares", this.stopLostState.tradePares);
+        LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
         LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);
@@ -175,6 +179,6 @@ export class RootStore {
         LocalStorageManager.removeStorageItem("lc_user");
         LocalStorageManager.removeStorageItem("lc_interactedActors");
         LocalStorageManager.removeStorageItem("lc_tradePares");
-
+        LocalStorageManager.removeStorageItem("lc_buy_tradePares");
     }
 }
