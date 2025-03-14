@@ -68,7 +68,7 @@ const StopLostPanel =
                 <div className="console-box" id="labas_as_krabas" hidden={cfgPanelState.stopAllAction}>
                     <div className="tab-container">
                         <span className="activeTime">
-                            Active time: {cfgPanelState.active.timeDiff} min.
+                            <span className="panelTitle">SELL panel</span>, active time: {cfgPanelState.active.timeDiff} min.
                         </span>
                         <button className="exit-button"
                                 onClick={() => handleCollapseButtonClick()}>
