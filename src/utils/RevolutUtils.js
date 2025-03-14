@@ -108,7 +108,7 @@ export const convertToNumber = (s) => {
 }
 
 export const getNowDate = () => {
-    let date = Date.now();
+    let date = new Date();
     let hours = date.getHours(); // hours
     let minutes = date.getMinutes(); // minutes
     let seconds = date.getSeconds(); // seconds
