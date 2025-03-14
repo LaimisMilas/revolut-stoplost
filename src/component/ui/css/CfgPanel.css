@@ -89,6 +89,10 @@
     font-weight: 400;
 }
 
+.panelTitle{
+    font-size: 17px;
+    font-weight: 600;
+}
 
 .exit-button{
     font-size: x-small;

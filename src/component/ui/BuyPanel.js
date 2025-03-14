@@ -53,7 +53,7 @@ const BuyPanel =
                 <div className="console-box" id="buy-panel" hidden={cfgBuyPanelState.stopAllAction}>
                     <div className="tab-container">
                         <span className="activeTime">
-                            Active time: {cfgBuyPanelState.active.timeDiff} min.
+                           <span className="panelTitle">BUY panel</span>, active time: {cfgBuyPanelState.active.timeDiff} min.
                         </span>
                         <button className="exit-button"
                                 onClick={() => handleCollapseButtonClick()}>
