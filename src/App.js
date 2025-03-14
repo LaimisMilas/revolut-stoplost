@@ -13,16 +13,10 @@ const App = () => {
     return (
         <Provider
             rootState={rootState}
-            navigationState={rootState.navigationState} 
-            scrollState={rootState.scrollState}
             stopLostState={rootState.stopLostState}
             buyState={rootState.buyState}
             cfgPanelState={rootState.cfgPanelState}
             cfgBuyPanelState={rootState.cfgBuyPanelState}
-            ruleState={rootState.ruleState}
-            authState={rootState.authState}
-            actorState={rootState.actorState}
-            timeOutState={rootState.timeOutState}
         >
             <div className="App">
                 <StopLostPanel/>
