@@ -7,18 +7,10 @@ const BuyPanel =
     inject("navigationState","buyState", "scrollState", "cfgBuyPanelState", "authState", "timeOutState")(
         observer(({navigationState, buyState, scrollState, cfgBuyPanelState, authState, timeOutState}) => {
 
-            const handleCheckboxChange = (event, key) => {
-                console.log("handleCheckboxChange", event, key);
-                if (key in cfgBuyPanelState.rowConfig) {
-                    if (key === "scroll") {
-                        scrollState.cfg.root.run = event.target.checked;
-                    } else {
-                        buyState.setRunEntityCfg(key, event.target.value);
-                    }
-                    setApplyButtonStyle({className: "apply-button-save"});
-                    buyState.updateSystemCfg = false;
-                }
-            };
+            const parsePareFromURL = () => {
+                let tmp = window.location.href.split("/trade/");
+                return tmp[1].split("-")[0];
+            }
 
             const [applyButtonStyle, setApplyButtonStyle] = useState({
                 className: "apply-button",
@@ -26,14 +18,22 @@ const BuyPanel =
 
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(cfgBuyPanelState.getIsActionsStop());
+            const [tradePare, setTradePare] = useState(buyState.getTradePareDataByKey(parsePareFromURL()));
 
             useEffect(() => {
                 setStopAllAction(cfgBuyPanelState.getIsActionsStop());
             }, [buyState.systemCfg.cfg.linkedInLike.root.run]);
 
+            const handleOnChangeEvent = (event, key) => {
+                console.log("BuyPanel handleOnChangeEvent", event, key);
+                tradePare[key] = event.target.value;
+                setApplyButtonStyle({className: "apply-button-save"});
+                buyState.updateSystemCfg = false;
+            };
+
             const handleApplyButtonClick = () => {
                 setApplyButtonStyle({className: "apply-button-apply"});
-                buyState.save(buyState.userCfg.cfg, authState.user.uid," cfgBuyPanelState.handleApplyButtonClick()");
+                buyState.saveTradePareData(tradePare);
                 setTimeout(
                     () => setApplyButtonStyle({className: "apply-button"}), 700
                 )
@@ -54,31 +54,9 @@ const BuyPanel =
                 }
             }
 
-            const totalBadge = () => {
-                const sum = (cfgBuyPanelState.badge.like
-                    + cfgBuyPanelState.badge.follower
-                    + cfgBuyPanelState.badge.repost
-                    + cfgBuyPanelState.badge.subscriber
-                    + cfgBuyPanelState.badge.accepter
-                    + cfgBuyPanelState.badge.connector);
-                return sum > 0 ? (sum > 99 ? "99+": sum) : ''
-            }
-
-            const totalBadgeTitle = () => {
-                const sum = (cfgBuyPanelState.badge.like
-                    + cfgBuyPanelState.badge.follower
-                    + cfgBuyPanelState.badge.subscriber
-                    + cfgBuyPanelState.badge.accepter
-                    + cfgBuyPanelState.badge.connector);
-                return sum > 0 ? sum: ''
-            }
-
             return (
                 <div className="console-box" id="buy-panel" hidden={cfgBuyPanelState.stopAllAction}>
                     <div className="tab-container">
-                        <span title={totalBadgeTitle()}
-                              className="badge">{totalBadge()}
-                        </span>
                         <span className="activeTime">
                             Active time: {cfgBuyPanelState.active.timeDiff} min.
                         </span>
@@ -96,48 +74,42 @@ const BuyPanel =
                                     type="text"
                                     id={cfgBuyPanelState.rowConfig.like.id}
                                     name={cfgBuyPanelState.rowConfig.like.name}
-                                    value={buyState.userCfg.cfg.linkedInLike.like.value}
-                                    onChange={(event) => handleCheckboxChange(event, cfgBuyPanelState.rowConfig.like.key)}
+                                    value={tradePare.targetPrice}
+                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.like.key)}
                                 />
                             </div>
                             <div className="checkbox-row">
-                                <span
-                                    className="badge notification-badge__count">{cfgBuyPanelState.badge.repost > 0 ? (cfgBuyPanelState.badge.repost > 99 ? "99+" : cfgBuyPanelState.badge.repost) : ''}</span>
                                 <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.repost.id}>{cfgBuyPanelState.rowConfig.repost.label}</label>
+                                    htmlFor={cfgBuyPanelState.rowConfig.exchPare.id}>{cfgBuyPanelState.rowConfig.exchPare.label}</label>
                                 <input
                                     type="text"
-                                    id={cfgBuyPanelState.rowConfig.repost.id}
-                                    name={cfgBuyPanelState.rowConfig.repost.name}
-                                    value={buyState.userCfg.cfg.linkedInLike.repost.value}
-                                    onChange={(event) => handleCheckboxChange(event, cfgBuyPanelState.rowConfig.repost.key)}
+                                    id={cfgBuyPanelState.rowConfig.exchPare.id}
+                                    name={cfgBuyPanelState.rowConfig.exchPare.name}
+                                    value={tradePare.name}
+                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.exchPare.key)}
                                 />
                             </div>
 
                             <div className="checkbox-row">
-                                <span
-                                    className="badge notification-badge__count">{cfgBuyPanelState.badge.follower > 0 ? (cfgBuyPanelState.badge.follower > 99 ? "99+" : cfgBuyPanelState.badge.follower) : ''}</span>
                                 <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.follower.id}>{cfgBuyPanelState.rowConfig.follower.label}</label>
+                                    htmlFor={cfgBuyPanelState.rowConfig.targetPrice.id}>{cfgBuyPanelState.rowConfig.targetPrice.label}</label>
                                 <input
                                     type="text"
-                                    id={cfgBuyPanelState.rowConfig.follower.id}
-                                    name={cfgBuyPanelState.rowConfig.follower.name}
-                                    value={buyState.userCfg.cfg.linkedInLike.follower.value}
-                                    onChange={(event) => handleCheckboxChange(event, cfgBuyPanelState.rowConfig.follower.key)}
+                                    id={cfgBuyPanelState.rowConfig.targetPrice.id}
+                                    name={cfgBuyPanelState.rowConfig.targetPrice.name}
+                                    value={tradePare.takeProfRsi}
+                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.targetPrice.key)}
                                 />
                             </div>
                             <div className="checkbox-row">
-                                <span
-                                    className="badge">{cfgBuyPanelState.badge.subscriber > 0 ? (cfgBuyPanelState.badge.subscriber > 99 ? "99+" : cfgBuyPanelState.badge.subscriber) : ''}</span>
                                 <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.subscriber.id}>{cfgBuyPanelState.rowConfig.subscriber.label}</label>
+                                    htmlFor={cfgBuyPanelState.rowConfig.quantity.id}>{cfgBuyPanelState.rowConfig.quantity.label}</label>
                                 <input
                                     type="text"
-                                    id={cfgBuyPanelState.rowConfig.subscriber.id}
-                                    name={cfgBuyPanelState.rowConfig.subscriber.name}
-                                    value={buyState.userCfg.cfg.linkedInLike.subscriber.value}
-                                    onChange={(event) => handleCheckboxChange(event, cfgBuyPanelState.rowConfig.subscriber.key)}
+                                    id={cfgBuyPanelState.rowConfig.quantity.id}
+                                    name={cfgBuyPanelState.rowConfig.quantity.name}
+                                    value={tradePare.quantity}
+                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.quantity.key)}
                                 />
                             </div>
                             <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Apply

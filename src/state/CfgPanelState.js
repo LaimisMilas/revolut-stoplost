@@ -1,6 +1,5 @@
 import {DateFormat} from "html-evaluate-utils/DateFormat";
 import { makeAutoObservable} from "mobx";
-import {readLastPrice} from "../utils/RevolutUtils";
 
 export class CfgPanelState {
 
@@ -9,8 +8,6 @@ export class CfgPanelState {
     cfgState = null;
 
     rowConfig = {};
-
-    badge = {};
 
     active = {}
 
@@ -21,12 +18,8 @@ export class CfgPanelState {
     constructor() {
         makeAutoObservable(this);
     }
-    
-    setStopAllAction(stopAllAction) {
-        this.stopAllAction = stopAllAction;
-    }
 
-    setup(rootStore, cfgState, caller) {
+    setup(rootStore, cfgState) {
         this.rootStore = rootStore;
         this.cfgState = cfgState;
         this. initializeRowConfig();
@@ -70,32 +63,15 @@ export class CfgPanelState {
                 id: "takeProfRsi_id",
                 name: "takeProfRsi_name",
                 key: "takeProfRsi"
-            },
-            scroll: {
-                label: "Scroller" ,
-                id: "scroll_id",
-                name: "scroll_name",
-                key: "scroll"
             }
         };
-        this.badge = {
-            price: 0,
-            stopLost: 0,
-            quantity: 0,
-            takeProf: 0,
-            rsi14: 0,
-            exchPare: 0,
-        };
+
         this.active = {
             fromDate: DateFormat.formatDate(new Date()),
             from: Date.now(),
             timeDiff: 0
         }
         this.stopAllAction = false;
-    }
-
-    updateBadge(fieldName, value) {
-        this.badge[fieldName] = value;
     }
 
     setIntervalUpdateTimeDiff(){
@@ -107,27 +83,7 @@ export class CfgPanelState {
         this.active.timeDiff = DateFormat.calculateTimeDifferenceInMinutes(Date.now(), this.active.from);
     }
 
-    updateRowConfigCheckValue(fieldName, newValue) {
-        this.rowConfig[fieldName].checkValue = newValue;
-    }
-    
-    handleStopButtonClick(stop) {
-        this.rootStore.cfgState.systemCfg.cfg.linkedInLike.root.run = stop === true;
-        this.rootStore.scrollState.cfg.root.run = stop === true;
-        this.rootStore.navigationState.nav.root.run = stop === true;
-    }
-
     getIsActionsStop() {
         return this.cfgState.systemCfg.cfg.linkedInLike.root.run === false;
-    }
-
-    updateStopLostPrice() {
-        let lastPrice = readLastPrice();
-        this.stopLostPrice = lastPrice;
-    }
-
-    setIntervalUpdate(){
-        this.intervalUpdateTimeDiff = setInterval(
-            this.updateStopLostPrice.bind(this), 4000);
     }
 }
