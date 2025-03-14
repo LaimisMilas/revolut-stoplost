@@ -1,12 +1,11 @@
 import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
-import {CustomTimeout} from "../../utils/CustomTimeout";
 import {convertToNumber} from "../../utils/RevolutUtils";
 
 const StopLostPanel =
-    inject("navigationState","stopLostState", "scrollState", "cfgPanelState", "authState", "timeOutState")(
-        observer(({navigationState, stopLostState, scrollState, cfgPanelState, authState, timeOutState}) => {
+    inject("stopLostState","cfgPanelState")(
+        observer(({stopLostState, cfgPanelState}) => {
 
             const parsePareFromURL = () => {
                 let tmp = window.location.href.split("/trade/");
@@ -62,11 +61,6 @@ const StopLostPanel =
             const handleStopButtonClick = () => {
                 stopAllAction === false ? setStopAllAction(true) : setStopAllAction(false);
                 stopLostState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
-                timeOutState.resetAllTimeOuts();
-                if (stopAllAction) {
-                    timeOutState.saveTimeOut(
-                        new CustomTimeout(scrollState.scrollDown, 90, scrollState.cfg, navigationState), scrollState.cfg.scroll.key);
-                }
             }
 
             return (

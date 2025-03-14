@@ -1,11 +1,10 @@
 import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
-import {CustomTimeout} from "../../utils/CustomTimeout";
 
 const BuyPanel =
-    inject("navigationState","buyState", "scrollState", "cfgBuyPanelState", "authState", "timeOutState")(
-        observer(({navigationState, buyState, scrollState, cfgBuyPanelState, authState, timeOutState}) => {
+    inject("buyState", "cfgBuyPanelState")(
+        observer(({buyState, cfgBuyPanelState}) => {
 
             const parsePareFromURL = () => {
                 let tmp = window.location.href.split("/trade/");
@@ -47,11 +46,6 @@ const BuyPanel =
             const handleStopButtonClick = () => {
                 stopAllAction === false ? setStopAllAction(true) : setStopAllAction(false);
                 buyState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
-                timeOutState.resetAllTimeOuts();
-                if (stopAllAction) {
-                    timeOutState.saveTimeOut(
-                        new CustomTimeout(scrollState.scrollDown, 90, scrollState.cfg, navigationState), scrollState.cfg.scroll.key);
-                }
             }
 
             return (
