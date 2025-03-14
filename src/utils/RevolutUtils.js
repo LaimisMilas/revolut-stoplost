@@ -1,5 +1,8 @@
 import {Utils} from "html-evaluate-utils/Utils";
-import {sleep} from "./CUtils";
+
+export const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export const selectSellSwitch = async () => {
     let el = Utils.getElByXPath("//*[contains(text(), 'Parduoti')]")

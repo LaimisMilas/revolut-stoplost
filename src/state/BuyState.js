@@ -1,5 +1,4 @@
 import {makeAutoObservable} from 'mobx';
-import {TimeoutStatus} from "../utils/CustomTimeout";
 import {lc_buy_cfg} from "../static/lc_buy_cfg";
 import {lc_system_cfg} from "../static/lc_system_cfg";
 import {trade_pares} from "../static/lc_buy_cfg";
@@ -12,7 +11,6 @@ export class BuyState {
     userCfg = null;
     systemCfg = null;
     stopAllAction = false;
-    currentTimeOut = {status: TimeoutStatus.COMPLETED};
     intervalGetCfg = null;
     intervalGetSystemCfg = null;
     resetLike = 0;

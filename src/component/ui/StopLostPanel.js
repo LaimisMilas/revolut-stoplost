@@ -21,6 +21,7 @@ const StopLostPanel =
 
             useEffect(() => {
                 setStopAllAction(cfgPanelState.getIsActionsStop());
+                setTradePare(stopLostState.getTradePareDataByKey(parsePareFromURL()))
             }, [stopLostState.systemCfg.cfg.linkedInLike.root.run]);
 
             const calcTakeProfPrice = () => {

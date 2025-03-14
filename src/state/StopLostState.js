@@ -1,5 +1,4 @@
 import {makeAutoObservable} from 'mobx';
-import {TimeoutStatus} from "../utils/CustomTimeout";
 import {lc_user_cfg, trade_pares} from "../static/lc_user_cfg";
 import {lc_system_cfg} from "../static/lc_system_cfg";
 
@@ -10,7 +9,6 @@ export class StopLostState {
     userCfg = null;
     systemCfg = null;
     stopAllAction = false;
-    currentTimeOut = {status: TimeoutStatus.COMPLETED};
     intervalGetCfg = null;
     intervalGetSystemCfg = null;
     resetLike = 0;
