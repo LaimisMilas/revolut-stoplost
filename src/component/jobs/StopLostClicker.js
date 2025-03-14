@@ -2,7 +2,7 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {
     clickSell,
-    convertToNumber, getRSIIndicator,
+    convertToNumber, getNowDate, getRSIIndicator,
     readLastPrice,
     selectSellSum,
     selectSellSwitch,
@@ -77,7 +77,7 @@ const StopLostClicker = inject("stopLostState", "buyState")(
                     + ", readLastPrice: " + sellPrice
                     + ", RSI 14: " + await getRSIIndicator()
                     + ", price: " + tradePare.price
-                    + ", time: " + Date.now());
+                    + ", time: " +  getNowDate());
             }
             if(result === 300){
                 stopLostState.systemCfg.cfg.linkedInLike.root.run = false;

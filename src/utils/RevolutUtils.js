@@ -107,6 +107,14 @@ export const convertToNumber = (s) => {
     return s;
 }
 
+export const getNowDate = () => {
+    let date = Date.now();
+    let hours = date.getHours(); // hours
+    let minutes = date.getMinutes(); // minutes
+    let seconds = date.getSeconds(); // seconds
+    return hours + ":" + minutes + ":" + seconds;
+}
+
 export const getTradeOrderValue = (tradeName) => {
     let element = Utils.getElByXPath("//*[contains(text(), '" + tradeName + "')]/../../../../../../../div[6]//span/span");
     if(element){
