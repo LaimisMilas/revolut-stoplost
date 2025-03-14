@@ -100,6 +100,11 @@ const BuyClicker = inject("buyState", "navigationState", "cfgPanelState",
                 buyPrice =  readLastPrice();
                 //result += await clickBuy(tradeName);
                 result += 100;
+                console.log("BuyClicker clickBuy "
+                    + ", readLastPrice: " + readLastPrice()
+                    + ", RSI 14: " + await getRSIIndicator()
+                    + ", price: " + buyState.userCfg.cfg.linkedInLike.like.value
+                    + ", time: " + new Date().getTime());
             }
             if(result === 300){
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;

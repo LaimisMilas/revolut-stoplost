@@ -106,6 +106,11 @@ const StopLostClicker = inject("stopLostState", "buyState")(
             if(result === 200){
                //result += await clickSell(tradePare.key);
                 result += 100;
+                console.log("StopLostClicker clickSell "
+                    + ", readLastPrice: " + readLastPrice()
+                    + ", RSI 14: " + await getRSIIndicator()
+                    + ", price: " + tradePare.price
+                    + ", time: " + new Date().getTime());
             }
             if(result === 300){
                 stopLostState.systemCfg.cfg.linkedInLike.root.run = false;
