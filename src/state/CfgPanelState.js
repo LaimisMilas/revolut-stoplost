@@ -81,6 +81,9 @@ export class CfgPanelState {
 
     updateTimeDiff() {
         this.active.timeDiff = DateFormat.calculateTimeDifferenceInMinutes(Date.now(), this.active.from);
+        if(this.active.timeDiff > 60){
+            location.reload();
+        }
     }
 
     getIsActionsStop() {

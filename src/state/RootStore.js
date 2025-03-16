@@ -4,12 +4,14 @@ import {LocalStorageManager} from "../storage/LocalStorageManager";
 import {SessionStorageManager} from "../storage/SessionStorageManager";
 import {BuyState} from "./BuyState";
 import {CfgBuyPanelState} from "./CfgBuyPanelState";
+import {IndicatorReadState} from "./IndicatorReadState";
 export class RootStore {
 
     stopLostState = null;
     buyState = null;
     cfgPanelState = null;
     cfgBuyPanelState = null;
+    indicatorReadState = null;
     prefix = "lc_";
 
     constructor() {
@@ -17,6 +19,7 @@ export class RootStore {
         this.buyState = new BuyState();
         this.cfgPanelState = new CfgPanelState();
         this.cfgBuyPanelState = new CfgBuyPanelState();
+        this.indicatorReadState = new IndicatorReadState();
         this.setupStoreRelationships(" RootStore.constructor()");
     }
 
@@ -25,6 +28,7 @@ export class RootStore {
         this.buyState.setup(this, this.cfgBuyPanelState);
         this.cfgPanelState.setup(this, this.stopLostState);
         this.cfgBuyPanelState.setup(this, this.buyState);
+        this.indicatorReadState.setup(this);
 
         const storeState = LocalStorageManager.getStorage("lc_store_state");
         if (storeState && storeState === 1) {
@@ -54,10 +58,9 @@ export class RootStore {
         this.buyState.systemCfg = {...LocalStorageManager.getStorage("lc_buy_systemCfg"), ...this.buyState.systemCfg};
         this.cfgPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_rowConfig"), ...this.cfgPanelState.rowConfig};
         this.cfgBuyPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_buy_rowConfig"), ...this.cfgBuyPanelState.rowConfig};
-        this.cfgPanelState.badge = {...SessionStorageManager.getStorage("lc_badgeLc"), ...this.cfgPanelState.badge};
-        this.cfgBuyPanelState.badge = {...SessionStorageManager.getStorage("lc_buy_badgeLc"), ...this.cfgBuyPanelState.badge};
+        this.indicatorReadState.last100RSIValue = this.reduce(LocalStorageManager.getStorage("lc_last100RSIValue"), this.indicatorReadState.last100RSIValue);
+        this.indicatorReadState.last100PriceValue = this.reduce(LocalStorageManager.getStorage("lc_last100PriceValue"), this.indicatorReadState.last100PriceValue);
     }
-
     reduce(acc, bcc){
         return acc.concat(bcc);
     }
@@ -72,8 +75,8 @@ export class RootStore {
         this.buyState.systemCfg = {...this.buyState.systemCfg, ...LocalStorageManager.getStorage("lc_buy_systemCfg")};
         this.cfgPanelState.rowConfig = {...this.cfgPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_rowConfig")};
         this.cfgBuyPanelState.rowConfig = {...this.cfgBuyPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_buy_rowConfig")};
-        this.cfgPanelState.badge = {...this.cfgPanelState.badge, ...SessionStorageManager.getStorage("lc_badgeLc")};
-        this.cfgBuyPanelState.badge = {...this.cfgBuyPanelState.badge, ...SessionStorageManager.getStorage("lc_buy_badgeLc")};
+        this.indicatorReadState.last100RSIValue = this.reduce(this.indicatorReadState.last100RSIValue, LocalStorageManager.getStorage("lc_last100RSIValue"));
+        this.indicatorReadState.last100PriceValue = this.reduce(this.indicatorReadState.last100PriceValue, LocalStorageManager.getStorage("lc_last100PriceValue"));
     }
 
     saveStorage() {
@@ -85,9 +88,9 @@ export class RootStore {
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);
         LocalStorageManager.flash("lc_buy_rowConfig", this.cfgBuyPanelState.rowConfig);
-        SessionStorageManager.flash("lc_badgeLc", this.cfgPanelState.badge);
-        SessionStorageManager.flash("lc_buy_badgeLc", this.cfgBuyPanelState.badge);
         LocalStorageManager.flash("lc_store_state", 1);
+        LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
+        LocalStorageManager.flash("lc_last100PriceValue", this.indicatorReadState.last100PriceValue);
       }
 
 
@@ -100,9 +103,9 @@ export class RootStore {
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.cfgPanelState.rowConfig);
         LocalStorageManager.flash("lc_buy_rowConfig", this.cfgBuyPanelState.rowConfig);
-        SessionStorageManager.flash("lc_badgeLc", this.cfgPanelState.badge);
-        SessionStorageManager.flash("lc_buy_badgeLc", this.cfgBuyPanelState.badge);
         LocalStorageManager.flash("lc_store_state", 1);
+        LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
+        LocalStorageManager.flash("lc_last100PriceValue", this.indicatorReadState.last100PriceValue);
     }
 
     deleteAllData() {
@@ -116,5 +119,7 @@ export class RootStore {
         LocalStorageManager.removeStorageItem("lc_store_state");
         LocalStorageManager.removeStorageItem("lc_tradePares");
         LocalStorageManager.removeStorageItem("lc_buy_tradePares");
+        LocalStorageManager.removeStorageItem("lc_last100RSIValue");
+        LocalStorageManager.removeStorageItem("lc_last100PriceValue");
     }
 }
