@@ -77,8 +77,7 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
                 }
             }
             if(result === 200){
-              // result += await clickSell(tradePare.key);
-                result += 100;
+                result += await clickSell(tradePare.key);
                 console.log("StopLostClicker clickSell "
                     + ", readLastPrice: " + indicatorReadState.lastPriceValue
                     + ", RSI 14: " + indicatorReadState.lastRSIValue
