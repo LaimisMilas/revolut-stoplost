@@ -2,16 +2,20 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {
     clickSell,
-    convertToNumber, getNowDate, getRSIIndicator,
-    readLastPrice,
+    convertToNumber,
+    detectFractalPattern,
+    doParabolicCorrelation,
+    findDivergence,
+    getNowDate,
     selectSellSum,
     selectSellSwitch,
+    simpleMovingAverage,
     writeQuantity
 } from "../../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
 
-const StopLostClicker = inject("stopLostState", "buyState")(
-    observer(({stopLostState, buyState}) => {
+const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState")(
+    observer(({stopLostState, buyState, indicatorReadState}) => {
 
         useEffect(() => {
             const executeWithInterval = async () => {
@@ -36,6 +40,10 @@ const StopLostClicker = inject("stopLostState", "buyState")(
 
         const doStopLost = async () => {
             let tradePare = stopLostState.currentTradePare;
+            await isRSIMovesDown();
+            if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
+                return;
+            }
             if(isStopLostReached(tradePare)){
                 await sellOperation(tradePare);
             } else {
@@ -68,20 +76,18 @@ const StopLostClicker = inject("stopLostState", "buyState")(
                     result += await writeQuantity(quantity);
                 }
             }
-            let sellPrice = 0;
             if(result === 200){
-                sellPrice =  readLastPrice();
                result += await clickSell(tradePare.key);
                 console.log("StopLostClicker clickSell "
-                    + ", readLastPrice: " + sellPrice
-                    + ", RSI 14: " + await getRSIIndicator()
+                    + ", readLastPrice: " + indicatorReadState.lastPriceValue
+                    + ", RSI 14: " + indicatorReadState.lastRSIValue
                     + ", price: " + tradePare.price
                     + ", time: " +  getNowDate());
             }
             if(result === 300){
                 stopLostState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
-                buyState.currentTradePare.targetPrice = sellPrice;
+                buyState.currentTradePare.targetPrice = indicatorReadState.lastPriceValue;
                 result += 100;
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
@@ -93,29 +99,34 @@ const StopLostClicker = inject("stopLostState", "buyState")(
         const isRSIUp = async (tradePare) => {
             if(Utils.getElByXPath("//iframe")){
                 let assetValue = tradePare.takeProfRsi;
-                let indicatorValue = await getRSIIndicator();
-                let isRSIUp = indicatorValue >= convertToNumber(assetValue)
-                console.log("StopLostClicker isRSIUp "
-                    + ", assetValue: " + assetValue
-                    + ", indicatorValue: " + indicatorValue
-                    + ", isRSIUp: " + isRSIUp);
-                return isRSIUp;
+                return indicatorReadState.lastRSIValue >= convertToNumber(assetValue);
             }
             return false;
         }
 
         const isTakeProfReached = (tradePare) => {
-            let lastPrice = readLastPrice();
+            let lastPrice = indicatorReadState.lastPriceValue;
             let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
             return currentProfit > convertToNumber(tradePare.takeProf);
         }
 
         const isStopLostReached = (tradePare) => {
-            let lastPrice = readLastPrice();
+            let lastPrice = indicatorReadState.lastPriceValue;
             let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
             return currentProfit < convertToNumber(tradePare.stopLost);
+        }
+
+        const isRSIMovesDown = async () => {
+            let last100RSIValue = indicatorReadState.last100RSIValue;
+            let last100PriceValue = indicatorReadState.last100PriceValue;
+            if (indicatorReadState.last100RSIValue.length > 99) {
+                doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3));
+                console.log(findDivergence(last100PriceValue, last100RSIValue));
+                console.log(detectFractalPattern(last100RSIValue));
+               // console.log("findMACDCrossovers: " + JSON.stringify(findMACDCrossovers(last100PriceValue)));
+            }
         }
 
     }));

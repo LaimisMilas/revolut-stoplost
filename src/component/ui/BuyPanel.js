@@ -25,7 +25,7 @@ const BuyPanel =
             }, [buyState.systemCfg.cfg.linkedInLike.root.run]);
 
             const handleOnChangeEvent = (event, key) => {
-                console.log("BuyPanel handleOnChangeEvent", event, key);
+                //console.log("BuyPanel handleOnChangeEvent", event, key);
                 tradePare[key] = event.target.value;
                 setApplyButtonStyle({className: "apply-button-save"});
                 buyState.updateSystemCfg = false;
