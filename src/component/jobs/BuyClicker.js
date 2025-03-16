@@ -3,16 +3,17 @@ import {useEffect} from "react";
 import {
     clickBuy,
     convertToNumber,
-    detectFractalPattern,
-    doParabolicCorrelation,
-    findDivergence,
     getNowDate, isBuyReached, isRSIDown,
     selectBuySwitch,
     selectSellSum,
-    simpleMovingAverage,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {findMACDCrossovers} from "../../utils/IndicatorsUtils";
+import {
+    detectFractalPattern,
+    doParabolicCorrelation,
+    findDivergence,
+    simpleMovingAverage
+} from "../../utils/IndicatorsUtils";
 
 const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
     observer(({buyState, stopLostState,indicatorReadState}) => {
@@ -40,12 +41,13 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
 
         const doBuy = async () => {
             let tradePare = buyState.currentTradePare;
-            await isRSIMovesDown();
+           // await isRSIMovesDown();
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
             if (await isBuyReached(tradePare, indicatorReadState.lastPriceValue)
-                && await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
+                && await isRSIDown(tradePare, indicatorReadState.lastRSIValue)
+                && await doRSIParabolicCorrelation() > 0.80) {
                 await buyOperation(tradePare);
             }
         }
@@ -74,8 +76,7 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
                 }
             }
             if (result === 200) {
-                //result += await clickBuy(tradePare.key);
-                result += 100;
+                result += await clickBuy(tradePare.key);
                     console.log("BuyClicker clickBuy "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
                     + ", lastRSIValue: " + indicatorReadState.lastRSIValue
@@ -94,6 +95,10 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
             return result;
         }
 
+        const doRSIParabolicCorrelation = async () => {
+            let last100RSIValue = indicatorReadState.last100RSIValue;
+            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "Buy RSI");
+        }
 
         const isRSIMovesDown = async () => {
                 let last100RSIValue = indicatorReadState.last100RSIValue;
