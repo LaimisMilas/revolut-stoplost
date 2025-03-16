@@ -40,7 +40,6 @@ const StopLostPanel =
             const [stopLostPrice, setStopLostPrice] = useState(calcStopLostPrice());
 
             const handleOnChangeEvent = (event, key) => {
-                console.log("StopLostPanel handleOnChangeEvent", event, key);
                 tradePare[key] = event.target.value;
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());

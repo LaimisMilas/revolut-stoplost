@@ -73,10 +73,10 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
                     result += await writeQuantity(quantity);
                 }
             }
-            let buyPrice = 0;
             if (result === 200) {
-                result += await clickBuy(tradePare.key);
-                console.log("BuyClicker clickBuy "
+                //result += await clickBuy(tradePare.key);
+                result += 100;
+                    console.log("BuyClicker clickBuy "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
                     + ", lastRSIValue: " + indicatorReadState.lastRSIValue
                     + ", targetPrice: " + tradePare.targetPrice
@@ -85,7 +85,7 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
             if (result === 300) {
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
-                stopLostState.currentTradePare.price = buyPrice;
+                stopLostState.currentTradePare.price = indicatorReadState.lastPriceValue;
                 result += 100;
                 stopLostState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
@@ -102,7 +102,7 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
                     doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3));
                     console.log(findDivergence(last100PriceValue, last100RSIValue));
                     console.log(detectFractalPattern(last100RSIValue));
-                    console.log("findMACDCrossovers: " + JSON.stringify(findMACDCrossovers(last100PriceValue)));
+                    //console.log("findMACDCrossovers: " + JSON.stringify(findMACDCrossovers(last100PriceValue)));
                 }
         }
     }));

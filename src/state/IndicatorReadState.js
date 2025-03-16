@@ -34,7 +34,7 @@ export class IndicatorReadState {
         if(Utils.getElByXPath("//iframe")){
             let value = await getRSIIndicator();
             if(value && value > 0){
-                this.lastPriceValue = value;
+                this.lastRSIValue = value;
                 this.last100RSIValue = this.pushWithLimit(this.last100RSIValue, value, 225);
             }
         }
