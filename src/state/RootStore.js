@@ -1,7 +1,6 @@
 import {StopLostState} from './StopLostState';
 import {CfgPanelState} from './CfgPanelState';
 import {LocalStorageManager} from "../storage/LocalStorageManager";
-import {SessionStorageManager} from "../storage/SessionStorageManager";
 import {BuyState} from "./BuyState";
 import {CfgBuyPanelState} from "./CfgBuyPanelState";
 import {IndicatorReadState} from "./IndicatorReadState";
@@ -29,7 +28,7 @@ export class RootStore {
         this.cfgPanelState.setup(this, this.stopLostState);
         this.cfgBuyPanelState.setup(this, this.buyState);
         this.indicatorReadState.setup(this);
-
+        this.addToStoreRegister();
         const storeState = LocalStorageManager.getStorage("lc_store_state");
         if (storeState && storeState === 1) {
             this.reverseLoudLocalStorage(caller);
@@ -60,6 +59,8 @@ export class RootStore {
         this.cfgBuyPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_buy_rowConfig"), ...this.cfgBuyPanelState.rowConfig};
         this.indicatorReadState.last100RSIValue = this.reduce(LocalStorageManager.getStorage("lc_last100RSIValue"), this.indicatorReadState.last100RSIValue);
         this.indicatorReadState.last100PriceValue = this.reduce(LocalStorageManager.getStorage("lc_last100PriceValue"), this.indicatorReadState.last100PriceValue);
+        this.indicatorReadState.last1kRSIValue = this.reduce(LocalStorageManager.getStorage("lc_last1kRSIValue"), this.indicatorReadState.last1kRSIValue);
+
     }
     reduce(acc, bcc){
         return acc.concat(bcc);
@@ -77,6 +78,7 @@ export class RootStore {
         this.cfgBuyPanelState.rowConfig = {...this.cfgBuyPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_buy_rowConfig")};
         this.indicatorReadState.last100RSIValue = this.reduce(this.indicatorReadState.last100RSIValue, LocalStorageManager.getStorage("lc_last100RSIValue"));
         this.indicatorReadState.last100PriceValue = this.reduce(this.indicatorReadState.last100PriceValue, LocalStorageManager.getStorage("lc_last100PriceValue"));
+        this.indicatorReadState.last1kRSIValue = this.reduce(this.indicatorReadState.last1kRSIValue, LocalStorageManager.getStorage("lc_last1kRSIValue"));
     }
 
     saveStorage() {
@@ -91,6 +93,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_store_state", 1);
         LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
         LocalStorageManager.flash("lc_last100PriceValue", this.indicatorReadState.last100PriceValue);
+        LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
       }
 
 
@@ -105,7 +108,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_buy_rowConfig", this.cfgBuyPanelState.rowConfig);
         LocalStorageManager.flash("lc_store_state", 1);
         LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
-        LocalStorageManager.flash("lc_last100PriceValue", this.indicatorReadState.last100PriceValue);
+        LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
     }
 
     deleteAllData() {
@@ -121,5 +124,32 @@ export class RootStore {
         LocalStorageManager.removeStorageItem("lc_buy_tradePares");
         LocalStorageManager.removeStorageItem("lc_last100RSIValue");
         LocalStorageManager.removeStorageItem("lc_last100PriceValue");
+        LocalStorageManager.removeStorageItem("lc_last1kRSIValue");
+    }
+
+    registryStoreObject = new Map();
+
+    addToStoreRegister(){
+        this.registryStoreObject.set("lc_cfg",{"obj": this.stopLostState.userCfg, "reduce": false});
+        this.registryStoreObject.set("lc_systemCfg",{"obj": this.stopLostState.systemCfg, "reduce": false});
+        this.registryStoreObject.set("lc_tradePares",{"obj": this.stopLostState.tradePares, "reduce": false});
+        this.registryStoreObject.set("lc_buy_tradePares",{"obj": this.buyState.tradePares, "reduce": false});
+        this.registryStoreObject.set("lc_buy_cfg",{"obj": this.buyState.userCfg, "reduce": false});
+        this.registryStoreObject.set("lc_buy_systemCfg",{"obj": this.buyState.systemCfg, "reduce": false});
+        this.registryStoreObject.set("lc_rowConfig",{"obj": this.cfgPanelState.rowConfig, "reduce": false});
+        this.registryStoreObject.set("lc_buy_rowConfig",{"obj": this.cfgBuyPanelState.rowConfig, "reduce": false});
+        this.registryStoreObject.set("lc_last100RSIValue",{"obj": this.indicatorReadState.last100RSIValue, "reduce": false});
+        this.registryStoreObject.set("lc_last100PriceValue",{"obj": this.indicatorReadState.last100PriceValue, "reduce": false});
+        this.registryStoreObject.set("lc_last1kRSIValue",{"obj": this.indicatorReadState.last1kRSIValue, "reduce": false});
+    }
+
+    reverse() {
+        this.registryStoreObject.forEach((reg) => {
+            if(reg.value.reduce){
+                reg.value.obj = this.reduce(reg.value.obj, LocalStorageManager.getStorage(reg.key));
+            } else {
+                reg.value.obj = {...reg.value.obj, ...LocalStorageManager.getStorage(reg.key)};
+            }
+        })
     }
 }

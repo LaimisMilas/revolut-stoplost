@@ -10,6 +10,7 @@ export class IndicatorReadState {
     last100RSIValue = [];
     lastPriceValue = 0;
     last100PriceValue = [];
+    last1kRSIValue = [];
 
     constructor() {
         makeAutoObservable(this);
@@ -28,6 +29,7 @@ export class IndicatorReadState {
     async updateValues() {
         await this.updateLastPrice();
         await this.updateLastRSI();
+        await this.updateLastRSI1K();
     }
 
     async updateLastRSI() {
@@ -36,6 +38,15 @@ export class IndicatorReadState {
             if(value && value > 0){
                 this.lastRSIValue = value;
                 this.last100RSIValue = this.pushWithLimit(this.last100RSIValue, value, 225);
+            }
+        }
+    }
+
+    async updateLastRSI1K() {
+        if(Utils.getElByXPath("//iframe")){
+            let value = await getRSIIndicator();
+            if(value && value > 0){
+                this.last1kRSIValue = this.pushWithLimit(this.last1kRSIValue, value, 1000);
             }
         }
     }

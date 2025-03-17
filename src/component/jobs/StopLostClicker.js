@@ -94,7 +94,7 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
                 result += 100;
                 if(caller === "stopLost"){
                     buyState.currentTradePare.targetPrice = indicatorReadState.lastPriceValue + ((indicatorReadState.lastPriceValue * 1)/100);
-                    buyState.currentTradePare.rsi = indicatorReadState.lastRSIValue + ((indicatorReadState.lastRSIValue * 1)/100);
+                    buyState.currentTradePare.rsi = 50;
                     result += 100;
                 } else if(caller === "takeProf"){
                     buyState.currentTradePare.targetPrice = indicatorReadState.lastPriceValue;

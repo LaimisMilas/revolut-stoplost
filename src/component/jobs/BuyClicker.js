@@ -9,6 +9,7 @@ import {
     writeQuantity
 } from "../../utils/RevolutUtils";
 import {
+    analyzeMarket, analyzeMarketLine,
     detectFractalPattern,
     doParabolicCorrelation,
     findDivergence,
@@ -34,6 +35,7 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
 
         const run = async () => {
             let root = buyState.systemCfg.cfg.linkedInLike.root;
+           await isRSIMovesDown();
             if (root.run) {
                 await doBuy();
             }
@@ -97,16 +99,20 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
 
         const doRSIParabolicCorrelation = async () => {
             let last100RSIValue = indicatorReadState.last100RSIValue;
-            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "Buy RSI");
+            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "Buy RSI + parabolic");
         }
 
         const isRSIMovesDown = async () => {
-                let last100RSIValue = indicatorReadState.last100RSIValue;
-                let last100PriceValue = indicatorReadState.last100PriceValue;
-                if (indicatorReadState.last100RSIValue.length > 99) {
-                    doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3));
-                    console.log(findDivergence(last100PriceValue, last100RSIValue));
-                    console.log(detectFractalPattern(last100RSIValue));
+            let last100RSIValue = indicatorReadState.last100RSIValue;
+            let last1kRSIValue = indicatorReadState.last1kRSIValue;
+            let last100PriceValue = indicatorReadState.last100PriceValue;
+                if (indicatorReadState.last100RSIValue.length > 99 && indicatorReadState.last1kRSIValue.length > 999) {
+                    doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "BUY 100 RSI last100");
+                    doParabolicCorrelation(simpleMovingAverage(last1kRSIValue,3), "BUY 1k RSI last 1k");
+                    analyzeMarket(simpleMovingAverage(last1kRSIValue,3), "BUY 1k Parabolic");
+                    analyzeMarketLine(simpleMovingAverage(last1kRSIValue,3), "BUY 100 Line");
+                    //console.log(findDivergence(last100PriceValue, last100RSIValue));
+                    //console.log(detectFractalPattern(last100RSIValue));
                     //console.log("findMACDCrossovers: " + JSON.stringify(findMACDCrossovers(last100PriceValue)));
                 }
         }
