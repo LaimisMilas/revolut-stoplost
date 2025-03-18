@@ -1,8 +1,8 @@
 import React from 'react';
 import {Provider} from "mobx-react";
-import StopLostPanel from "./component/ui/StopLostPanel";
+import SellPanel from "./component/ui/SellPanel";
 import {RootStore} from "./state/RootStore";
-import StopLostClicker from "./component/jobs/StopLostClicker";
+import SellClicker from "./component/jobs/SellClicker";
 import BuyPanel from "./component/ui/BuyPanel";
 import BuyClicker from "./component/jobs/BuyClicker";
 import ChartPanel from "./component/ui/ChartPanel";
@@ -10,21 +10,20 @@ import ChartPanel from "./component/ui/ChartPanel";
 const rootState = new RootStore();
 
 const App = () => {
-
     return (
         <Provider
             rootState={rootState}
-            stopLostState={rootState.stopLostState}
+            sellState={rootState.sellState}
             buyState={rootState.buyState}
-            cfgPanelState={rootState.cfgPanelState}
-            cfgBuyPanelState={rootState.cfgBuyPanelState}
+            sellPanelState={rootState.sellPanelState}
+            buyPanelState={rootState.buyPanelState}
             indicatorReadState={rootState.indicatorReadState}
         >
             <div className="App">
-                <StopLostPanel/>
+                <SellPanel/>
                 <BuyPanel/>
                 <ChartPanel/>
-                <StopLostClicker/>
+                <SellClicker/>
                 <BuyClicker/>
             </div>
         </Provider>

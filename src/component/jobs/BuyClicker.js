@@ -13,8 +13,8 @@ import {
     simpleMovingAverage
 } from "../../utils/IndicatorsUtils";
 
-const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
-    observer(({buyState, stopLostState,indicatorReadState}) => {
+const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
+    observer(({buyState,sellState,indicatorReadState}) => {
 
         useEffect(() => {
             const executeWithInterval = async () => {
@@ -86,9 +86,9 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
             if (result === 300) {
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
-                stopLostState.getCurrentTradePare().price = indicatorReadState.lastPriceValue;
+                sellState.getCurrentTradePare().price = indicatorReadState.lastPriceValue;
                 result += 100;
-                stopLostState.systemCfg.cfg.linkedInLike.root.run = true;
+                sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
             }
             console.log("BuyClicker buyOperation " + tradePare.name + " done status: " + result);
@@ -98,7 +98,7 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
         const doRSIParabolicCorrelation = async () => {
             let last100RSIValue = indicatorReadState.last100RSIValue;
             last100RSIValue = last100RSIValue.slice(50, indicatorReadState.last100RSIValue.length - 1);
-            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "Buy RSI + parabolic");
+            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,indicatorReadState.period), "Buy RSI + parabolic");
         }
 
     }));

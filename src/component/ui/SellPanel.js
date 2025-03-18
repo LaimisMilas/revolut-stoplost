@@ -1,0 +1,172 @@
+import {inject, observer} from 'mobx-react';
+import React, {useEffect, useState} from 'react';
+import './css/CfgPanel.css';
+import {convertToNumber} from "../../utils/RevolutUtils";
+import Draggable from "react-draggable";
+
+const SellPanel =
+    inject("sellState", "sellPanelState")(
+        observer(({sellState, sellPanelState}) => {
+
+            const parsePareFromURL = () => {
+                let tmp = window.location.href.split("/trade/");
+                return tmp[1].split("-")[0];
+            }
+
+            const [applyButtonStyle, setApplyButtonStyle] = useState({
+                className: "apply-button",
+            });
+            const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
+            const [stopAllAction, setStopAllAction] = useState(sellPanelState.getIsActionsStop());
+            const [tradePare, setTradePare] = useState(sellState.getTradePareDataByKey(parsePareFromURL()));
+
+            useEffect(() => {
+                setStopAllAction(sellPanelState.getIsActionsStop());
+                setTradePare(sellState.getTradePareDataByKey(parsePareFromURL()))
+                setTakeProfPrice(calcTakeProfPrice());
+                setStopLostPrice(calcStopLostPrice());
+            }, [sellState.systemCfg.cfg.linkedInLike.root.run]);
+
+            const calcTakeProfPrice = () => {
+                let value = convertToNumber(tradePare.price) + ((convertToNumber(tradePare.price) * convertToNumber(tradePare.takeProf)) / 100);
+                return value.toPrecision(4);
+            };
+
+            const calcStopLostPrice = () => {
+                let value = convertToNumber(tradePare.price) - ((convertToNumber(tradePare.price) * (convertToNumber(tradePare.stopLost)) * (-1)) / 100);
+                return value.toPrecision(4);
+            };
+
+            const [takeProfPrice, setTakeProfPrice] = useState(calcTakeProfPrice());
+            const [stopLostPrice, setStopLostPrice] = useState(calcStopLostPrice());
+
+            const handleOnChangeEvent = (event, key) => {
+                tradePare[key] = event.target.value;
+                setTakeProfPrice(calcTakeProfPrice());
+                setStopLostPrice(calcStopLostPrice());
+                setApplyButtonStyle({className: "apply-button-save"});
+                sellState.updateSystemCfg = false;
+            };
+
+            const handleApplyButtonClick = () => {
+                setApplyButtonStyle({className: "apply-button-apply"});
+                sellState.saveTradePareData(tradePare);
+                setTimeout(
+                    () => setApplyButtonStyle({className: "apply-button"}), 700
+                )
+                sellState.updateSystemCfg = true;
+            };
+
+            const handleCollapseButtonClick = () => {
+                checkBoxContainerState === true ? setCheckBoxContainerState(false) : setCheckBoxContainerState(true);
+            }
+
+            const handleStopButtonClick = () => {
+                stopAllAction === false ? setStopAllAction(true) : setStopAllAction(false);
+                sellState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
+            }
+
+            return (
+                <Draggable>
+                    <div className="console-box" id="labas_as_krabas" hidden={sellPanelState.stopAllAction}>
+                        <div className="tab-container">
+                        <span className="activeTime">
+                            <span
+                                className="panelTitle">SELL panel</span>, active time: {sellPanelState.active.timeDiff} min.
+                        </span>
+                            <button className="exit-button"
+                                    onClick={() => handleCollapseButtonClick()}>
+                                {checkBoxContainerState === true ? "▼" : "▲"}
+                            </button>
+                            <div hidden={checkBoxContainerState}>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={sellPanelState.rowConfig.price.id}>{sellPanelState.rowConfig.price.label}</label>
+                                    <input
+                                        type="text"
+                                        id={sellPanelState.rowConfig.price.id}
+                                        name={sellPanelState.rowConfig.price.name}
+                                        value={tradePare.price}
+                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.price.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={sellPanelState.rowConfig.exchPare.id}>{sellPanelState.rowConfig.exchPare.label}</label>
+                                    <input
+                                        type="text"
+                                        id={sellPanelState.rowConfig.exchPare.id}
+                                        name={sellPanelState.rowConfig.exchPare.name}
+                                        value={tradePare.name}
+                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.exchPare.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={sellPanelState.rowConfig.stopLost.id}>{sellPanelState.rowConfig.stopLost.label}</label>
+                                    <input
+                                        type="text"
+                                        id={sellPanelState.rowConfig.stopLost.id}
+                                        name={sellPanelState.rowConfig.stopLost.name}
+                                        value={tradePare.stopLost}
+                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.stopLost.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>SL price</label>
+                                    <span>{stopLostPrice}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={sellPanelState.rowConfig.takeProf.id}>{sellPanelState.rowConfig.takeProf.label}</label>
+                                    <input
+                                        type="text"
+                                        id={sellPanelState.rowConfig.takeProf.id}
+                                        name={sellPanelState.rowConfig.takeProf.name}
+                                        value={tradePare.takeProf}
+                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.takeProf.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>TP price</label>
+                                    <span>{takeProfPrice}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={sellPanelState.rowConfig.takeProfRsi.id}>{sellPanelState.rowConfig.takeProfRsi.label}</label>
+                                    <input
+                                        type="text"
+                                        id={sellPanelState.rowConfig.takeProfRsi.id}
+                                        name={sellPanelState.rowConfig.takeProfRsi.name}
+                                        value={tradePare.takeProfRsi}
+                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.takeProfRsi.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={sellPanelState.rowConfig.quantity.id}>{sellPanelState.rowConfig.quantity.label}</label>
+                                    <input
+                                        type="text"
+                                        id={sellPanelState.rowConfig.quantity.id}
+                                        name={sellPanelState.rowConfig.quantity.name}
+                                        value={tradePare.quantity}
+                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.quantity.key)}
+                                    />
+                                </div>
+                                <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Apply
+                                </button>
+                                <button
+                                    className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
+                                    onClick={handleStopButtonClick}>
+                                    {
+                                        stopAllAction === false ? "Stop" : "Start"
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </Draggable>
+            );
+        }));
+
+export default SellPanel;

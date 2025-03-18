@@ -1,10 +1,11 @@
 import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
+import Draggable from "react-draggable";
 
 const BuyPanel =
-    inject("buyState", "cfgBuyPanelState")(
-        observer(({buyState, cfgBuyPanelState}) => {
+    inject("buyState", "buyPanelState")(
+        observer(({buyState, buyPanelState}) => {
 
             const parsePareFromURL = () => {
                 let tmp = window.location.href.split("/trade/");
@@ -16,11 +17,11 @@ const BuyPanel =
             });
 
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
-            const [stopAllAction, setStopAllAction] = useState(cfgBuyPanelState.getIsActionsStop());
+            const [stopAllAction, setStopAllAction] = useState(buyPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(buyState.getTradePareDataByKey(parsePareFromURL()));
 
             useEffect(() => {
-                setStopAllAction(cfgBuyPanelState.getIsActionsStop());
+                setStopAllAction(buyPanelState.getIsActionsStop());
                 setTradePare(buyState.getTradePareDataByKey(parsePareFromURL()))
             }, [buyState.systemCfg.cfg.linkedInLike.root.run]);
 
@@ -49,72 +50,75 @@ const BuyPanel =
             }
 
             return (
-                <div className="console-box" id="buy-panel" hidden={cfgBuyPanelState.stopAllAction}>
-                    <div className="tab-container">
+                <Draggable>
+                    <div className="console-box" id="buy-panel" hidden={buyPanelState.stopAllAction}>
+                        <div className="tab-container">
                         <span className="activeTime">
-                           <span className="panelTitle">BUY panel</span>, active time: {cfgBuyPanelState.active.timeDiff} min.
+                           <span
+                               className="panelTitle">BUY panel</span>, active time: {buyPanelState.active.timeDiff} min.
                         </span>
-                        <button className="exit-button"
-                                onClick={() => handleCollapseButtonClick()}>
-                            {checkBoxContainerState === true ? "▼" : "▲"}
-                        </button>
-                        <div hidden={checkBoxContainerState}>
-                            <div className="checkbox-row">
-                                <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.targetPrice.id}>{cfgBuyPanelState.rowConfig.targetPrice.label}</label>
-                                <input
-                                    type="text"
-                                    id={cfgBuyPanelState.rowConfig.targetPrice.id}
-                                    name={cfgBuyPanelState.rowConfig.targetPrice.name}
-                                    value={tradePare.targetPrice}
-                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.targetPrice.key)}
-                                />
-                            </div>
-                            <div className="checkbox-row">
-                                <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.exchPare.id}>{cfgBuyPanelState.rowConfig.exchPare.label}</label>
-                                <input
-                                    type="text"
-                                    id={cfgBuyPanelState.rowConfig.exchPare.id}
-                                    name={cfgBuyPanelState.rowConfig.exchPare.name}
-                                    value={tradePare.name}
-                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.exchPare.key)}
-                                />
-                            </div>
-                            <div className="checkbox-row">
-                                <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.rsi.id}>{cfgBuyPanelState.rowConfig.rsi.label}</label>
-                                <input
-                                    type="text"
-                                    id={cfgBuyPanelState.rowConfig.rsi.id}
-                                    name={cfgBuyPanelState.rowConfig.rsi.name}
-                                    value={tradePare.rsi}
-                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.rsi.key)}
-                                />
-                            </div>
-                            <div className="checkbox-row">
-                                <label
-                                    htmlFor={cfgBuyPanelState.rowConfig.quantity.id}>{cfgBuyPanelState.rowConfig.quantity.label}</label>
-                                <input
-                                    type="text"
-                                    id={cfgBuyPanelState.rowConfig.quantity.id}
-                                    name={cfgBuyPanelState.rowConfig.quantity.name}
-                                    value={tradePare.quantity}
-                                    onChange={(event) => handleOnChangeEvent(event, cfgBuyPanelState.rowConfig.quantity.key)}
-                                />
-                            </div>
-                            <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Apply
+                            <button className="exit-button"
+                                    onClick={() => handleCollapseButtonClick()}>
+                                {checkBoxContainerState === true ? "▼" : "▲"}
                             </button>
-                            <button
-                                className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
-                                onClick={handleStopButtonClick}>
-                                {
-                                    stopAllAction === false ? "Stop" : "Start"
-                                }
-                            </button>
+                            <div hidden={checkBoxContainerState}>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={buyPanelState.rowConfig.targetPrice.id}>{buyPanelState.rowConfig.targetPrice.label}</label>
+                                    <input
+                                        type="text"
+                                        id={buyPanelState.rowConfig.targetPrice.id}
+                                        name={buyPanelState.rowConfig.targetPrice.name}
+                                        value={tradePare.targetPrice}
+                                        onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.targetPrice.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={buyPanelState.rowConfig.exchPare.id}>{buyPanelState.rowConfig.exchPare.label}</label>
+                                    <input
+                                        type="text"
+                                        id={buyPanelState.rowConfig.exchPare.id}
+                                        name={buyPanelState.rowConfig.exchPare.name}
+                                        value={tradePare.name}
+                                        onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.exchPare.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={buyPanelState.rowConfig.rsi.id}>{buyPanelState.rowConfig.rsi.label}</label>
+                                    <input
+                                        type="text"
+                                        id={buyPanelState.rowConfig.rsi.id}
+                                        name={buyPanelState.rowConfig.rsi.name}
+                                        value={tradePare.rsi}
+                                        onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.rsi.key)}
+                                    />
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={buyPanelState.rowConfig.quantity.id}>{buyPanelState.rowConfig.quantity.label}</label>
+                                    <input
+                                        type="text"
+                                        id={buyPanelState.rowConfig.quantity.id}
+                                        name={buyPanelState.rowConfig.quantity.name}
+                                        value={tradePare.quantity}
+                                        onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.quantity.key)}
+                                    />
+                                </div>
+                                <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Apply
+                                </button>
+                                <button
+                                    className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
+                                    onClick={handleStopButtonClick}>
+                                    {
+                                        stopAllAction === false ? "Stop" : "Start"
+                                    }
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </Draggable>
             );
         }));
 

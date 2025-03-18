@@ -25,7 +25,7 @@ const ChartPanel =
 
             const getRSIData = () => {
                 let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
-                return simpleMovingAverage(data, 3);
+                return simpleMovingAverage(data, indicatorReadState.period);
             }
             const [rsiData, setRsiData] = useState(getRSIData);
             const getCartData = () => {

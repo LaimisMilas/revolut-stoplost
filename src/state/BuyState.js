@@ -7,8 +7,8 @@ export class BuyState {
 
     rootStore = null;
     authState = null;
-    cfgPanelState = null;
-    userCfg = null;
+    buyPanelState = null;
+    buyCfg = null;
     systemCfg = null;
     stopAllAction = false;
     intervalGetCfg = null;
@@ -27,11 +27,11 @@ export class BuyState {
         makeAutoObservable(this);
     }
 
-    setup(rootStore, authState, cfgPanelState) {
+    setup(rootStore, authState, buyPanelState) {
         this.rootStore = rootStore;
         this.authState = authState;
-        this.cfgPanelState = cfgPanelState;
-        this.setUserCfg(lc_buy_cfg);
+        this.buyPanelState = buyPanelState;
+        this.setBuyCfg(lc_buy_cfg);
         this.setSystemCfg(lc_system_cfg);
         this.setTradePares(trade_pares);
     }
@@ -65,8 +65,8 @@ export class BuyState {
         return this.getTradePareDataByKey(tradeDate.key);
     }
 
-    setUserCfg(rootCfg){
-        this.userCfg = rootCfg;
+    setBuyCfg(cfg){
+        this.buyCfg = cfg;
     }
 
     setSystemCfg(systemCfg){

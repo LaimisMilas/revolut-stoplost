@@ -12,6 +12,7 @@ export class IndicatorReadState {
     last100PriceValue = [];
     last1kRSIValue = [];
     last100RSICounter = 0;
+    period = 5;
 
     constructor() {
         makeAutoObservable(this);
