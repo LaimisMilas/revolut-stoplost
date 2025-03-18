@@ -80,10 +80,12 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
             if (result === 200) {
                // result += await clickBuy(tradePare.key);
                 result += 100;
+                let last100RSIValue = indicatorReadState.last100RSIValue;
                     console.log("BuyClicker clickBuy "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
                     + ", lastRSIValue: " + indicatorReadState.lastRSIValue
                     + ", targetPrice: " + tradePare.targetPrice
+                    + ", RSI corelecijos duomenys: " + JSON.stringify(last100RSIValue.slice(50, indicatorReadState.last100RSIValue.length - 1))
                     + ", time: " + getNowDate());
             }
             if (result === 300) {
@@ -100,6 +102,7 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
 
         const doRSIParabolicCorrelation = async () => {
             let last100RSIValue = indicatorReadState.last100RSIValue;
+            last100RSIValue = last100RSIValue.slice(50, indicatorReadState.last100RSIValue.length - 1);
             return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "Buy RSI + parabolic");
         }
 

@@ -17,6 +17,25 @@
     right: 310px;
 }
 
+#chart-panel{
+    right: 660px;
+    width: 600px;
+}
+
+#chart-panel .checkbox-row label{
+    width: 200px;
+}
+
+#parabolic-chart-panel{
+    right: 660px;
+    top: 350px;
+    width: 600px;
+}
+
+#parabolic-chart-panel .checkbox-row label{
+    width: 200px;
+}
+
 .console-box button {
      font-size: 14px;
      border-radius: 0.8rem !important;

@@ -71,27 +71,23 @@ export const pearsonCorrelation = (x, y) => {
 }
 
 export const doParabolicCorrelation = (rsi5Value, caller) => {
+    const xValues = [];
 
-    // RSI14 paskutinės 10 reikšmių
-    // const rsiValues = [30, 28, 27, 26, 25, 26, 28, 30, 33, 36];
-    const rsiValues = rsi5Value;
+    const plusXValues = [...Array(rsi5Value.length/2).keys()];
 
-    // Sukuriame parabolės formą su x^2
-    const xValues = [...Array(rsi5Value.length).keys()]; // [0, 1, 2, ..., 9]
-    const parabolicValues = xValues.map(x => 0.5 * x ** 2 - 4 * x + 30); // a=0.5, b=-4, c=30
+    plusXValues.forEach(xValue => {
+        xValues.push(plusXValues.length * -1 - xValue * - 1);
+    });
+    plusXValues.forEach(xValue => {
+        xValues.push(xValue);
+    });
+    xValues.push(plusXValues.length);
 
-    // Apskaičiuojame koreliaciją
-    const correlation = pearsonCorrelation(rsiValues, parabolicValues);
+    const parabolicValues = xValues.map(x => (0.5 * x ** 2) - (0 * x) + 1); // a=0.5, b=-4, c=30
+
+    const correlation = pearsonCorrelation(xValues, parabolicValues);
 
     console.log(caller + " Koreliacija su parabole:", correlation);
-
-    if (correlation > 0.8) {
-        console.log(caller + " Rinka gali keisti kryptį į viršų!");
-    } else if (correlation < -0.8) {
-        console.log(caller + " Rinka gali keisti kryptį į apačią!");
-    } else {
-        console.log(caller + " Nėra aiškios krypties.");
-    }
 
     return correlation;
 }

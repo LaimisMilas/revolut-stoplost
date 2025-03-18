@@ -5,14 +5,17 @@
   "main": "src/index.js",
   "dependencies": {
     "axios": "^1.7.9",
+    "chart.js": "^4.4.8",
+    "clicker-common": "^1.0.44",
     "html-evaluate-utils": "^1.0.6",
-    "clicker-common":"^1.0.44",
     "jquery": "^3.7.0",
     "jquery-ui": "^1.13.2",
     "mobx": "^6.10.0",
     "mobx-react": "^9.0.0",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.2.0",
+    "react-draggable": "^4.4.6",
     "react-router-dom": "^6.20.0",
     "react-validation": "^3.0.7"
   },

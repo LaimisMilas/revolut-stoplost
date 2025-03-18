@@ -11,7 +11,7 @@ export var trade_pares = {
         "name": "XRP-USD",
         "targetPrice": 123,
         "rsi": 30,
-        "quantity": "25%"
+        "quantity": "100%"
     }
 };
 

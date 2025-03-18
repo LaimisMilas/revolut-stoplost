@@ -11,6 +11,7 @@ export class IndicatorReadState {
     lastPriceValue = 0;
     last100PriceValue = [];
     last1kRSIValue = [];
+    last100RSICounter = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -38,6 +39,7 @@ export class IndicatorReadState {
             if(value && value > 0){
                 this.lastRSIValue = value;
                 this.last100RSIValue = this.pushWithLimit(this.last100RSIValue, value, 100);
+                this.last100RSICounter ++;
             }
         }
     }
