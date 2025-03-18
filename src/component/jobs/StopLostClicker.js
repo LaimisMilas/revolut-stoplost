@@ -41,7 +41,7 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
         }
 
         const doStopLost = async () => {
-            let tradePare = stopLostState.currentTradePare;
+            let tradePare = stopLostState.getCurrentTradePare();
             //await isRSIMovesDown();
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
@@ -81,7 +81,8 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
                 }
             }
             if(result === 200){
-                result += await clickSell(tradePare.key);
+                //result += await clickSell(tradePare.key);
+                result += 100;
                 console.log("StopLostClicker clickSell "
                     + ", readLastPrice: " + indicatorReadState.lastPriceValue
                     + ", RSI 14: " + indicatorReadState.lastRSIValue
@@ -93,12 +94,12 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
                 stopLostState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
                 if(caller === "stopLost"){
-                    buyState.currentTradePare.targetPrice = indicatorReadState.lastPriceValue + ((indicatorReadState.lastPriceValue * 1)/100);
-                    buyState.currentTradePare.rsi = 50;
+                    buyState.getCurrentTradePare().targetPrice = indicatorReadState.lastPriceValue + ((indicatorReadState.lastPriceValue * 1)/100);
+                    buyState.getCurrentTradePare().rsi = 50;
                     result += 100;
                 } else if(caller === "takeProf"){
-                    buyState.currentTradePare.targetPrice = indicatorReadState.lastPriceValue;
-                    buyState.currentTradePare.rsi = 30;
+                    buyState.getCurrentTradePare().targetPrice = indicatorReadState.lastPriceValue;
+                    buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 }
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;

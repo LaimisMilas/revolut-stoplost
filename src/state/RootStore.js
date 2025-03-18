@@ -51,7 +51,7 @@ export class RootStore {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
         this.stopLostState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.stopLostState.userCfg};
         this.stopLostState.systemCfg = {...LocalStorageManager.getStorage("lc_systemCfg"), ...this.stopLostState.systemCfg};
-        this.stopLostState.tradePares = {...LocalStorageManager.getStorage("lc_tradePares"), ...this.stopLostState.tradePares};
+        this.stopLostState.tradePares = {...LocalStorageManager.getStorage("lc_sell_tradePares"), ...this.stopLostState.tradePares};
         this.buyState.tradePares = {...LocalStorageManager.getStorage("lc_buy_tradePares"), ...this.buyState.tradePares};
         this.buyState.userCfg = {...LocalStorageManager.getStorage("lc_buy_cfg"), ...this.buyState.userCfg};
         this.buyState.systemCfg = {...LocalStorageManager.getStorage("lc_buy_systemCfg"), ...this.buyState.systemCfg};
@@ -70,7 +70,7 @@ export class RootStore {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
         this.stopLostState.userCfg = {...this.stopLostState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
         this.stopLostState.systemCfg = {...this.stopLostState.systemCfg, ...LocalStorageManager.getStorage("lc_systemCfg")};
-        this.stopLostState.tradePares = {...this.stopLostState.tradePares, ...LocalStorageManager.getStorage("lc_tradePares")};
+        this.stopLostState.tradePares = {...this.stopLostState.tradePares, ...LocalStorageManager.getStorage("lc_sell_tradePares")};
         this.buyState.tradePares = {...this.buyState.tradePares, ...LocalStorageManager.getStorage("lc_buy_tradePares")};
         this.buyState.userCfg = {...this.buyState.userCfg, ...LocalStorageManager.getStorage("lc_buy_cfg")};
         this.buyState.systemCfg = {...this.buyState.systemCfg, ...LocalStorageManager.getStorage("lc_buy_systemCfg")};
@@ -84,7 +84,7 @@ export class RootStore {
     saveStorage() {
         LocalStorageManager.flash("lc_cfg", this.stopLostState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.stopLostState.systemCfg);
-        LocalStorageManager.flash("lc_tradePares", this.stopLostState.tradePares);
+        LocalStorageManager.flash("lc_sell_tradePares", this.stopLostState.tradePares);
         LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
         LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
@@ -100,7 +100,7 @@ export class RootStore {
     initializeLocalStorage() {
         LocalStorageManager.flash("lc_cfg", this.stopLostState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.stopLostState.systemCfg);
-        LocalStorageManager.flash("lc_tradePares", this.stopLostState.tradePares);
+        LocalStorageManager.flash("lc_sell_tradePares", this.stopLostState.tradePares);
         LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
         LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
@@ -120,7 +120,7 @@ export class RootStore {
         LocalStorageManager.removeStorageItem("lc_rowConfig");
         LocalStorageManager.removeStorageItem("lc_buy_rowConfig");
         LocalStorageManager.removeStorageItem("lc_store_state");
-        LocalStorageManager.removeStorageItem("lc_tradePares");
+        LocalStorageManager.removeStorageItem("lc_sell_tradePares");
         LocalStorageManager.removeStorageItem("lc_buy_tradePares");
         LocalStorageManager.removeStorageItem("lc_last100RSIValue");
         LocalStorageManager.removeStorageItem("lc_last100PriceValue");
@@ -132,15 +132,15 @@ export class RootStore {
     addToStoreRegister(){
         this.registryStoreObject.set("lc_cfg",{"obj": this.stopLostState.userCfg, "reduce": false});
         this.registryStoreObject.set("lc_systemCfg",{"obj": this.stopLostState.systemCfg, "reduce": false});
-        this.registryStoreObject.set("lc_tradePares",{"obj": this.stopLostState.tradePares, "reduce": false});
+        this.registryStoreObject.set("lc_sell_tradePares",{"obj": this.stopLostState.tradePares, "reduce": false});
         this.registryStoreObject.set("lc_buy_tradePares",{"obj": this.buyState.tradePares, "reduce": false});
         this.registryStoreObject.set("lc_buy_cfg",{"obj": this.buyState.userCfg, "reduce": false});
         this.registryStoreObject.set("lc_buy_systemCfg",{"obj": this.buyState.systemCfg, "reduce": false});
         this.registryStoreObject.set("lc_rowConfig",{"obj": this.cfgPanelState.rowConfig, "reduce": false});
         this.registryStoreObject.set("lc_buy_rowConfig",{"obj": this.cfgBuyPanelState.rowConfig, "reduce": false});
-        this.registryStoreObject.set("lc_last100RSIValue",{"obj": this.indicatorReadState.last100RSIValue, "reduce": false});
-        this.registryStoreObject.set("lc_last100PriceValue",{"obj": this.indicatorReadState.last100PriceValue, "reduce": false});
-        this.registryStoreObject.set("lc_last1kRSIValue",{"obj": this.indicatorReadState.last1kRSIValue, "reduce": false});
+        this.registryStoreObject.set("lc_last100RSIValue",{"obj": this.indicatorReadState.last100RSIValue, "reduce": true});
+        this.registryStoreObject.set("lc_last100PriceValue",{"obj": this.indicatorReadState.last100PriceValue, "reduce": true});
+        this.registryStoreObject.set("lc_last1kRSIValue",{"obj": this.indicatorReadState.last1kRSIValue, "reduce": true});
     }
 
     reverse() {

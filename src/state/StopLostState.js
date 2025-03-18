@@ -33,9 +33,19 @@ export class StopLostState {
         this.setTradePares(trade_pares);
     }
 
-    getTradePareDataByKey(key){
-        this.currentTradePare = this.tradePares[key]
+    getCurrentTradePare(){
         return this.currentTradePare;
+    }
+
+    setCurrentTradePare(tradePares){
+        this.currentTradePare  = tradePares;
+    }
+
+    getTradePareDataByKey(key){
+        if(this.tradePares[key]){
+            this.setCurrentTradePare(this.tradePares[key]);
+        }
+        return this.getCurrentTradePare();
     }
 
     saveTradePareData(tradeDate){

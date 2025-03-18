@@ -37,7 +37,7 @@ export class IndicatorReadState {
             let value = await getRSIIndicator();
             if(value && value > 0){
                 this.lastRSIValue = value;
-                this.last100RSIValue = this.pushWithLimit(this.last100RSIValue, value, 225);
+                this.last100RSIValue = this.pushWithLimit(this.last100RSIValue, value, 100);
             }
         }
     }
@@ -55,7 +55,7 @@ export class IndicatorReadState {
         let value = await readLastPrice();
         if(value && value > 0){
             this.lastPriceValue = value;
-            this.last100PriceValue = this.pushWithLimit(this.last100PriceValue, value, 225);
+            this.last100PriceValue = this.pushWithLimit(this.last100PriceValue, value, 100);
         }
     }
 
