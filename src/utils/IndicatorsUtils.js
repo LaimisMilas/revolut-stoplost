@@ -70,27 +70,29 @@ export const pearsonCorrelation = (x, y) => {
     return denominator === 0 ? 0 : numerator / denominator;
 }
 
-export const doParabolicCorrelation = (rsi5Value, caller) => {
-    const xValues = [];
+export const doParabolicCorrelation = (rsiValues, caller) => {
+    const n = rsiValues.length;
+    if (n < 3) {
+        console.error("RSI reikšmių per mažai, reikia bent 3.");
+        return 0;
+    }
 
-    const plusXValues = [...Array(rsi5Value.length/2).keys()];
+    // Generuojame X reikšmes: simetriškai aplink nulį
+    const xValues = Array.from({ length: n }, (_, i) => i - Math.floor(n / 2));
 
-    plusXValues.forEach(xValue => {
-        xValues.push(plusXValues.length * -1 - xValue * - 1);
-    });
-    plusXValues.forEach(xValue => {
-        xValues.push(xValue);
-    });
-    xValues.push(plusXValues.length);
+    // Parabolės funkcija: y = a*x^2 + c
+    const a = 0.5; // Reguliuojamas kreivumo koeficientas
+    const c = 1;   // Vertikalus poslinkis
 
-    const parabolicValues = xValues.map(x => (0.5 * x ** 2) - (0 * x) + 1); // a=0.5, b=-4, c=30
+    const parabolicValues = xValues.map(x => a * x ** 2 + c);
 
-    const correlation = pearsonCorrelation(xValues, parabolicValues);
+    // Skaičiuojame koreliaciją
+    const correlation = pearsonCorrelation(rsiValues, parabolicValues);
 
-    console.log(caller + " Koreliacija su parabole:", correlation);
+    console.log(`${caller} Koreliacija su parabole:`, correlation.toFixed(3));
 
     return correlation;
-}
+};
 
 
 // Funkcija, kuri sugeneruoja parabolę su dviejų krypčių šakomis

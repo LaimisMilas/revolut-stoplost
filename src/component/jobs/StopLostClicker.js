@@ -10,9 +10,7 @@ import {
 } from "../../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
 import {
-    detectFractalPattern,
     doParabolicCorrelation,
-    findDivergence,
     simpleMovingAverage
 } from "../../utils/IndicatorsUtils";
 
@@ -42,7 +40,6 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
 
         const doStopLost = async () => {
             let tradePare = stopLostState.getCurrentTradePare();
-            //await isRSIMovesDown();
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
@@ -81,8 +78,8 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
                 }
             }
             if(result === 200){
-                //result += await clickSell(tradePare.key);
-                result += 100;
+                result += await clickSell(tradePare.key);
+                //result += 100;
                 console.log("StopLostClicker clickSell "
                     + ", readLastPrice: " + indicatorReadState.lastPriceValue
                     + ", RSI 14: " + indicatorReadState.lastRSIValue
@@ -134,24 +131,6 @@ const StopLostClicker = inject("stopLostState", "buyState", "indicatorReadState"
         const doRSIParabolicCorrelation = async () => {
             let last100RSIValue = indicatorReadState.last100RSIValue;
             return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "SELL RSI");
-        }
-
-        const doPriceParabolicCorrelation = async () => {
-            let last100PriceValue = indicatorReadState.last100PriceValue;
-            return doParabolicCorrelation(simpleMovingAverage(last100PriceValue,3), "SELL Price");
-        }
-
-        const isRSIMovesDown = async () => {
-            let last100RSIValue = indicatorReadState.last100RSIValue;
-            let last100PriceValue = indicatorReadState.last100PriceValue;
-            if (indicatorReadState.last100RSIValue.length > 99) {
-                await doRSIParabolicCorrelation();
-                await doPriceParabolicCorrelation();
-                console.log(findDivergence(last100PriceValue, last100RSIValue));
-                console.log(detectFractalPattern(last100RSIValue, "SELL RSI"));
-                console.log(detectFractalPattern(last100PriceValue, "SELL Price"));
-                // console.log("findMACDCrossovers: " + JSON.stringify(findMACDCrossovers(last100PriceValue)));
-            }
         }
 
     }));

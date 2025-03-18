@@ -1,27 +1,44 @@
 import {inject, observer} from 'mobx-react';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './css/CfgPanel.css';
-import {doParabolicCorrelation, simpleMovingAverage} from "../../utils/IndicatorsUtils";
-import Draggable from 'react-draggable';
 import {Line} from "react-chartjs-2";
 import {
-    Chart as ChartJS,
     CategoryScale,
+    Chart as ChartJS,
+    Legend,
     LinearScale,
-    PointElement,
     LineElement,
+    PointElement,
     Title,
-    Tooltip,
-    Legend
+    Tooltip
 } from "chart.js";
 // Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import Draggable from "react-draggable";
 
 const ParabolicChartPanel =
     inject("indicatorReadState")(
         observer(({indicatorReadState}) => {
 
             const arrayIndex = 50;
+
+            const doParabolicCorrelation = () => {
+                const n = 50;
+                if (n < 3) {
+                    console.error("RSI reikšmių per mažai, reikia bent 3.");
+                    return 0;
+                }
+
+                // Generuojame X reikšmes: simetriškai aplink nulį
+                const xValues = Array.from({ length: n }, (_, i) => i - Math.floor(n / 2));
+
+                // Parabolės funkcija: y = a*x^2 + c
+                const a = 0.5; // Reguliuojamas kreivumo koeficientas
+                const c = 1;   // Vertikalus poslinkis
+
+                return xValues.map(x => a * x ** 2 + c);
+            };
+
             const getParabolicValues = () => {
                 const xValues = []; // sudes vertes nuo 0 -> 50
 
@@ -42,13 +59,14 @@ const ParabolicChartPanel =
                 // c → Nustato pradinę vertę (poslinkį aukštyn arba žemyn)
 
             }
+
             const getChartData = () => {
                 return {
-                    labels: getParabolicValues().map((_, i) => i + 1),
+                    labels: doParabolicCorrelation().map((_, i) => i + 1),
                         datasets: [
                     {
                         label: "Parabole",
-                        data: getParabolicValues(),
+                        data: doParabolicCorrelation(),
                         borderColor: "rgba(75,192,192,1)",
                         backgroundColor: "rgba(75,192,192,0.2)",
                         pointRadius: 3,
@@ -68,11 +86,13 @@ const ParabolicChartPanel =
             });
 
             return (
+                <Draggable>
                 <div className="console-box" id="parabolic-chart-panel">
                     <div className="checkbox-row">
                         <Line data={chartData} options={options}/>
                     </div>
                 </div>
+                    </Draggable>
             );
         }));
 

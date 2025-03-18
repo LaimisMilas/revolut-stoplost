@@ -2,7 +2,7 @@ import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {doParabolicCorrelation, simpleMovingAverage} from "../../utils/IndicatorsUtils";
-import Draggable from 'react-draggable';
+import Draggable from "react-draggable";
 import {Line} from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -21,19 +21,11 @@ const ChartPanel =
     inject("indicatorReadState")(
         observer(({indicatorReadState}) => {
 
-            const arrayIndex = 50;
-            const getParabolicValues = (data) => {
-                const xValues = [...Array(data.length).keys()]; // sudes vertes nuo 0 -> 50
-                return xValues.map(x => 0.5 * x ** 2 - 4 * x + 30); // a=0.5, b=-4, c=30
-                // y = ax2 + bx + c
-                // Kai a > 0 → Parabolė atsiveria į viršų (🔼)
-                // Kai a < 0 → Parabolė atsiveria žemyn (🔽)
-                // b → Valdo pasvirimą (į dešinę ar į kairę)
-                // c → Nustato pradinę vertę (poslinkį aukštyn arba žemyn)
-            }
+            const arrayIndex = 0;
+
             const getRSIData = () => {
                 let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
-                return simpleMovingAverage(data, 20);
+                return simpleMovingAverage(data, 3);
             }
             const [rsiData, setRsiData] = useState(getRSIData);
             const getCartData = () => {
@@ -69,6 +61,7 @@ const ChartPanel =
             }, [indicatorReadState.last100RSICounter]);
 
             return (
+                <Draggable>
                 <div className="console-box" id="chart-panel">
                     <div className="checkbox-row">
                         <Line data={chartData} options={options}/>
@@ -80,6 +73,7 @@ const ChartPanel =
                         </div>
                     </div>
                 </div>
+                </Draggable>
             );
         }));
 
