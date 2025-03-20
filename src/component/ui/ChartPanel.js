@@ -14,6 +14,8 @@ import {
     Tooltip,
     Legend
 } from "chart.js";
+import {cleanData} from "../../utils/dataFilter";
+import {calculateRSI} from "../../utils/RSI14";
 // Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -25,7 +27,10 @@ const ChartPanel =
 
             const getRSIData = () => {
                 let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
-                return simpleMovingAverage(data, indicatorReadState.period);
+                //let data = indicatorReadState.last100PriceValue.slice(arrayIndex, indicatorReadState.last100PriceValue.length);
+                // return simpleMovingAverage(data, indicatorReadState.period);
+                return cleanData(data);
+
             }
             const [rsiData, setRsiData] = useState(getRSIData);
             const getCartData = () => {

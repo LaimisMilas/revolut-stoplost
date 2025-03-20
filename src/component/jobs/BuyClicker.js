@@ -43,13 +43,17 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 return;
             }
             if (await isBuyReached(tradePare, indicatorReadState.lastPriceValue)
-                && await isRSIDown(tradePare, indicatorReadState.lastRSIValue)
-                && await doRSIParabolicCorrelation() > 0.80) {
-                await buyOperation(tradePare);
+                && await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
+                const correlation = await doRSIParabolicCorrelation();
+                if(correlation > buyState.aspectCorrelation){
+                    await buyOperation(tradePare, correlation);
+                } else {
+                    console.log("BuyClicker doBuy failure correlation: " + correlation);
+                }
             }
         }
 
-        const buyOperation = async (tradePare) => {
+        const buyOperation = async (tradePare, correlation) => {
             let result = await selectBuySwitch();
             if (result === 100) {
                 let quantityValue = tradePare.quantity;
@@ -80,6 +84,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
                     + ", lastRSIValue: " + indicatorReadState.lastRSIValue
                     + ", targetPrice: " + tradePare.targetPrice
+                    + ", aspectCorrelation: " + buyState.aspectCorrelation
+                    + ", correlation: " + correlation
                     + ", RSI corelecijos duomenys: " + JSON.stringify(last100RSIValue.slice(50, indicatorReadState.last100RSIValue.length - 1))
                     + ", time: " + getNowDate());
             }
@@ -96,8 +102,9 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
         }
 
         const doRSIParabolicCorrelation = async () => {
+            const arrayIndex = 0;
             let last100RSIValue = indicatorReadState.last100RSIValue;
-            last100RSIValue = last100RSIValue.slice(50, indicatorReadState.last100RSIValue.length - 1);
+            last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
             return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,indicatorReadState.period), "Buy RSI + parabolic");
         }
 

@@ -60,7 +60,7 @@ export class RootStore {
         this.indicatorReadState.last100RSIValue = this.reduce(LocalStorageManager.getStorage("lc_last100RSIValue"), this.indicatorReadState.last100RSIValue);
         this.indicatorReadState.last100PriceValue = this.reduce(LocalStorageManager.getStorage("lc_last100PriceValue"), this.indicatorReadState.last100PriceValue);
         this.indicatorReadState.last1kRSIValue = this.reduce(LocalStorageManager.getStorage("lc_last1kRSIValue"), this.indicatorReadState.last1kRSIValue);
-
+        this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
     }
     reduce(acc, bcc){
         return acc.concat(bcc);
@@ -79,6 +79,7 @@ export class RootStore {
         this.indicatorReadState.last100RSIValue = this.reduce(this.indicatorReadState.last100RSIValue, LocalStorageManager.getStorage("lc_last100RSIValue"));
         this.indicatorReadState.last100PriceValue = this.reduce(this.indicatorReadState.last100PriceValue, LocalStorageManager.getStorage("lc_last100PriceValue"));
         this.indicatorReadState.last1kRSIValue = this.reduce(this.indicatorReadState.last1kRSIValue, LocalStorageManager.getStorage("lc_last1kRSIValue"));
+        this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
     }
 
     saveStorage() {
@@ -94,6 +95,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
         LocalStorageManager.flash("lc_last100PriceValue", this.indicatorReadState.last100PriceValue);
         LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
+        LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
       }
 
 
@@ -109,6 +111,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_store_state", 1);
         LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
         LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
+        LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
     }
 
     deleteAllData() {

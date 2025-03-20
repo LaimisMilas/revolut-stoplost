@@ -129,7 +129,9 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         }
 
         const doRSIParabolicCorrelation = async () => {
+            const arrayIndex = 0;
             let last100RSIValue = indicatorReadState.last100RSIValue;
+            last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
             return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,indicatorReadState.period), "SELL RSI + parabolic");
         }
 

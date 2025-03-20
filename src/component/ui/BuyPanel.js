@@ -2,6 +2,7 @@ import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import Draggable from "react-draggable";
+import {convertToNumber} from "../../utils/RevolutUtils";
 
 const BuyPanel =
     inject("buyState", "buyPanelState")(
@@ -26,7 +27,11 @@ const BuyPanel =
             }, [buyState.systemCfg.cfg.linkedInLike.root.run]);
 
             const handleOnChangeEvent = (event, key) => {
-                tradePare[key] = event.target.value;
+                if(key === "aspectCorrelation"){
+                    buyState.aspectCorrelation = convertToNumber(event.target.value);
+                } else{
+                    tradePare[key] = event.target.value;
+                }
                 setApplyButtonStyle({className: "apply-button-save"});
                 buyState.updateSystemCfg = false;
             };
@@ -106,20 +111,29 @@ const BuyPanel =
                                         onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.quantity.key)}
                                     />
                                 </div>
-                                <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Apply
-                                </button>
-                                <button
-                                    className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
-                                    onClick={handleStopButtonClick}>
-                                    {
-                                        stopAllAction === false ? "Stop" : "Start"
-                                    }
-                                </button>
+                                <div className="checkbox-row">
+                                        <label>Aspect cor.</label>
+                                        <input
+                                            type="text"
+                                            value={buyState.aspectCorrelation}
+                                            onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
+                                        />
+                                </div>
+                                        <button className={applyButtonStyle.className}
+                                                onClick={handleApplyButtonClick}>Apply
+                                        </button>
+                                        <button
+                                            className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
+                                            onClick={handleStopButtonClick}>
+                                            {
+                                                stopAllAction === false ? "Stop" : "Start"
+                                            }
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
                 </Draggable>
-            );
+        );
         }));
 
-export default BuyPanel;
+        export default BuyPanel;

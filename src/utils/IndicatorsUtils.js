@@ -27,7 +27,6 @@ export function findMACDCrossovers(prices) {
     return crossovers;
 }
 
-
 export function simpleMovingAverage(data, period) {
     return data.map((val, idx, arr) => {
         if (idx < period - 1) return val; // Nepakankamai duomenų vidurkiui
