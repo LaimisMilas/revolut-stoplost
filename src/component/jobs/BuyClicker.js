@@ -78,7 +78,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             }
             if (result === 200) {
                 result += await clickBuy(tradePare.key);
-                // result += 100;
+                //result += 100;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
                 const msg = "BuyClicker clickBuy "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
@@ -88,6 +88,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                     + ", correlation: " + correlation
                     + ", RSI data: " + JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1))
                     + ", time: " + getNowDate();
+                buyState.saveMsg(msg);
                 console.log(msg);
             }
 

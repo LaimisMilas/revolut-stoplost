@@ -62,6 +62,8 @@ export class RootStore {
         this.indicatorReadState.last1kRSIValue = this.reduce(LocalStorageManager.getStorage("lc_last1kRSIValue"), this.indicatorReadState.last1kRSIValue);
         this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
         this.sellState.aspectCorrelation = LocalStorageManager.getStorage("lc_sel_aspectCorrelation");
+        this.sellState.msgs = this.reduce(LocalStorageManager.getStorage("lc_sell_msgs"), this.sellState.msgs);
+        this.buyState.msgs = this.reduce(LocalStorageManager.getStorage("lc_buy_msgs"), this.buyState.msgs);
     }
     reduce(acc, bcc){
         return acc.concat(bcc);
@@ -82,6 +84,8 @@ export class RootStore {
         this.indicatorReadState.last1kRSIValue = this.reduce(this.indicatorReadState.last1kRSIValue, LocalStorageManager.getStorage("lc_last1kRSIValue"));
         this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
         this.sellState.aspectCorrelation = LocalStorageManager.getStorage("lc_sell_aspectCorrelation");
+        this.sellState.msgs = this.reduce(this.sellState.msgs, LocalStorageManager.getStorage("lc_sell_msgs"));
+        this.buyState.msgs = this.reduce(this.buyState.msgs, LocalStorageManager.getStorage("lc_buy_msgs"));
     }
 
     saveStorage() {
@@ -99,6 +103,8 @@ export class RootStore {
         LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
         LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
         LocalStorageManager.flash("lc_sell_aspectCorrelation", this.sellState.aspectCorrelation);
+        LocalStorageManager.flash("lc_sell_msgs", this.sellState.msgs);
+        LocalStorageManager.flash("lc_buy_msgs", this.buyState.msgs);
       }
 
     initializeLocalStorage() {
@@ -115,6 +121,8 @@ export class RootStore {
         LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
         LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
         LocalStorageManager.flash("lc_sell_aspectCorrelation", this.sellState.aspectCorrelation);
+        LocalStorageManager.flash("lc_sell_msgs", this.sellState.msgs);
+        LocalStorageManager.flash("lc_buy_msgs", this.buyState.msgs);
     }
 
     registryStoreObject = new Map();

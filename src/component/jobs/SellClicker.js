@@ -46,9 +46,9 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(isStopLostReached(tradePare)){
                 await sellOperation(tradePare, "stopLost");
             } else {
-                if(isTakeProfReached(tradePare) && await isRSIUp(tradePare)){
+                if(isTakeProfReached(tradePare)){
                     const correlation = await doRSIParabolicCorrelation();
-                    if(correlation > buyState.aspectCorrelation){
+                    if(correlation > sellState.aspectCorrelation){
                         await sellOperation(tradePare, correlation, "takeProf");
                     } else {
                         console.log("SellClicker doSell failure correlation: " + correlation);
@@ -83,6 +83,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(result === 200){
                 result += await clickSell(tradePare.key);
                 //result += 100;
+                let last100RSIValue = indicatorReadState.last100RSIValue;
                 const msg = "SellClicker clickSell "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
                     + ", lastRSIValue: " + indicatorReadState.lastRSIValue
@@ -91,6 +92,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     + ", correlation: " + correlation
                     + ", RSI data: " + JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1))
                     + ", time: " + getNowDate();
+                sellState.saveMsg(msg);
                 console.log(msg);
             }
             if(result === 300){

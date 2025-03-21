@@ -21,6 +21,7 @@ export class SellState {
     tradePares = null;
     currentTradePare  = null;
     aspectCorrelation = 0.80;
+    msgs = [];
 
     constructor() {
         makeAutoObservable(this);
@@ -75,5 +76,9 @@ export class SellState {
 
     setTradePares(tradePares){
         this.tradePares = tradePares;
+    }
+
+    saveMsg(msg){
+        this.msgs.push(msg);
     }
 }

@@ -59,7 +59,11 @@ const SellPanel =
 
 
             const handleOnChangeEvent = (event, key) => {
-                tradePare[key] = event.target.value;
+                if(key === "aspectCorrelation"){
+                    sellState.aspectCorrelation = convertToNumber(event.target.value);
+                } else{
+                    tradePare[key] = event.target.value;
+                }
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setApplyButtonStyle({className: "apply-button-save"});
@@ -150,18 +154,15 @@ const SellPanel =
                                     <span>{currentProf} %</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <span>Aroon {aroonLastValue}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label
-                                        htmlFor={sellPanelState.rowConfig.takeProfRsi.id}>{sellPanelState.rowConfig.takeProfRsi.label}</label>
+                                    <label>Aspect cor.</label>
                                     <input
                                         type="text"
-                                        id={sellPanelState.rowConfig.takeProfRsi.id}
-                                        name={sellPanelState.rowConfig.takeProfRsi.name}
-                                        value={tradePare.takeProfRsi}
-                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.takeProfRsi.key)}
+                                        value={sellState.aspectCorrelation}
+                                        onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
                                     />
+                                </div>
+                                <div className="checkbox-row">
+                                    <span>Aroon {aroonLastValue}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label
