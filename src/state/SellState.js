@@ -20,6 +20,7 @@ export class SellState {
     updateSystemCfg = true;
     tradePares = null;
     currentTradePare  = null;
+    aspectCorrelation = 0.80;
 
     constructor() {
         makeAutoObservable(this);

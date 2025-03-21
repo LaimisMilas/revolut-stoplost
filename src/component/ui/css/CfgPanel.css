@@ -7,10 +7,9 @@
     z-index: 100000000;
     padding: 15px;
     border-radius: 0.8rem !important;
-    background-color: black;
-    font-weight: var(--artdeco-reset-typography-font-weight-normal);
-    font-size: 1.4rem;
-    line-height: 1.42857;
+    background-color: #1a1a1a;
+    font-weight: 400;
+    font-size: 18px;
 }
 
 #buy-panel{
@@ -64,10 +63,16 @@
     width: 130px;
 }
 
+.checkbox-row input.halfInput{
+    width: 50px;
+    margin-right: 10px;
+}
+
 .apply-button{
     border: 1px solid #71b7fb;
     padding: 3px;
     width: 130px;
+
 }
 
 .apply-button-apply{

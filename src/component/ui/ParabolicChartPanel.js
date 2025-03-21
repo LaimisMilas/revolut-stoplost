@@ -39,27 +39,6 @@ const ParabolicChartPanel =
                 return xValues.map(x => a * x ** 2 + c);
             };
 
-            const getParabolicValues = () => {
-                const xValues = []; // sudes vertes nuo 0 -> 50
-
-                const plusXValues = [...Array(arrayIndex/2).keys()];
-
-                plusXValues.forEach(xValue => {
-                    xValues.push(plusXValues.length * -1 - xValue * - 1);
-                });
-                plusXValues.forEach(xValue => {
-                    xValues.push(xValue);
-                });
-                xValues.push(plusXValues.length);
-                return xValues.map(x => (0.5 * x ** 2) - (0 * x) + 1); // a=0.5, b=-4, c=30
-                // y = ax2 + bx + c
-                // Kai a > 0 → Parabolė atsiveria į viršų (🔼)
-                // Kai a < 0 → Parabolė atsiveria žemyn (🔽)
-                // b → Valdo pasvirimą (į dešinę ar į kairę)
-                // c → Nustato pradinę vertę (poslinkį aukštyn arba žemyn)
-
-            }
-
             const getChartData = () => {
                 return {
                     labels: doParabolicCorrelation().map((_, i) => i + 1),

@@ -34,11 +34,11 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         const run = async () => {
             let root = sellState.systemCfg.cfg.linkedInLike.root;
             if (root.run) {
-                await doStopLost();
+                await doSell();
             }
         }
 
-        const doStopLost = async () => {
+        const doSell = async () => {
             let tradePare = sellState.getCurrentTradePare();
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
@@ -46,15 +46,18 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(isStopLostReached(tradePare)){
                 await sellOperation(tradePare, "stopLost");
             } else {
-                if(isTakeProfReached(tradePare)
-                    && await isRSIUp(tradePare)
-                    && await doRSIParabolicCorrelation() < -0.80){
-                    await sellOperation(tradePare, "takeProf");
+                if(isTakeProfReached(tradePare) && await isRSIUp(tradePare)){
+                    const correlation = await doRSIParabolicCorrelation();
+                    if(correlation > buyState.aspectCorrelation){
+                        await sellOperation(tradePare, correlation, "takeProf");
+                    } else {
+                        console.log("SellClicker doSell failure correlation: " + correlation);
+                    }
                 }
             }
         }
 
-        const sellOperation = async (tradePare, caller) => {
+        const sellOperation = async (tradePare, correlation, caller) => {
             let result = await selectSellSwitch();
             if(result === 100){
                 let quantityValue = tradePare.quantity;
@@ -80,12 +83,15 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(result === 200){
                 result += await clickSell(tradePare.key);
                 //result += 100;
-                console.log("StopLostClicker clickSell "
-                    + ", readLastPrice: " + indicatorReadState.lastPriceValue
-                    + ", RSI 14: " + indicatorReadState.lastRSIValue
-                    + ", price: " + tradePare.price
-                    + ", caller: " + caller
-                    + ", time: " +  getNowDate());
+                const msg = "SellClicker clickSell "
+                    + ", lastPriceValue: " + indicatorReadState.lastPriceValue
+                    + ", lastRSIValue: " + indicatorReadState.lastRSIValue
+                    + ", targetPrice: " + tradePare.targetPrice
+                    + ", aspectCorrelation: " + sellState.aspectCorrelation
+                    + ", correlation: " + correlation
+                    + ", RSI data: " + JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1))
+                    + ", time: " + getNowDate();
+                console.log(msg);
             }
             if(result === 300){
                 sellState.systemCfg.cfg.linkedInLike.root.run = false;

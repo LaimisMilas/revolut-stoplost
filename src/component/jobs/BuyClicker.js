@@ -78,17 +78,19 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             }
             if (result === 200) {
                 result += await clickBuy(tradePare.key);
-               // result += 100;
+                // result += 100;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
-                    console.log("BuyClicker clickBuy "
+                const msg = "BuyClicker clickBuy "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
                     + ", lastRSIValue: " + indicatorReadState.lastRSIValue
                     + ", targetPrice: " + tradePare.targetPrice
                     + ", aspectCorrelation: " + buyState.aspectCorrelation
                     + ", correlation: " + correlation
-                    + ", RSI corelecijos duomenys: " + JSON.stringify(last100RSIValue.slice(50, indicatorReadState.last100RSIValue.length - 1))
-                    + ", time: " + getNowDate());
+                    + ", RSI data: " + JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1))
+                    + ", time: " + getNowDate();
+                console.log(msg);
             }
+
             if (result === 300) {
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;

@@ -61,6 +61,7 @@ export class RootStore {
         this.indicatorReadState.last100PriceValue = this.reduce(LocalStorageManager.getStorage("lc_last100PriceValue"), this.indicatorReadState.last100PriceValue);
         this.indicatorReadState.last1kRSIValue = this.reduce(LocalStorageManager.getStorage("lc_last1kRSIValue"), this.indicatorReadState.last1kRSIValue);
         this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
+        this.sellState.aspectCorrelation = LocalStorageManager.getStorage("lc_sel_aspectCorrelation");
     }
     reduce(acc, bcc){
         return acc.concat(bcc);
@@ -80,6 +81,7 @@ export class RootStore {
         this.indicatorReadState.last100PriceValue = this.reduce(this.indicatorReadState.last100PriceValue, LocalStorageManager.getStorage("lc_last100PriceValue"));
         this.indicatorReadState.last1kRSIValue = this.reduce(this.indicatorReadState.last1kRSIValue, LocalStorageManager.getStorage("lc_last1kRSIValue"));
         this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
+        this.sellState.aspectCorrelation = LocalStorageManager.getStorage("lc_sell_aspectCorrelation");
     }
 
     saveStorage() {
@@ -96,8 +98,8 @@ export class RootStore {
         LocalStorageManager.flash("lc_last100PriceValue", this.indicatorReadState.last100PriceValue);
         LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
         LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
+        LocalStorageManager.flash("lc_sell_aspectCorrelation", this.sellState.aspectCorrelation);
       }
-
 
     initializeLocalStorage() {
         LocalStorageManager.flash("lc_cfg", this.sellState.userCfg);
@@ -112,22 +114,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
         LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
         LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
-    }
-
-    deleteAllData() {
-        LocalStorageManager.removeStorageItem("lc_store_state");
-        LocalStorageManager.removeStorageItem("lc_cfg");
-        LocalStorageManager.removeStorageItem("lc_systemCfg");
-        LocalStorageManager.removeStorageItem("lc_buy_cfg");
-        LocalStorageManager.removeStorageItem("lc_buy_systemCfg");
-        LocalStorageManager.removeStorageItem("lc_rowConfig");
-        LocalStorageManager.removeStorageItem("lc_buy_rowConfig");
-        LocalStorageManager.removeStorageItem("lc_store_state");
-        LocalStorageManager.removeStorageItem("lc_sell_tradePares");
-        LocalStorageManager.removeStorageItem("lc_buy_tradePares");
-        LocalStorageManager.removeStorageItem("lc_last100RSIValue");
-        LocalStorageManager.removeStorageItem("lc_last100PriceValue");
-        LocalStorageManager.removeStorageItem("lc_last1kRSIValue");
+        LocalStorageManager.flash("lc_sell_aspectCorrelation", this.sellState.aspectCorrelation);
     }
 
     registryStoreObject = new Map();

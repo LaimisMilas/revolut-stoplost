@@ -3,15 +3,21 @@ import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {convertToNumber} from "../../utils/RevolutUtils";
 import Draggable from "react-draggable";
+import {calculateAroon} from "../../utils/AroonIndicator";
 
 const SellPanel =
-    inject("sellState", "sellPanelState")(
-        observer(({sellState, sellPanelState}) => {
+    inject("sellState", "sellPanelState","indicatorReadState")(
+        observer(({sellState, sellPanelState,indicatorReadState}) => {
 
             const parsePareFromURL = () => {
                 let tmp = window.location.href.split("/trade/");
                 return tmp[1].split("-")[0];
             }
+
+            const calcCurrentProf = () => {
+                let value = ((convertToNumber(indicatorReadState.lastPriceValue) * 100) / tradePare.price) - 100;
+                return value.toPrecision(4);
+            };
 
             const [applyButtonStyle, setApplyButtonStyle] = useState({
                 className: "apply-button",
@@ -25,7 +31,9 @@ const SellPanel =
                 setTradePare(sellState.getTradePareDataByKey(parsePareFromURL()))
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
-            }, [sellState.systemCfg.cfg.linkedInLike.root.run]);
+                setCurrentProf(calcCurrentProf());
+                setAroonLastValue(calcAroonLastValue());
+            }, [sellState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const calcTakeProfPrice = () => {
                 let value = convertToNumber(tradePare.price) + ((convertToNumber(tradePare.price) * convertToNumber(tradePare.takeProf)) / 100);
@@ -37,8 +45,18 @@ const SellPanel =
                 return value.toPrecision(4);
             };
 
+            const calcAroonLastValue = () => {
+                let values = calculateAroon(indicatorReadState.last100PriceValue);
+                const up = convertToNumber(values.aroonUp[values.aroonUp.length -1]).toPrecision(4);
+                const down = convertToNumber(values.aroonDown[values.aroonDown.length -1]).toPrecision(4);
+                return "🔼: " + up + "🔽: " + down;
+            }
+
             const [takeProfPrice, setTakeProfPrice] = useState(calcTakeProfPrice());
             const [stopLostPrice, setStopLostPrice] = useState(calcStopLostPrice());
+            const [currentProf, setCurrentProf] = useState(calcCurrentProf());
+            const [aroonLastValue, setAroonLastValue] = useState(calcAroonLastValue());
+
 
             const handleOnChangeEvent = (event, key) => {
                 tradePare[key] = event.target.value;
@@ -105,31 +123,34 @@ const SellPanel =
                                     <label
                                         htmlFor={sellPanelState.rowConfig.stopLost.id}>{sellPanelState.rowConfig.stopLost.label}</label>
                                     <input
+                                        className="halfInput"
                                         type="text"
                                         id={sellPanelState.rowConfig.stopLost.id}
                                         name={sellPanelState.rowConfig.stopLost.name}
                                         value={tradePare.stopLost}
                                         onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.stopLost.key)}
                                     />
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>SL price</label>
                                     <span>{stopLostPrice}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label
                                         htmlFor={sellPanelState.rowConfig.takeProf.id}>{sellPanelState.rowConfig.takeProf.label}</label>
                                     <input
+                                        className="halfInput"
                                         type="text"
                                         id={sellPanelState.rowConfig.takeProf.id}
                                         name={sellPanelState.rowConfig.takeProf.name}
                                         value={tradePare.takeProf}
                                         onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.takeProf.key)}
                                     />
+                                    <span>{takeProfPrice}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label>TP price</label>
-                                    <span>{takeProfPrice}</span>
+                                    <label>Current prof.</label>
+                                    <span>{currentProf} %</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <span>Aroon {aroonLastValue}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label
