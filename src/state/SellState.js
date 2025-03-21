@@ -1,12 +1,11 @@
 import {makeAutoObservable} from 'mobx';
-import {lc_sell_cfg, trade_pares} from "../static/lc_sell_cfg";
+import {trade_pares} from "../static/lc_sell_cfg";
 import {lc_system_cfg} from "../static/lc_system_cfg";
 
 export class SellState {
 
     rootStore = null;
     sellPanelState = null;
-    sellCfg = null;
     systemCfg = null;
     stopAllAction = false;
     intervalGetCfg = null;
@@ -30,7 +29,6 @@ export class SellState {
     setup(rootStore, sellPanelState) {
         this.rootStore = rootStore;
         this.sellPanelState = sellPanelState;
-        this.setSellCfg(lc_sell_cfg);
         this.setSystemCfg(lc_system_cfg);
         this.setTradePares(trade_pares);
     }
@@ -64,10 +62,6 @@ export class SellState {
         }
         this.rootStore.saveStorage();
         return this.getTradePareDataByKey(tradeDate.key);
-    }
-
-    setSellCfg(cfg){
-        this.sellCfg = cfg;
     }
 
     setSystemCfg(systemCfg){
