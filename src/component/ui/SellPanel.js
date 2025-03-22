@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {convertToNumber} from "../../utils/RevolutUtils";
 import Draggable from "react-draggable";
-import {calculateAroon} from "../../indicator/Aroon";
 
 const SellPanel =
     inject("sellState", "sellPanelState","indicatorReadState")(
@@ -32,7 +31,6 @@ const SellPanel =
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setCurrentProf(calcCurrentProf());
-                setAroonLastValue(calcAroonLastValue());
             }, [sellState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const calcTakeProfPrice = () => {
@@ -45,18 +43,9 @@ const SellPanel =
                 return value.toPrecision(4);
             };
 
-            const calcAroonLastValue = () => {
-                let values = calculateAroon(indicatorReadState.last100PriceValue);
-                const up = convertToNumber(values.aroonUp[values.aroonUp.length -1]).toPrecision(4);
-                const down = convertToNumber(values.aroonDown[values.aroonDown.length -1]).toPrecision(4);
-                return "🔼: " + up + "🔽: " + down;
-            }
-
             const [takeProfPrice, setTakeProfPrice] = useState(calcTakeProfPrice());
             const [stopLostPrice, setStopLostPrice] = useState(calcStopLostPrice());
             const [currentProf, setCurrentProf] = useState(calcCurrentProf());
-            const [aroonLastValue, setAroonLastValue] = useState(calcAroonLastValue());
-
 
             const handleOnChangeEvent = (event, key) => {
                 if(key === "aspectCorrelation"){
@@ -160,9 +149,6 @@ const SellPanel =
                                         value={sellState.aspectCorrelation}
                                         onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
                                     />
-                                </div>
-                                <div className="checkbox-row">
-                                    <span>Aroon {aroonLastValue}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label

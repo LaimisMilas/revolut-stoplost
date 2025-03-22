@@ -1,5 +1,3 @@
-
-
 export function findDivergence(prices, rsi) {
     const len = prices.length;
     if (prices[len - 1] < prices[len - 2] && rsi[len - 1] > rsi[len - 2]) {
@@ -21,43 +19,6 @@ export function detectFractalPattern(rsi, caller) {
     }
     return caller + " Fraktalinio modelio nėra.";
 }
-
-export const pearsonCorrelation = (x, y) => {
-    const n = x.length;
-    const sumX = x.reduce((a, b) => a + b, 0);
-    const sumY = y.reduce((a, b) => a + b, 0);
-    const sumXY = x.map((xi, i) => xi * y[i]).reduce((a, b) => a + b, 0);
-    const sumX2 = x.map(xi => xi ** 2).reduce((a, b) => a + b, 0);
-    const sumY2 = y.map(yi => yi ** 2).reduce((a, b) => a + b, 0);
-    const numerator = n * sumXY - sumX * sumY;
-    const denominator = Math.sqrt((n * sumX2 - sumX ** 2) * (n * sumY2 - sumY ** 2));
-    return denominator === 0 ? 0 : numerator / denominator;
-}
-
-export const doParabolicCorrelation = (rsiValues, caller) => {
-    const n = rsiValues.length;
-    if (n < 3) {
-        console.error("RSI reikšmių per mažai, reikia bent 3.");
-        return 0;
-    }
-
-    // Generuojame X reikšmes: simetriškai aplink nulį
-    const xValues = Array.from({ length: n }, (_, i) => i - Math.floor(n / 2));
-
-    // Parabolės funkcija: y = a*x^2 + c
-    const a = 0.5; // Reguliuojamas kreivumo koeficientas
-    const c = 1;   // Vertikalus poslinkis
-
-    const parabolicValues = xValues.map(x => a * x ** 2 + c);
-
-    // Skaičiuojame koreliaciją
-    const correlation = pearsonCorrelation(rsiValues, parabolicValues);
-
-    console.log(`${caller} Koreliacija su parabole:`, correlation.toFixed(3));
-
-    return correlation;
-};
-
 
 // Funkcija, kuri sugeneruoja parabolę su dviejų krypčių šakomis
 function customParabola(x, pivot, a1, b1, c1, a2, b2, c2) {

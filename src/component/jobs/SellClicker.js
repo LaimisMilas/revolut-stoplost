@@ -8,10 +8,8 @@ import {
     selectSellSwitch,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {
-    doParabolicCorrelation
-} from "../../utils/IndicatorsUtils";
-import {cleanData, simpleMovingAverage} from "../../utils/dataFilter";
+import {cleanData} from "../../utils/dataFilter";
+import {doParabolicCorrelation} from "../../indicator/Correletion";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {

@@ -16,7 +16,6 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 import Draggable from "react-draggable";
 import {calculateEMA, calculateMACD} from "../../indicator/MACD";
-import {doParabolicCorrelation} from "../../utils/IndicatorsUtils";
 import {downsampleArray, movingAverage, simpleMovingAverage} from "../../utils/dataFilter";
 
 const ParabolicChartPanel =

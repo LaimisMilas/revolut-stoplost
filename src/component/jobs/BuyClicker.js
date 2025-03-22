@@ -8,12 +8,9 @@ import {
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {
-    doParabolicCorrelation
-} from "../../utils/IndicatorsUtils";
 import {isRSIDown} from "../../indicator/RSI14";
-import {cleanData, simpleMovingAverage} from "../../utils/dataFilter";
-import {calculateMACD} from "../../indicator/MACD";
+import {cleanData} from "../../utils/dataFilter";
+import {doParabolicCorrelation} from "../../indicator/Correletion";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState,sellState,indicatorReadState}) => {

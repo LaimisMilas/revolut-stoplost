@@ -1,7 +1,6 @@
 import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
-import {doParabolicCorrelation} from "../../utils/IndicatorsUtils";
 import {Line} from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -15,6 +14,7 @@ import {
 } from "chart.js";
 import {cleanData} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
+import {doParabolicCorrelation} from "../../indicator/Correletion";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const ChartPanel =

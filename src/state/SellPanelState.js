@@ -1,5 +1,6 @@
 import {DateFormat} from "html-evaluate-utils/DateFormat";
 import { makeAutoObservable} from "mobx";
+import {selectSellSwitch} from "../utils/RevolutUtils";
 
 export class SellPanelState {
 
@@ -79,10 +80,13 @@ export class SellPanelState {
             this.updateTimeDiff.bind(this), 30000);
     }
 
-    updateTimeDiff() {
+    async updateTimeDiff() {
         this.active.timeDiff = DateFormat.calculateTimeDifferenceInMinutes(Date.now(), this.active.from);
-        if(this.active.timeDiff > 60){
+        if (this.active.timeDiff > 60) {
             location.reload();
+        }
+        if (this.active.timeDiff > 20 && this.active.timeDiff < 45) {
+            await selectSellSwitch();
         }
     }
 
