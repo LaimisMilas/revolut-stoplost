@@ -28,12 +28,8 @@ const ChartPanel =
 
             const getRSIData = () => {
                 let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
-                //let data = indicatorReadState.last100PriceValue.slice(arrayIndex, indicatorReadState.last100PriceValue.length);
-                // return simpleMovingAverage(data, indicatorReadState.period);
                 return cleanData(data);
             }
-
-            const [macd, setMacd] = useState(calculateMACD(indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 27 , indicatorReadState.last100PriceValue.length - 1)));
 
             const [rsiData, setRsiData] = useState(getRSIData);
             const getCartData = () => {
@@ -65,7 +61,6 @@ const ChartPanel =
                 setRsiData(getRSIData());
                 setChartData(getCartData());
                 setCorrelationIndex(doParabolicCorrelation(rsiData, "Chart RSI"));
-                setMacd(calculateMACD(indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 27 , indicatorReadState.last100PriceValue.length - 1)));
             }, [indicatorReadState.last100RSICounter]);
 
             return (
@@ -77,11 +72,6 @@ const ChartPanel =
                         <div className="checkbox-row">
                             <label>Correlation index</label>
                             <span>{correlationIndex}</span>
-                        </div>
-                        <div className="checkbox-row">
-                            <label>MACD</label>
-                            <span> ema12Trend: {macd.ema12Trend}, lastCross: {macd.lastCross}, line:{macd.macdLine[macd.macdLine.length - 1]}, signam: {macd.signalLine[macd.signalLine.length - 1]}
-                            </span>
                         </div>
                     </div>
                 </Draggable>

@@ -1,5 +1,5 @@
 import {inject, observer} from 'mobx-react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {Line} from "react-chartjs-2";
 import {
@@ -15,12 +15,36 @@ import {
 // Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 import Draggable from "react-draggable";
+import {calculateEMA, calculateMACD} from "../../indicator/MACD";
+import {doParabolicCorrelation} from "../../utils/IndicatorsUtils";
+import {downsampleArray, movingAverage, simpleMovingAverage} from "../../utils/dataFilter";
 
 const ParabolicChartPanel =
     inject("indicatorReadState")(
         observer(({indicatorReadState}) => {
 
             const arrayIndex = 50;
+
+            const calcEMA12 = () => {
+                const period = 12;
+               // const from = indicatorReadState.last100PriceValue.length -1 - 120;
+                const from = 0;
+
+                const to = indicatorReadState.last100PriceValue.length -1;
+                const data = downsampleArray(indicatorReadState.last100PriceValue.slice(from, to), 10);
+                return calculateEMA(data, period);
+            }
+            const calcEMA26 = () => {
+                const period = 26;
+                // const from = indicatorReadState.last100PriceValue.length -1 - 120;
+                const from = 0;
+                const to = indicatorReadState.last100PriceValue.length -1;
+                const data = downsampleArray(indicatorReadState.last100PriceValue.slice(from, to), 10);
+                return calculateEMA(data, period);
+            }
+
+            const [ema12Value, setEMA12] = useState([]);
+            const [ema26Value, setEMA26] = useState([]);
 
             const doParabolicCorrelation = () => {
                 const n = 50;
@@ -41,21 +65,30 @@ const ParabolicChartPanel =
 
             const getChartData = () => {
                 return {
-                    labels: doParabolicCorrelation().map((_, i) => i + 1),
+                    labels: ema12Value.map((_, i) => i + 1),
                         datasets: [
                     {
-                        label: "Parabole",
-                        data: doParabolicCorrelation(),
+                        label: "Ema12",
+                        data: ema12Value,
                         borderColor: "rgba(75,192,192,1)",
                         backgroundColor: "rgba(75,192,192,0.2)",
                         pointRadius: 3,
                         tension: 0.4
-                    }
+                    },
+                        {
+                            label: "Ema26",
+                            data: ema26Value,
+                            borderColor: "rgb(163,75,192)",
+                            backgroundColor: "rgba(132,75,192,0.2)",
+                            pointRadius: 3,
+                            tension: 0.4
+                        }
                 ],
                 }
             };
 
             const [chartData, setChartData] = useState(getChartData());
+
             const [options, setOptions] = useState({
                 responsive: true,
                 scales: {
@@ -63,6 +96,13 @@ const ParabolicChartPanel =
                     y: {title: {display: true, text: "RSI"}},
                 },
             });
+
+            useEffect(() => {
+                setEMA12(calcEMA12());
+                setEMA26(calcEMA26());
+                setChartData(getChartData());
+
+          }, [indicatorReadState.last100RSICounter]);
 
             return (
                 <Draggable>

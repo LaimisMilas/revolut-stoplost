@@ -69,6 +69,18 @@ const findJumps = (prices, threshold = 1) => {
     return jumps;
 };
 
+export function downsampleArray(data, chunkSize) {
+    let result = [];
+
+    for (let i = 0; i < data.length; i += chunkSize) {
+        let chunk = data.slice(i, i + chunkSize);
+        let avg = chunk.reduce((sum, val) => sum + val, 0) / chunk.length;
+        result.push(avg);
+    }
+
+    return result;
+}
+
 const prices = [
     60.33,60.47,60.61,60.57,60.44,59.91,60.06,60.06,60.06,59.87,59.87,59.87,60.19,60.22,60.22,
     60.49,60.38,60.17,60.17,60.17,60.35,60.67,60.25,60.26,60.36,60.26,60.4,60.4,60.55,60.44,

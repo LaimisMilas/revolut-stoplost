@@ -1,14 +1,20 @@
+//data.slice(0, period) → paima pirmas period reikšmes iš duomenų masyvo.
+//    .reduce((a, b) => a + b) → susumuoja šias reikšmes.
+// period → padalina iš period, kad gautų vidurkį.
+//EMA (Exponential Moving Average)
+//SMA (Simple Moving Average)
 
-function calculateEMA(data, period) {
+export function calculateEMA(data, period) {
     const k = 2 / (period + 1);
-    let sma = data.slice(0, period).reduce((a, b) => a + b) / period;
-    const result = [sma];
-
+    const dataByPeriod = data.slice(0, period);
+    const valueSum = dataByPeriod.reduce((a, b) => a + b);
+    let emaPrev = valueSum / period;  // Čia pirmas SMA, kuris tampa pirmu EMA tašku
+    const ema = [emaPrev];
     for (let i = period; i < data.length; i++) {
-        sma = data[i] * k + sma * (1 - k);
-        result.push(sma);
+        emaPrev = data[i] * k + emaPrev * (1 - k);  // Skaičiuojama EMA
+        ema.push(emaPrev);
     }
-    return result;
+    return ema;
 }
 
 export function findMACDCrossovers(prices) {
