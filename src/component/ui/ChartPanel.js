@@ -15,6 +15,8 @@ import {
 } from "chart.js";
 import {cleanData} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
+import {calculateMACD} from "../../indicator/MACD";
+import {convertToNumber} from "../../utils/RevolutUtils";
 // Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -29,8 +31,10 @@ const ChartPanel =
                 //let data = indicatorReadState.last100PriceValue.slice(arrayIndex, indicatorReadState.last100PriceValue.length);
                 // return simpleMovingAverage(data, indicatorReadState.period);
                 return cleanData(data);
-
             }
+
+            const [macd, setMacd] = useState(calculateMACD(indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 27 , indicatorReadState.last100PriceValue.length - 1)));
+
             const [rsiData, setRsiData] = useState(getRSIData);
             const getCartData = () => {
                 return {
@@ -61,22 +65,25 @@ const ChartPanel =
                 setRsiData(getRSIData());
                 setChartData(getCartData());
                 setCorrelationIndex(doParabolicCorrelation(rsiData, "Chart RSI"));
-
+                setMacd(calculateMACD(indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 27 , indicatorReadState.last100PriceValue.length - 1)));
             }, [indicatorReadState.last100RSICounter]);
 
             return (
                 <Draggable>
-                <div className="console-box" id="chart-panel">
-                    <div className="checkbox-row">
-                        <Line data={chartData} options={options}/>
-                    </div>
-                    <div className="checkbox-row">
+                    <div className="console-box" id="chart-panel">
+                        <div className="checkbox-row">
+                            <Line data={chartData} options={options}/>
+                        </div>
                         <div className="checkbox-row">
                             <label>Correlation index</label>
                             <span>{correlationIndex}</span>
                         </div>
+                        <div className="checkbox-row">
+                            <label>MACD</label>
+                            <span> ema12Trend: {macd.ema12Trend}, lastCross: {macd.lastCross}, line:{macd.macdLine[macd.macdLine.length - 1]}, signam: {macd.signalLine[macd.signalLine.length - 1]}
+                            </span>
+                        </div>
                     </div>
-                </div>
                 </Draggable>
             );
         }));

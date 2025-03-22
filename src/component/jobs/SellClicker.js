@@ -11,7 +11,7 @@ import {
 import {
     doParabolicCorrelation
 } from "../../utils/IndicatorsUtils";
-import {simpleMovingAverage} from "../../utils/dataFilter";
+import {cleanData, simpleMovingAverage} from "../../utils/dataFilter";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -136,8 +136,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             const arrayIndex = 0;
             let last100RSIValue = indicatorReadState.last100RSIValue;
             last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
-            last100RSIValue = simpleMovingAverage(last100RSIValue,indicatorReadState.period);
-            return doParabolicCorrelation(last100RSIValue, "SELL RSI + parabolic");
+            //last100RSIValue = simpleMovingAverage(last100RSIValue,indicatorReadState.period);
+            return doParabolicCorrelation(cleanData(last100RSIValue), "SELL RSI + parabolic");
         }
 
     }));

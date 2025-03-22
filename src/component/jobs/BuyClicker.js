@@ -12,7 +12,8 @@ import {
     doParabolicCorrelation
 } from "../../utils/IndicatorsUtils";
 import {isRSIDown} from "../../indicator/RSI14";
-import {simpleMovingAverage} from "../../utils/dataFilter";
+import {cleanData, simpleMovingAverage} from "../../utils/dataFilter";
+import {calculateMACD} from "../../indicator/MACD";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState,sellState,indicatorReadState}) => {
@@ -43,8 +44,10 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
+
             if (await isBuyReached(tradePare, indicatorReadState.lastPriceValue)
                 && await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
+
                 const correlation = await doRSIParabolicCorrelation();
                 if(correlation > buyState.aspectCorrelation){
                     await buyOperation(tradePare, correlation);
@@ -114,7 +117,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             const arrayIndex = 0;
             let last100RSIValue = indicatorReadState.last100RSIValue;
             last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
-            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,indicatorReadState.period), "Buy RSI + parabolic");
+            return doParabolicCorrelation(cleanData(last100RSIValue), "Buy RSI + parabolic");
         }
 
     }));
