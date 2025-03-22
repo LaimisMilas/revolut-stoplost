@@ -15,9 +15,6 @@ import {
 } from "chart.js";
 import {cleanData} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
-import {calculateMACD} from "../../indicator/MACD";
-import {convertToNumber} from "../../utils/RevolutUtils";
-// Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const ChartPanel =
