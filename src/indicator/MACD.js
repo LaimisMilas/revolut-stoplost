@@ -1,12 +1,14 @@
-function calculateEMA(data, period) {
-    let multiplier = 2 / (period + 1);
-    let ema = [data[0]]; // Pradinė EMA reikšmė yra pirmasis duomenų taškas
 
-    for (let i = 1; i < data.length; i++) {
-        let value = (data[i] - ema[i - 1]) * multiplier + ema[i - 1];
-        ema.push(value);
+function calculateEMA(data, period) {
+    const k = 2 / (period + 1);
+    let sma = data.slice(0, period).reduce((a, b) => a + b) / period;
+    const result = [sma];
+
+    for (let i = period; i < data.length; i++) {
+        sma = data[i] * k + sma * (1 - k);
+        result.push(sma);
     }
-    return ema;
+    return result;
 }
 
 export function findMACDCrossovers(prices) {
@@ -44,6 +46,7 @@ function isLastCrossBearish(prices) {
 }
 
 function getCurrentMACD(prices) {
+
     if (isLastCrossBearish(prices)) {
         let ema12 = calculateEMA(prices, 12);
         let ema26 = calculateEMA(prices, 26);
@@ -82,30 +85,10 @@ function getCurrentMACD(prices) {
     }
 }
 
-function ds(price){
-    const macd = getCurrentMACD(price);
-    if(macd.type === "bearish"){
-
-
-    }
-}
-
 export const calculateMACD = (prices) => {
     if (prices.length < 26) {
         throw new Error("Duomenų per mažai MACD skaičiavimui.");
     }
-
-    const calculateEMA = (data, period) => {
-        const k = 2 / (period + 1);
-        let ema = data.slice(0, period).reduce((a, b) => a + b) / period;
-        const result = [ema];
-
-        for (let i = period; i < data.length; i++) {
-            ema = data[i] * k + ema * (1 - k);
-            result.push(ema);
-        }
-        return result;
-    };
 
     const ema12 = calculateEMA(prices, 12);
     const ema26 = calculateEMA(prices, 26);
@@ -123,12 +106,11 @@ export const calculateMACD = (prices) => {
     let lastCross = null;
     for (let i = 1; i < macdLine.length; i++) {
         if (macdLine[i - 1] < signalLine[i - 1] && macdLine[i] > signalLine[i]) {
-            lastCross = "Bullish Crossover 🟢"; // Kirtimas į viršų
+            lastCross = "Bullish"; // Kirtimas į viršų
         } else if (macdLine[i - 1] > signalLine[i - 1] && macdLine[i] < signalLine[i]) {
-            lastCross = "Bearish Crossover 🔴"; // Kirtimas žemyn
+            lastCross = "Bearish"; // Kirtimas žemyn
         }
     }
-
     // Patikrinti, ar EMA12 yra labiausiai nutolęs nuo nulio
     const ema12MaxDistance = Math.max(...ema12Trimmed.map(Math.abs));
     const ema12Trend = Math.abs(ema12Trimmed[ema12Trimmed.length - 1]) === ema12MaxDistance
