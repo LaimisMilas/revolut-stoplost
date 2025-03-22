@@ -8,11 +8,10 @@ import {
     selectSellSwitch,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {Utils} from "html-evaluate-utils/Utils";
 import {
-    doParabolicCorrelation,
-    simpleMovingAverage
+    doParabolicCorrelation
 } from "../../utils/IndicatorsUtils";
+import {simpleMovingAverage} from "../../utils/dataFilter";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -115,11 +114,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         }
 
         const isRSIUp = async (tradePare) => {
-            if(Utils.getElByXPath("//iframe")){
                 let assetValue = tradePare.takeProfRsi;
                 return indicatorReadState.lastRSIValue >= convertToNumber(assetValue);
-            }
-            return false;
         }
 
         const isTakeProfReached = (tradePare) => {
@@ -140,7 +136,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             const arrayIndex = 0;
             let last100RSIValue = indicatorReadState.last100RSIValue;
             last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
-            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,indicatorReadState.period), "SELL RSI + parabolic");
+            last100RSIValue = simpleMovingAverage(last100RSIValue,indicatorReadState.period);
+            return doParabolicCorrelation(last100RSIValue, "SELL RSI + parabolic");
         }
 
     }));

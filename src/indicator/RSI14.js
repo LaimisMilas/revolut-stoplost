@@ -1,3 +1,5 @@
+import {convertToNumber} from "../utils/RevolutUtils";
+
 export const calculateRSI = (prices, period = 14) => {
     if (prices.length < period) {
         throw new Error("Not enough data to calculate RSI.");
@@ -36,3 +38,11 @@ export const calculateRSI = (prices, period = 14) => {
 
     return rsiValues;
 };
+
+export const isRSIDown = async (tradePare, rsiValue) => {
+    if (rsiValue > 0) {
+        let assetValue = tradePare.rsi;
+        return rsiValue <= convertToNumber(assetValue);
+    }
+    return false;
+}

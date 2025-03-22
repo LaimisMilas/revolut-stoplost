@@ -1,8 +1,7 @@
 import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
-import {doParabolicCorrelation, simpleMovingAverage} from "../../utils/IndicatorsUtils";
-import Draggable from "react-draggable";
+import {doParabolicCorrelation} from "../../utils/IndicatorsUtils";
 import {Line} from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -15,7 +14,7 @@ import {
     Legend
 } from "chart.js";
 import {cleanData} from "../../utils/dataFilter";
-import {calculateRSI} from "../../indicator/RSI14";
+import Draggable from "react-draggable";
 // Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 

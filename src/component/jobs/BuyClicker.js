@@ -3,15 +3,16 @@ import {useEffect} from "react";
 import {
     clickBuy,
     convertToNumber,
-    getNowDate, isBuyReached, isRSIDown,
+    getNowDate,
     selectBuySwitch,
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
 import {
-    doParabolicCorrelation,
-    simpleMovingAverage
+    doParabolicCorrelation
 } from "../../utils/IndicatorsUtils";
+import {isRSIDown} from "../../indicator/RSI14";
+import {simpleMovingAverage} from "../../utils/dataFilter";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState,sellState,indicatorReadState}) => {
@@ -102,6 +103,11 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             }
             console.log("BuyClicker buyOperation " + tradePare.name + " done status: " + result);
             return result;
+        }
+
+        const isBuyReached = async (tradePare,lastPrice) => {
+            let buyPrice = convertToNumber(tradePare.targetPrice);
+            return lastPrice <= buyPrice;
         }
 
         const doRSIParabolicCorrelation = async () => {

@@ -107,19 +107,6 @@ export const convertToNumber = (s) => {
     return s;
 }
 
-export const isBuyReached = async (tradePare,lastPrice) => {
-    let buyPrice = convertToNumber(tradePare.targetPrice);
-    return lastPrice <= buyPrice;
-}
-
-export const isRSIDown = async (tradePare, rsiValue) => {
-    if (rsiValue > 0) {
-        let assetValue = tradePare.rsi;
-        return rsiValue <= convertToNumber(assetValue);
-    }
-    return false;
-}
-
 export const getNowDate = () => {
     let date = new Date();
     let hours = date.getHours(); // hours

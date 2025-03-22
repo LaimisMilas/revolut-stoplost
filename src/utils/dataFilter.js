@@ -33,6 +33,13 @@ const removeOutliersZScore2 = (data, threshold = 3) => {
     });
 };
 
+export function simpleMovingAverage(data, period) {
+    return data.map((val, idx, arr) => {
+        if (idx < period - 1) return val; // Nepakankamai duomenų vidurkiui
+        const subset = arr.slice(idx - period + 1, idx + 1);
+        return subset.reduce((sum, num) => sum + num, 0) / period;
+    });
+}
 
 export const movingAverage = (data, windowSize = 5) => {
     return data.map((_, i, arr) => {
