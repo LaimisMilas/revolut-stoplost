@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {convertToNumber} from "../../utils/RevolutUtils";
 import Draggable from "react-draggable";
-import {calculateAroon} from "../../utils/AroonIndicator";
+import {calculateAroon} from "../../indicator/AroonIndicator";
 
 const SellPanel =
     inject("sellState", "sellPanelState","indicatorReadState")(

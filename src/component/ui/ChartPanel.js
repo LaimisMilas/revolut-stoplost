@@ -15,7 +15,7 @@ import {
     Legend
 } from "chart.js";
 import {cleanData} from "../../utils/dataFilter";
-import {calculateRSI} from "../../utils/RSI14";
+import {calculateRSI} from "../../indicator/RSI14";
 // Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
