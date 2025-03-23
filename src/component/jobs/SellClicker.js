@@ -45,7 +45,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             } else {
                 if(isTakeProfReached(tradePare)){
                     const correlation = await doRSIParabolicCorrelation();
-                    if(correlation > sellState.aspectCorrelation){
+                    if(correlation < sellState.aspectCorrelation){
                         await sellOperation(tradePare, correlation, "takeProf");
                     } else {
                         console.log("SellClicker doSell failure correlation: " + correlation);
