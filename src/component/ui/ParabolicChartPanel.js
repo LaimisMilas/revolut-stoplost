@@ -28,18 +28,18 @@ const ParabolicChartPanel =
                 const period = 12;
                 // const from = indicatorReadState.last100PriceValue.length -1 - 120;
                 let data = indicatorReadState.tickerValue.map(item => parseFloat(item.indexPrice));
-                const from = 0;
+                const from = data.length - 300;
                 const to = data.length - 1;
-                data = downsampleArray(data.slice(from, to), 200);
+                data = downsampleArray(data.slice(from, to), 10);
                 return calculateEMA(data, period);
             }
             const calcEMA26 = () => {
                 const period = 26;
                 // const from = indicatorReadState.last100PriceValue.length -1 - 120;
                 let data = indicatorReadState.tickerValue.map(item => parseFloat(item.indexPrice));
-                const from = 0;
+                const from = data.length - 300;
                 const to = data.length - 1;
-                data = downsampleArray(data.slice(from, to), 200);
+                data = downsampleArray(data.slice(from, to), 10);
                 return calculateEMA(data, period);
             }
 
@@ -72,7 +72,7 @@ const ParabolicChartPanel =
                         data: ema12Value,
                         borderColor: "rgba(75,192,192,1)",
                         backgroundColor: "rgba(75,192,192,0.2)",
-                        pointRadius: 3,
+                        pointRadius: 2,
                         tension: 0.4
                     },
                         {
@@ -80,7 +80,7 @@ const ParabolicChartPanel =
                             data: ema26Value,
                             borderColor: "rgb(163,75,192)",
                             backgroundColor: "rgba(132,75,192,0.2)",
-                            pointRadius: 3,
+                            pointRadius: 2,
                             tension: 0.4
                         }
                 ],
