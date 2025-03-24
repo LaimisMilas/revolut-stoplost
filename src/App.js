@@ -5,8 +5,8 @@ import {RootStore} from "./state/RootStore";
 import SellClicker from "./component/jobs/SellClicker";
 import BuyPanel from "./component/ui/BuyPanel";
 import BuyClicker from "./component/jobs/BuyClicker";
-import ChartPanel from "./component/ui/ChartPanel";
 import DataReader from "./component/jobs/DataReader";
+import ParabolicChartPanel from "./component/ui/ParabolicChartPanel";
 
 const rootState = new RootStore();
 
@@ -23,10 +23,10 @@ const App = () => {
             <div className="App">
                 <SellPanel/>
                 <BuyPanel/>
-                <ChartPanel/>
                 <SellClicker/>
                 <BuyClicker/>
                 <DataReader/>
+                <ParabolicChartPanel/>
             </div>
         </Provider>
     );

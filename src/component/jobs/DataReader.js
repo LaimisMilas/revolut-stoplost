@@ -18,8 +18,8 @@ const DataReader = inject("indicatorReadState")(
         }, []);
 
         const doAction = async (responseData) => {
-            console.log("Gavome duomenis iš extension:", responseData);
-            indicatorReadState.tickerValue.push(responseData);
+            //console.log("Gavome duomenis iš extension:", responseData);
+            indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, responseData, 11250);
         }
 
     }));

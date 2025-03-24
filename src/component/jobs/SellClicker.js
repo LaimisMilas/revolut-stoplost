@@ -40,7 +40,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 return;
             }
             if(isStopLostReached(tradePare)){
-                await sellOperation(tradePare, "stopLost");
+                await sellOperation(tradePare, null , "stopLost");
             } else {
                 if(isTakeProfReached(tradePare)){
                     const correlation = await doRSIParabolicCorrelation();
@@ -95,8 +95,10 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 sellState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
                 if(caller === "stopLost"){
-                    buyState.getCurrentTradePare().targetPrice = indicatorReadState.lastPriceValue + ((indicatorReadState.lastPriceValue * 1)/100);
-                    buyState.getCurrentTradePare().rsi = 50;
+                    const newTargetPrice = indicatorReadState.lastPriceValue + ((indicatorReadState.lastPriceValue * 1)/100);
+                    buyState.getCurrentTradePare().targetPrice = Number(newTargetPrice).toFixed(2);
+                    const newRSIValue = indicatorReadState.lastRSIValue + ((indicatorReadState.lastRSIValue * 1)/100);
+                    buyState.getCurrentTradePare().rsi = Number(newRSIValue).toFixed(0);
                     result += 100;
                 } else if(caller === "takeProf"){
                     buyState.getCurrentTradePare().targetPrice = indicatorReadState.lastPriceValue;

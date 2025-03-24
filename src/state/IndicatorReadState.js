@@ -71,6 +71,9 @@ export class IndicatorReadState {
         if (arr.length > maxLength) {
             arr.shift(); // Pašaliname pirmą (seniausią) elementą
         }
+        if (arr.length > maxLength) {
+            arr = arr.slice(arr.length - maxLength, arr.length);
+        }
         return arr;
     }
 }

@@ -26,19 +26,20 @@ const ParabolicChartPanel =
 
             const calcEMA12 = () => {
                 const period = 12;
-               // const from = indicatorReadState.last100PriceValue.length -1 - 120;
+                // const from = indicatorReadState.last100PriceValue.length -1 - 120;
+                let data = indicatorReadState.tickerValue.map(item => parseFloat(item.indexPrice));
                 const from = 0;
-
-                const to = indicatorReadState.last100PriceValue.length -1;
-                const data = downsampleArray(indicatorReadState.last100PriceValue.slice(from, to), 10);
+                const to = data.length - 1;
+                data = downsampleArray(data.slice(from, to), 200);
                 return calculateEMA(data, period);
             }
             const calcEMA26 = () => {
                 const period = 26;
                 // const from = indicatorReadState.last100PriceValue.length -1 - 120;
+                let data = indicatorReadState.tickerValue.map(item => parseFloat(item.indexPrice));
                 const from = 0;
-                const to = indicatorReadState.last100PriceValue.length -1;
-                const data = downsampleArray(indicatorReadState.last100PriceValue.slice(from, to), 10);
+                const to = data.length - 1;
+                data = downsampleArray(data.slice(from, to), 200);
                 return calculateEMA(data, period);
             }
 

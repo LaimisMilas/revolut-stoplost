@@ -95,7 +95,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if (result === 300) {
                 buyState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
-                sellState.getCurrentTradePare().price = indicatorReadState.lastPriceValue;
+                sellState.getCurrentTradePare().price = Number(indicatorReadState.lastPriceValue).toFixed(2);
                 result += 100;
                 sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
