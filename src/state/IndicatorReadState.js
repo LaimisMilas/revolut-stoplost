@@ -16,6 +16,7 @@ export class IndicatorReadState {
     readDataPeriod = 3000;
     maxLengthRSIValue = 200;
     maxLengthPriceValue = 1000;
+    tickerValue = [];
 
     constructor() {
         makeAutoObservable(this);

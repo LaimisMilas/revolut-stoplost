@@ -6,6 +6,7 @@ import SellClicker from "./component/jobs/SellClicker";
 import BuyPanel from "./component/ui/BuyPanel";
 import BuyClicker from "./component/jobs/BuyClicker";
 import ChartPanel from "./component/ui/ChartPanel";
+import DataReader from "./component/jobs/DataReader";
 
 const rootState = new RootStore();
 
@@ -25,6 +26,7 @@ const App = () => {
                 <ChartPanel/>
                 <SellClicker/>
                 <BuyClicker/>
+                <DataReader/>
             </div>
         </Provider>
     );

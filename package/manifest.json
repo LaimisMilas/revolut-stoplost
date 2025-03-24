@@ -14,12 +14,30 @@
     "16": "images/icon_16.png",
     "48": "images/icon_48.png"
   },
+  "permissions": [
+    "tabs",
+    "debugger",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*.revolut.com/*"
+  ],
   "content_scripts": [
     {
       "matches": ["https://exchange.revolut.com/trade/*"],
       "js": ["revolut-click.js"]
+    },
+    {
+      "matches": ["https://*.revolut.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
     }
   ],
+  "background": {
+    "service_worker": "./background.js"
+  },
   "web_accessible_resources": [
     {
       "resources": ["images/active/icon_48-on.png"],
