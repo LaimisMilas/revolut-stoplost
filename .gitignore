@@ -1,9 +1,8 @@
 .idea/
 node_modules/
-./package/click.js
-./package/click.js.LICENSE.txt
-./package.zip
-/package.zip
-
-/package/click.js
-revolut-click.js
+./package/revolut-click.js
+./package/revolut-click.js.LICENSE.txt
+package.zip
+package/revolut-click.js
+package.crx
+package.pem
