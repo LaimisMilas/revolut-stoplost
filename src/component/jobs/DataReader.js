@@ -4,9 +4,9 @@ import {useEffect} from "react";
 const DataReader = inject("indicatorReadState")(
     observer(({indicatorReadState}) => {
 
-        function interce(){
+        function addEventListener(){
             window.addEventListener("message", async (event) => {
-                if (event.source !== window) return; // Užtikrina, kad duomenys ateina iš mūsų kodo
+                if (event.source !== window) return;
                 if (event.data.type === "EXTENSION_DATA") {
                     await doAction(event.data.data);
                 }
@@ -14,7 +14,7 @@ const DataReader = inject("indicatorReadState")(
         }
 
         useEffect(() => {
-            interce();
+            addEventListener();
         }, []);
 
         const doAction = async (responseData) => {
