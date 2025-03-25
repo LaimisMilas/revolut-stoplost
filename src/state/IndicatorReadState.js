@@ -1,6 +1,7 @@
 import { makeAutoObservable} from "mobx";
 import {getRSIIndicator, readLastPrice} from "../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
+import {downsampleArray} from "../utils/dataFilter";
 
 export class IndicatorReadState {
 
@@ -76,4 +77,17 @@ export class IndicatorReadState {
         }
         return arr;
     }
+
+    //327 = 15min. 109 = 5min. norint matyti MACD reikia bent 26 po 109
+    // tai chunkSize = 109, 26 x 109 = 2834(min data set)
+    getLastTickers(size = 300, chunkSize = 10){
+        let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
+        const from = data.length - size;
+        const to = data.length - 1;
+        data = downsampleArray(data.slice(from, to), chunkSize);
+        return data;
+    }
+
+
+
 }

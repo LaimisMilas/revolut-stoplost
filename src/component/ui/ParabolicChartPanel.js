@@ -26,25 +26,26 @@ const ParabolicChartPanel =
 
             const calcEMA12 = () => {
                 const period = 12;
-                // const from = indicatorReadState.last100PriceValue.length -1 - 120;
-                let data = indicatorReadState.tickerValue.map(item => parseFloat(item.indexPrice));
-                const from = data.length - 300;
-                const to = data.length - 1;
-                data = downsampleArray(data.slice(from, to), 10);
+                let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 109);
                 return calculateEMA(data, period);
             }
+
             const calcEMA26 = () => {
                 const period = 26;
-                // const from = indicatorReadState.last100PriceValue.length -1 - 120;
-                let data = indicatorReadState.tickerValue.map(item => parseFloat(item.indexPrice));
-                const from = data.length - 300;
-                const to = data.length - 1;
-                data = downsampleArray(data.slice(from, to), 10);
+                let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 109);
                 return calculateEMA(data, period);
             }
 
             const [ema12Value, setEMA12] = useState([]);
             const [ema26Value, setEMA26] = useState([]);
+            const [signalLine, setSignalLine] = useState([]);
+
+            const calcSignalLine = () => {
+                if (ema12Value.length === 0 || ema26Value.length === 0) { return; }
+                const ema12Trimmed = ema12Value.slice(ema12Value.length - ema26Value.length);
+                const macdLine = ema12Trimmed.map((ema, i) => ema - ema26Value[i]);
+                return  calculateEMA(macdLine, 9);
+            }
 
             const doParabolicCorrelation = () => {
                 const n = 50;
@@ -65,7 +66,7 @@ const ParabolicChartPanel =
 
             const getChartData = () => {
                 return {
-                    labels: ema12Value.map((_, i) => i + 1),
+                    labels: ema26Value.map((_, i) => i + 1),
                         datasets: [
                     {
                         label: "Ema12",
@@ -75,15 +76,15 @@ const ParabolicChartPanel =
                         pointRadius: 2,
                         tension: 0.4
                     },
-                        {
-                            label: "Ema26",
-                            data: ema26Value,
-                            borderColor: "rgb(163,75,192)",
-                            backgroundColor: "rgba(132,75,192,0.2)",
-                            pointRadius: 2,
-                            tension: 0.4
-                        }
-                ],
+                    {
+                        label: "Ema26",
+                        data: ema26Value,
+                        borderColor: "rgb(163,75,192)",
+                        backgroundColor: "rgba(132,75,192,0.2)",
+                        pointRadius: 2,
+                        tension: 0.4
+                    }
+                ]
                 }
             };
 
@@ -100,6 +101,7 @@ const ParabolicChartPanel =
             useEffect(() => {
                 setEMA12(calcEMA12());
                 setEMA26(calcEMA26());
+                setSignalLine(calcSignalLine());
                 setChartData(getChartData());
 
           }, [indicatorReadState.last100RSICounter]);

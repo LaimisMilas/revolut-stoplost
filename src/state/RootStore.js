@@ -49,11 +49,11 @@ export class RootStore {
 
     loudLocalStorage() {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
-        this.sellState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.sellState.userCfg};
+     //   this.sellState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.sellState.userCfg};
         this.sellState.systemCfg = {...LocalStorageManager.getStorage("lc_systemCfg"), ...this.sellState.systemCfg};
         this.sellState.tradePares = {...LocalStorageManager.getStorage("lc_sell_tradePares"), ...this.sellState.tradePares};
         this.buyState.tradePares = {...LocalStorageManager.getStorage("lc_buy_tradePares"), ...this.buyState.tradePares};
-        this.buyState.userCfg = {...LocalStorageManager.getStorage("lc_buy_cfg"), ...this.buyState.userCfg};
+   //     this.buyState.userCfg = {...LocalStorageManager.getStorage("lc_buy_cfg"), ...this.buyState.userCfg};
         this.buyState.systemCfg = {...LocalStorageManager.getStorage("lc_buy_systemCfg"), ...this.buyState.systemCfg};
         this.sellPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_rowConfig"), ...this.sellPanelState.rowConfig};
         this.buyPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_buy_rowConfig"), ...this.buyPanelState.rowConfig};
@@ -73,11 +73,11 @@ export class RootStore {
 
     reverseLoudLocalStorage() {
         /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
-        this.sellState.userCfg = {...this.sellState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
+       // this.sellState.userCfg = {...this.sellState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
         this.sellState.systemCfg = {...this.sellState.systemCfg, ...LocalStorageManager.getStorage("lc_systemCfg")};
         this.sellState.tradePares = {...this.sellState.tradePares, ...LocalStorageManager.getStorage("lc_sell_tradePares")};
         this.buyState.tradePares = {...this.buyState.tradePares, ...LocalStorageManager.getStorage("lc_buy_tradePares")};
-        this.buyState.userCfg = {...this.buyState.userCfg, ...LocalStorageManager.getStorage("lc_buy_cfg")};
+       // this.buyState.userCfg = {...this.buyState.userCfg, ...LocalStorageManager.getStorage("lc_buy_cfg")};
         this.buyState.systemCfg = {...this.buyState.systemCfg, ...LocalStorageManager.getStorage("lc_buy_systemCfg")};
         this.sellPanelState.rowConfig = {...this.sellPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_rowConfig")};
         this.buyPanelState.rowConfig = {...this.buyPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_buy_rowConfig")};
@@ -92,11 +92,11 @@ export class RootStore {
     }
 
     saveStorage() {
-        LocalStorageManager.flash("lc_cfg", this.sellState.userCfg);
+       // LocalStorageManager.flash("lc_cfg", this.sellState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.sellState.systemCfg);
         LocalStorageManager.flash("lc_sell_tradePares", this.sellState.tradePares);
         LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
-        LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
+     //   LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.sellPanelState.rowConfig);
         LocalStorageManager.flash("lc_buy_rowConfig", this.buyPanelState.rowConfig);
@@ -112,11 +112,11 @@ export class RootStore {
       }
 
     initializeLocalStorage() {
-        LocalStorageManager.flash("lc_cfg", this.sellState.userCfg);
+   //     LocalStorageManager.flash("lc_cfg", this.sellState.userCfg);
         LocalStorageManager.flash("lc_systemCfg", this.sellState.systemCfg);
         LocalStorageManager.flash("lc_sell_tradePares", this.sellState.tradePares);
         LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
-        LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
+    //    LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
         LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
         LocalStorageManager.flash("lc_rowConfig", this.sellPanelState.rowConfig);
         LocalStorageManager.flash("lc_buy_rowConfig", this.buyPanelState.rowConfig);
