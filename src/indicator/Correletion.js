@@ -32,5 +32,5 @@ export const doParabolicCorrelation = (rsiValues, caller) => {
 
     console.log(`${caller} Koreliacija su parabole:`, correlation.toFixed(3));
 
-    return correlation;
+    return Number(correlation).toFixed(2);
 };

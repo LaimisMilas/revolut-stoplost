@@ -22,30 +22,25 @@ const ParabolicChartPanel =
     inject("indicatorReadState")(
         observer(({indicatorReadState}) => {
 
-            const arrayIndex = 50;
-
-            const calcEMA12 = () => {
-                const period = 12;
-                let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 109);
-                return calculateEMA(data, period);
+            const calcEma = () => {
+                let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 218);
+                setEMA12(calculateEMA(data, 12));
+                setEMA26(calculateEMA(data, 26));
             }
 
-            const calcEMA26 = () => {
-                const period = 26;
+            const calcSignalLine = () => {
                 let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 109);
-                return calculateEMA(data, period);
+                const ema12 = calculateEMA(data, 12);
+                const ema26 = calculateEMA(data, 26);
+                if (ema12.length === 0 || ema26.length === 0) { return; }
+                const ema12Trimmed = ema12.slice(ema12.length - ema26.length);
+                const macdLine = ema12Trimmed.map((ema, i) => ema - ema26[i]);
+                return  calculateEMA(macdLine, 9);
             }
 
             const [ema12Value, setEMA12] = useState([]);
             const [ema26Value, setEMA26] = useState([]);
             const [signalLine, setSignalLine] = useState([]);
-
-            const calcSignalLine = () => {
-                if (ema12Value.length === 0 || ema26Value.length === 0) { return; }
-                const ema12Trimmed = ema12Value.slice(ema12Value.length - ema26Value.length);
-                const macdLine = ema12Trimmed.map((ema, i) => ema - ema26Value[i]);
-                return  calculateEMA(macdLine, 9);
-            }
 
             const doParabolicCorrelation = () => {
                 const n = 50;
@@ -88,7 +83,25 @@ const ParabolicChartPanel =
                 }
             };
 
+            const getChartData2 = () => {
+                return {
+                    labels: signalLine.map((_, i) => i + 1),
+                    datasets: [
+                        {
+                            label: "Signal",
+                            data: signalLine,
+                            borderColor: "rgba(75,192,192,1)",
+                            backgroundColor: "rgba(75,192,192,0.2)",
+                            pointRadius: 2,
+                            tension: 0.4
+                        }
+                    ]
+                }
+            };
+
             const [chartData, setChartData] = useState(getChartData());
+
+            const [chartData2, setChartData2] = useState(getChartData2());
 
             const [options, setOptions] = useState({
                 responsive: true,
@@ -99,21 +112,30 @@ const ParabolicChartPanel =
             });
 
             useEffect(() => {
-                setEMA12(calcEMA12());
-                setEMA26(calcEMA26());
-                setSignalLine(calcSignalLine());
+                calcEma();
                 setChartData(getChartData());
+                setSignalLine(calcSignalLine());
+                setChartData2(getChartData2());
 
           }, [indicatorReadState.last100RSICounter]);
 
             return (
                 <Draggable>
-                <div className="console-box" id="parabolic-chart-panel">
-                    <div className="checkbox-row">
-                        <Line data={chartData} options={options}/>
+                    <div className="console-box" id="parabolic-chart-panel">
+                        <div className="checkbox-row">
+                            <Line data={chartData} options={options}/>
+                        </div>
+                        <div className="checkbox-row">
+                            <Line data={chartData2} options={{
+                                responsive: true,
+                                scales: {
+                                    x: {title: {display: true, text: "Masyvo indeksas"}},
+                                    y: {title: {display: true, text: "RSI"}},
+                                },
+                            }}/>
+                        </div>
                     </div>
-                </div>
-                    </Draggable>
+                </Draggable>
             );
         }));
 

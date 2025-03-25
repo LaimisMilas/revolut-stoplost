@@ -1,12 +1,14 @@
 import React from 'react';
 import {Provider} from "mobx-react";
-import SellPanel from "./component/ui/SellPanel";
+
 import {RootStore} from "./state/RootStore";
 import SellClicker from "./component/jobs/SellClicker";
-import BuyPanel from "./component/ui/BuyPanel";
+
 import BuyClicker from "./component/jobs/BuyClicker";
 import DataReader from "./component/jobs/DataReader";
 import ParabolicChartPanel from "./component/ui/ParabolicChartPanel";
+import SellPanel from "./component/ui/SellPanel";
+import BuyPanel from "./component/ui/BuyPanel";
 
 const rootState = new RootStore();
 

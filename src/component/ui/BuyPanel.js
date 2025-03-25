@@ -3,10 +3,12 @@ import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import Draggable from "react-draggable";
 import {convertToNumber} from "../../utils/RevolutUtils";
+import {doParabolicCorrelation} from "../../indicator/Correletion";
+import {cleanData} from "../../utils/dataFilter";
 
 const BuyPanel =
-    inject("buyState", "buyPanelState")(
-        observer(({buyState, buyPanelState}) => {
+    inject("buyState", "buyPanelState", "indicatorReadState")(
+        observer(({buyState, buyPanelState, indicatorReadState}) => {
 
             const parsePareFromURL = () => {
                 let tmp = window.location.href.split("/trade/");
@@ -17,14 +19,23 @@ const BuyPanel =
                 className: "apply-button",
             });
 
+            const doRSIParabolicCorrelation = () => {
+                const arrayIndex = 0;
+                let last100RSIValue = indicatorReadState.last100RSIValue;
+                last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
+                return doParabolicCorrelation(cleanData(last100RSIValue), "BuyPanel RSI correlation");
+            }
+
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(buyPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(buyState.getTradePareDataByKey(parsePareFromURL()));
+            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation());
 
             useEffect(() => {
                 setStopAllAction(buyPanelState.getIsActionsStop());
                 setTradePare(buyState.getTradePareDataByKey(parsePareFromURL()))
-            }, [buyState.systemCfg.cfg.linkedInLike.root.run]);
+               setCurrentCorrelation(doRSIParabolicCorrelation());
+            }, [buyState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const handleOnChangeEvent = (event, key) => {
                 if(key === "aspectCorrelation"){
@@ -112,14 +123,16 @@ const BuyPanel =
                                     />
                                 </div>
                                 <div className="checkbox-row">
-                                        <label>Aspect cor.</label>
-                                        <input
-                                            type="text"
-                                            value={buyState.aspectCorrelation}
-                                            onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
-                                        />
+                                    <label>Aspect cor.</label>
+                                    <input
+                                        className="halfInput"
+                                        type="text"
+                                        value={buyState.aspectCorrelation}
+                                        onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
+                                    />
+                                    <span>{currentCorrelation}</span>
                                 </div>
-                                        <button className={applyButtonStyle.className}
+                                <button className={applyButtonStyle.className}
                                                 onClick={handleApplyButtonClick}>Apply
                                         </button>
                                         <button

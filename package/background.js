@@ -33,7 +33,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                             if(response.body){
                                 let data = JSON.parse(response.body);
                                 const searchPair = "SOL/USD";
-                                const result = data.find(item => item.pair.includes(searchPair));
+                                const result = data.find(item => item.pair === searchPair);
                                 result.time = getNowDate();
                                 chrome.tabs.sendMessage(source.tabId, { data: result });
                             }

@@ -3,6 +3,8 @@ import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {convertToNumber} from "../../utils/RevolutUtils";
 import Draggable from "react-draggable";
+import {doParabolicCorrelation} from "../../indicator/Correletion";
+import {cleanData} from "../../utils/dataFilter";
 
 const SellPanel =
     inject("sellState", "sellPanelState","indicatorReadState")(
@@ -18,12 +20,20 @@ const SellPanel =
                 return value.toPrecision(4);
             };
 
+            const doRSIParabolicCorrelation = () => {
+                const arrayIndex = 0;
+                let last100RSIValue = indicatorReadState.last100RSIValue;
+                last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
+                return doParabolicCorrelation(cleanData(last100RSIValue), "BuyPanel RSI correlation");
+            }
+
             const [applyButtonStyle, setApplyButtonStyle] = useState({
                 className: "apply-button",
             });
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(sellPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(sellState.getTradePareDataByKey(parsePareFromURL()));
+            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation());
 
             useEffect(() => {
                 setStopAllAction(sellPanelState.getIsActionsStop());
@@ -31,6 +41,7 @@ const SellPanel =
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setCurrentProf(calcCurrentProf());
+                setCurrentCorrelation(doRSIParabolicCorrelation());
             }, [sellState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const calcTakeProfPrice = () => {
@@ -145,10 +156,12 @@ const SellPanel =
                                 <div className="checkbox-row">
                                     <label>Aspect cor.</label>
                                     <input
+                                        className="halfInput"
                                         type="text"
                                         value={sellState.aspectCorrelation}
                                         onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
                                     />
+                                    <span>{currentCorrelation}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label
