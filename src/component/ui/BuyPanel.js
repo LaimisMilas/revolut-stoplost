@@ -80,6 +80,11 @@ const BuyPanel =
                             <div hidden={checkBoxContainerState}>
                                 <div className="checkbox-row">
                                     <label
+                                        htmlFor={buyPanelState.rowConfig.exchPare.id}>{buyPanelState.rowConfig.exchPare.label}</label>
+                                    <span>{tradePare.name}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
                                         htmlFor={buyPanelState.rowConfig.targetPrice.id}>{buyPanelState.rowConfig.targetPrice.label}</label>
                                     <input
                                         type="text"
@@ -87,17 +92,6 @@ const BuyPanel =
                                         name={buyPanelState.rowConfig.targetPrice.name}
                                         value={tradePare.targetPrice}
                                         onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.targetPrice.key)}
-                                    />
-                                </div>
-                                <div className="checkbox-row">
-                                    <label
-                                        htmlFor={buyPanelState.rowConfig.exchPare.id}>{buyPanelState.rowConfig.exchPare.label}</label>
-                                    <input
-                                        type="text"
-                                        id={buyPanelState.rowConfig.exchPare.id}
-                                        name={buyPanelState.rowConfig.exchPare.name}
-                                        value={tradePare.name}
-                                        onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.exchPare.key)}
                                     />
                                 </div>
                                 <div className="checkbox-row">
@@ -112,6 +106,16 @@ const BuyPanel =
                                     />
                                 </div>
                                 <div className="checkbox-row">
+                                    <label>Aspect cor.</label>
+                                    <input
+                                        className="halfInput"
+                                        type="text"
+                                        value={buyState.aspectCorrelation}
+                                        onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
+                                    />
+                                    <span>{currentCorrelation}</span>
+                                </div>
+                                <div className="checkbox-row">
                                     <label
                                         htmlFor={buyPanelState.rowConfig.quantity.id}>{buyPanelState.rowConfig.quantity.label}</label>
                                     <input
@@ -122,31 +126,21 @@ const BuyPanel =
                                         onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.quantity.key)}
                                     />
                                 </div>
-                                <div className="checkbox-row">
-                                    <label>Aspect cor.</label>
-                                    <input
-                                        className="halfInput"
-                                        type="text"
-                                        value={buyState.aspectCorrelation}
-                                        onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
-                                    />
-                                    <span>{currentCorrelation}</span>
-                                </div>
                                 <button className={applyButtonStyle.className}
-                                                onClick={handleApplyButtonClick}>Apply
-                                        </button>
-                                        <button
-                                            className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
-                                            onClick={handleStopButtonClick}>
-                                            {
-                                                stopAllAction === false ? "Stop" : "Start"
-                                            }
-                                        </button>
-                                    </div>
-                                </div>
+                                        onClick={handleApplyButtonClick}>Apply
+                                </button>
+                                <button
+                                    className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
+                                    onClick={handleStopButtonClick}>
+                                    {
+                                        stopAllAction === false ? "Stop" : "Start"
+                                    }
+                                </button>
                             </div>
+                        </div>
+                    </div>
                 </Draggable>
-        );
+            );
         }));
 
-        export default BuyPanel;
+export default BuyPanel;

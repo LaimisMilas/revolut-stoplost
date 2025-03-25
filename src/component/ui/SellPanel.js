@@ -102,6 +102,10 @@ const SellPanel =
                             </button>
                             <div hidden={checkBoxContainerState}>
                                 <div className="checkbox-row">
+                                    <label>{sellPanelState.rowConfig.exchPare.label}</label>
+                                    <span>{tradePare.name}</span>
+                                </div>
+                                <div className="checkbox-row">
                                     <label
                                         htmlFor={sellPanelState.rowConfig.price.id}>{sellPanelState.rowConfig.price.label}</label>
                                     <input
@@ -110,17 +114,6 @@ const SellPanel =
                                         name={sellPanelState.rowConfig.price.name}
                                         value={tradePare.price}
                                         onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.price.key)}
-                                    />
-                                </div>
-                                <div className="checkbox-row">
-                                    <label
-                                        htmlFor={sellPanelState.rowConfig.exchPare.id}>{sellPanelState.rowConfig.exchPare.label}</label>
-                                    <input
-                                        type="text"
-                                        id={sellPanelState.rowConfig.exchPare.id}
-                                        name={sellPanelState.rowConfig.exchPare.name}
-                                        value={tradePare.name}
-                                        onChange={(event) => handleOnChangeEvent(event, sellPanelState.rowConfig.exchPare.key)}
                                     />
                                 </div>
                                 <div className="checkbox-row">
