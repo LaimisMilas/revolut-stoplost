@@ -16,20 +16,32 @@ import {
 // Registruojame būtinas Chart.js komponentes
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, BarElement);
 import Draggable from "react-draggable";
-import {calculateEMA} from "../../indicator/MACD";
 
 const ParabolicChartPanel =
     inject("indicatorReadState")(
         observer(({indicatorReadState}) => {
 
+            const calculateEMA = (data, period, zoom = 1) => {
+                const k = 2 / (period + 1);
+                const dataByPeriod = data.slice(0, period);
+                const valueSum = dataByPeriod.reduce((a, b) => a + b);
+                let emaPrev = valueSum / period;  // Čia pirmas SMA, kuris tampa pirmu EMA tašku
+                const ema = [emaPrev/zoom];
+                for (let i = period; i < data.length; i++) {
+                    emaPrev = data[i] * k + emaPrev * (1 - k);  // Skaičiuojama EMA
+                    ema.push(emaPrev/zoom);
+                }
+                return ema;
+            }
+
             const calcEma = () => {
                 let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 218);
-                setEMA12(calculateEMA(data, 12));
-                setEMA26(calculateEMA(data, 26));
+                setEMA12(calculateEMA(data, 12,1));
+                setEMA26(calculateEMA(data, 26,1));
             }
 
             const calcSignalLine = () => {
-                let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 109);
+                let data = indicatorReadState.getLastTickers(indicatorReadState.tickerValue.length, 218);
                 const ema12 = calculateEMA(data, 12);
                 const ema26 = calculateEMA(data, 26);
                 if (ema12.length === 0 || ema26.length === 0) {
@@ -37,7 +49,7 @@ const ParabolicChartPanel =
                 }
                 const ema12Trimmed = ema12.slice(ema12.length - ema26.length);
                 const macdLine = ema12Trimmed.map((ema, i) => ema - ema26[i]);
-                return calculateEMA(macdLine, 9);
+                return calculateEMA(macdLine, 1);
             }
 
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
