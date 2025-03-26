@@ -1,6 +1,5 @@
 
-function getNowDate(){
-    let date = new Date();
+function getNowDate(date){
     let fullYear = date.getFullYear();
     let month = date.getMonth() < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
     let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
@@ -31,13 +30,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                             //console.log("🔎 Atsakymas:", response.body);
                             // 🔥 Siunčiame duomenis į content script
                             if(response.body){
+                                let date = new Date();
                                 let data = JSON.parse(response.body);
                                 const searchPair = "SOL/USD";
                                 const result = data.find(item => item.pair === searchPair);
-                                result.time = getNowDate();
+                                result.time = getNowDate(date);
+                                result.seconds = date.getSeconds();
                                 chrome.tabs.sendMessage(source.tabId, { data: result });
                             }
-
                         }
                     }
                 );
