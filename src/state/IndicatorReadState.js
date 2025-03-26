@@ -80,7 +80,7 @@ export class IndicatorReadState {
 
     //327 = 15min. 109 = 5min. norint matyti MACD reikia bent 26 po 109
     // tai chunkSize = 109, 26 x 109 = 2834(mini data set)
-    getLastTickers(size = 300, chunkSize = 10){
+    getLastTickers(size = 300, chunkSize = 1){
         let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
         const from = data.length - size;
         const to = data.length - 1;

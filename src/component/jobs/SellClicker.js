@@ -10,6 +10,7 @@ import {
 } from "../../utils/RevolutUtils";
 import {cleanData} from "../../utils/dataFilter";
 import {doParabolicCorrelation} from "../../indicator/Correletion";
+import {calculateRSI} from "../../indicator/RSI14";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -43,7 +44,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 await sellOperation(tradePare, null , "stopLost");
             } else {
                 if(isTakeProfReached(tradePare)){
-                    const correlation = await doRSIParabolicCorrelation();
+                    const correlation = await doRSIParabolicCorrelation2();
                     if(correlation < sellState.aspectCorrelation){
                         await sellOperation(tradePare, correlation, "takeProf");
                     } else {
@@ -137,6 +138,11 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
             //last100RSIValue = simpleMovingAverage(last100RSIValue,indicatorReadState.period);
             return doParabolicCorrelation(cleanData(last100RSIValue), "SELL RSI + parabolic");
+        }
+
+        const doRSIParabolicCorrelation2 = async () => {
+            let data = indicatorReadState.getLastTickers(600 + 14, 30);
+            return doParabolicCorrelation(calculateRSI(data), "Buy RSI + parabolic");
         }
 
     }));

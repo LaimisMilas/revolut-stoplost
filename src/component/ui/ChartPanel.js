@@ -12,7 +12,7 @@ import {
     Tooltip,
     Legend
 } from "chart.js";
-import {cleanData} from "../../utils/dataFilter";
+import {cleanData, downsampleArray} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
 import {doParabolicCorrelation} from "../../indicator/Correletion";
 import {calculateRSI} from "../../indicator/RSI14";
@@ -26,17 +26,25 @@ const ChartPanel =
 
             const getRSIData = () => {
                 let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
-                return cleanData(data);
+                return downsampleArray(data, 30);
+            }
+            const getRSIData2 = () => {
+                // let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
+                let data = indicatorReadState.getLastTickers(600 + 14, 30);
+                return calculateRSI(data);
             }
 
-            const [rsiData, setRsiData] = useState(getRSIData);
-            const getCartData = () => {
+           // const [rsiData, setRsiData] = useState(getRSIData);
+            const [rsiData2, setRsiData2] = useState(getRSIData2);
+
+
+            const getCartData = (data) => {
                 return {
-                    labels: rsiData.map((_, i) => i + 1),
+                    labels: data.map((_, i) => i + 1),
                         datasets: [
                     {
                         label: "RSI kreivė",
-                        data: rsiData,
+                        data: data,
                         borderColor: "rgba(75,192,192,1)",
                         backgroundColor: "rgba(75,192,192,0.2)",
                         pointRadius: 3,
@@ -45,30 +53,35 @@ const ChartPanel =
                 ],
                 }
             };
-            const [chartData, setChartData] = useState(getCartData());
-            const [correlationIndex, setCorrelationIndex] = useState(doParabolicCorrelation(rsiData, "Chart RSI"));
+            //const [chartData, setChartData] = useState(getCartData(rsiData));
+            const [chartData2, setChartData2] = useState(getCartData(rsiData2));
+           // const [correlationIndex, setCorrelationIndex] = useState(doParabolicCorrelation(rsiData, "Chart RSI"));
+            const [correlation2Index, setCorrelation2Index] = useState(doParabolicCorrelation(rsiData2, "Chart RSI"));
 
             useEffect(() => {
-                setRsiData(getRSIData());
-                setChartData(getCartData());
-                setCorrelationIndex(doParabolicCorrelation(rsiData, "Chart RSI"));
+               // setRsiData(getRSIData());
+                setRsiData2(getRSIData2());
+                //setChartData(getCartData(rsiData));
+                setChartData2(getCartData(rsiData2));
+                //setCorrelationIndex(doParabolicCorrelation(rsiData, "Chart RSI"));
+                setCorrelation2Index(doParabolicCorrelation(rsiData2, "Chart RSI"));
             }, [indicatorReadState.last100RSICounter]);
 
             return (
                 <Draggable>
                     <div className="console-box" id="chart-panel">
                         <div className="checkbox-row">
-                            <Line data={chartData} options={{
+                            <Line data={chartData2} options={{
                                 responsive: true,
                                 scales: {
                                     x: {title: {display: true, text: "Masyvo indeksas"}},
-                                    y: {title: {display: true, text: "RSI"}},
+                                    y: {title: {display: true, text: "RSI New"}},
                                 },
                             }}/>
                         </div>
                         <div className="checkbox-row">
-                            <label>Correlation index</label>
-                            <span>{correlationIndex}</span>
+                            <label>New Correlation index</label>
+                            <span>{correlation2Index}</span>
                         </div>
                     </div>
                 </Draggable>

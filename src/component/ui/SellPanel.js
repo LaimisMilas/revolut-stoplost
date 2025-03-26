@@ -5,6 +5,7 @@ import {convertToNumber} from "../../utils/RevolutUtils";
 import Draggable from "react-draggable";
 import {doParabolicCorrelation} from "../../indicator/Correletion";
 import {cleanData} from "../../utils/dataFilter";
+import {calculateRSI} from "../../indicator/RSI14";
 
 const SellPanel =
     inject("sellState", "sellPanelState","indicatorReadState")(
@@ -24,7 +25,12 @@ const SellPanel =
                 const arrayIndex = 0;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
                 last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
-                return doParabolicCorrelation(cleanData(last100RSIValue), "BuyPanel RSI correlation");
+                return doParabolicCorrelation(cleanData(last100RSIValue), "SellPanel RSI correlation");
+            }
+
+            const doRSIParabolicCorrelation2 = () => {
+                let data = indicatorReadState.getLastTickers(600 + 14, 30);
+                return doParabolicCorrelation(calculateRSI(data), "SellPanel RSI correlation");
             }
 
             const [applyButtonStyle, setApplyButtonStyle] = useState({
@@ -33,7 +39,7 @@ const SellPanel =
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(sellPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(sellState.getTradePareDataByKey(parsePareFromURL()));
-            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation());
+            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation2());
 
             useEffect(() => {
                 setStopAllAction(sellPanelState.getIsActionsStop());
@@ -41,7 +47,7 @@ const SellPanel =
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setCurrentProf(calcCurrentProf());
-                setCurrentCorrelation(doRSIParabolicCorrelation());
+                setCurrentCorrelation(doRSIParabolicCorrelation2());
             }, [sellState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const calcTakeProfPrice = () => {

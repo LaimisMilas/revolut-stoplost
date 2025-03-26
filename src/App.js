@@ -6,7 +6,7 @@ import SellClicker from "./component/jobs/SellClicker";
 
 import BuyClicker from "./component/jobs/BuyClicker";
 import DataReader from "./component/jobs/DataReader";
-import ParabolicChartPanel from "./component/ui/ParabolicChartPanel";
+
 import SellPanel from "./component/ui/SellPanel";
 import BuyPanel from "./component/ui/BuyPanel";
 import ChartPanel from "./component/ui/ChartPanel";

@@ -8,7 +8,7 @@ import {
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {isRSIDown} from "../../indicator/RSI14";
+import {calculateRSI, isRSIDown} from "../../indicator/RSI14";
 import {cleanData} from "../../utils/dataFilter";
 import {doParabolicCorrelation} from "../../indicator/Correletion";
 
@@ -42,7 +42,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             }
             //const isBuy = await isBuyReached(tradePare, indicatorReadState.lastPriceValue);
             if (await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
-                const correlation = await doRSIParabolicCorrelation();
+                const correlation = await doRSIParabolicCorrelation2();
                 if(correlation > buyState.aspectCorrelation){
                     await buyOperation(tradePare, correlation);
                 } else {
@@ -112,6 +112,10 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             let last100RSIValue = indicatorReadState.last100RSIValue;
             last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
             return doParabolicCorrelation(cleanData(last100RSIValue), "Buy RSI + parabolic");
+        }
+        const doRSIParabolicCorrelation2 = async () => {
+            let data = indicatorReadState.getLastTickers(600 + 14, 30);
+            return doParabolicCorrelation(calculateRSI(data), "Buy RSI + parabolic");
         }
 
     }));

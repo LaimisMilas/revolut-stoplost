@@ -5,6 +5,7 @@ import Draggable from "react-draggable";
 import {convertToNumber} from "../../utils/RevolutUtils";
 import {doParabolicCorrelation} from "../../indicator/Correletion";
 import {cleanData} from "../../utils/dataFilter";
+import {calculateRSI} from "../../indicator/RSI14";
 
 const BuyPanel =
     inject("buyState", "buyPanelState", "indicatorReadState")(
@@ -26,16 +27,21 @@ const BuyPanel =
                 return doParabolicCorrelation(cleanData(last100RSIValue), "BuyPanel RSI correlation");
             }
 
+            const doRSIParabolicCorrelation2 = () => {
+                let data = indicatorReadState.getLastTickers(600 + 14, 30);
+                return doParabolicCorrelation(calculateRSI(data), "BuyPanel RSI correlation");
+            }
+
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(buyPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(buyState.getTradePareDataByKey(parsePareFromURL()));
-            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation());
+            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation2());
             const [hiddenField, setHiddenField] = useState(true);
 
             useEffect(() => {
                 setStopAllAction(buyPanelState.getIsActionsStop());
                 setTradePare(buyState.getTradePareDataByKey(parsePareFromURL()))
-               setCurrentCorrelation(doRSIParabolicCorrelation());
+               setCurrentCorrelation(doRSIParabolicCorrelation2());
             }, [buyState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const handleOnChangeEvent = (event, key) => {
