@@ -15,6 +15,7 @@ import {
 import {cleanData} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
 import {doParabolicCorrelation} from "../../indicator/Correletion";
+import {calculateRSI} from "../../indicator/RSI14";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const ChartPanel =
@@ -45,13 +46,6 @@ const ChartPanel =
                 }
             };
             const [chartData, setChartData] = useState(getCartData());
-            const [options, setOptions] = useState({
-                responsive: true,
-                scales: {
-                    x: {title: {display: true, text: "Masyvo indeksas"}},
-                    y: {title: {display: true, text: "RSI"}},
-                },
-            });
             const [correlationIndex, setCorrelationIndex] = useState(doParabolicCorrelation(rsiData, "Chart RSI"));
 
             useEffect(() => {
@@ -64,7 +58,13 @@ const ChartPanel =
                 <Draggable>
                     <div className="console-box" id="chart-panel">
                         <div className="checkbox-row">
-                            <Line data={chartData} options={options}/>
+                            <Line data={chartData} options={{
+                                responsive: true,
+                                scales: {
+                                    x: {title: {display: true, text: "Masyvo indeksas"}},
+                                    y: {title: {display: true, text: "RSI"}},
+                                },
+                            }}/>
                         </div>
                         <div className="checkbox-row">
                             <label>Correlation index</label>

@@ -40,10 +40,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
-
-            if (await isBuyReached(tradePare, indicatorReadState.lastPriceValue)
-                && await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
-
+            //const isBuy = await isBuyReached(tradePare, indicatorReadState.lastPriceValue);
+            if (await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
                 const correlation = await doRSIParabolicCorrelation();
                 if(correlation > buyState.aspectCorrelation){
                     await buyOperation(tradePare, correlation);

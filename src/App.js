@@ -9,6 +9,7 @@ import DataReader from "./component/jobs/DataReader";
 import ParabolicChartPanel from "./component/ui/ParabolicChartPanel";
 import SellPanel from "./component/ui/SellPanel";
 import BuyPanel from "./component/ui/BuyPanel";
+import ChartPanel from "./component/ui/ChartPanel";
 
 const rootState = new RootStore();
 
@@ -28,7 +29,7 @@ const App = () => {
                 <SellClicker/>
                 <BuyClicker/>
                 <DataReader/>
-                <ParabolicChartPanel/>
+                <ChartPanel/>
             </div>
         </Provider>
     );

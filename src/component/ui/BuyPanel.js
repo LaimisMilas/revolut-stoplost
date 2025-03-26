@@ -30,6 +30,7 @@ const BuyPanel =
             const [stopAllAction, setStopAllAction] = useState(buyPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(buyState.getTradePareDataByKey(parsePareFromURL()));
             const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation());
+            const [hiddenField, setHiddenField] = useState(true);
 
             useEffect(() => {
                 setStopAllAction(buyPanelState.getIsActionsStop());
@@ -82,17 +83,6 @@ const BuyPanel =
                                     <label
                                         htmlFor={buyPanelState.rowConfig.exchPare.id}>{buyPanelState.rowConfig.exchPare.label}</label>
                                     <span>{tradePare.name}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label
-                                        htmlFor={buyPanelState.rowConfig.targetPrice.id}>{buyPanelState.rowConfig.targetPrice.label}</label>
-                                    <input
-                                        type="text"
-                                        id={buyPanelState.rowConfig.targetPrice.id}
-                                        name={buyPanelState.rowConfig.targetPrice.name}
-                                        value={tradePare.targetPrice}
-                                        onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.targetPrice.key)}
-                                    />
                                 </div>
                                 <div className="checkbox-row">
                                     <label
