@@ -41,6 +41,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 return;
             }
             //const isBuy = await isBuyReached(tradePare, indicatorReadState.lastPriceValue);
+
             if (await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
                 const correlation = await doRSIParabolicCorrelation2();
                 if(correlation > buyState.aspectCorrelation){
@@ -75,8 +76,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 }
             }
             if (result === 200) {
-                //result += await clickBuy(tradePare.key);
-                result += 100;
+                result += await clickBuy(tradePare.key);
+                //result += 100;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
                 const msg = "BuyClicker clickBuy "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue

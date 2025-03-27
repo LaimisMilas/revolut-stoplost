@@ -78,8 +78,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 }
             }
             if(result === 200){
-                //result += await clickSell(tradePare.key);
-                result += 100;
+                result += await clickSell(tradePare.key);
+                //result += 100;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
                 const msg = "SellClicker clickSell "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
@@ -102,7 +102,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     buyState.getCurrentTradePare().rsi = Number(newRSIValue).toFixed(0);
                     result += 100;
                 } else if(caller === "takeProf"){
-                    buyState.getCurrentTradePare().targetPrice = indicatorReadState.lastPriceValue;
+                    buyState.getCurrentTradePare().targetPrice = Number(indicatorReadState.lastPriceValue);
                     buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 }
