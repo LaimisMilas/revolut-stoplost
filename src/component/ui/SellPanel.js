@@ -29,8 +29,8 @@ const SellPanel =
             }
 
             const doRSIParabolicCorrelation2 = () => {
-                let data = indicatorReadState.getLastTickers(600 + 14, 30);
-                return doParabolicCorrelation(calculateRSI(data), "SellPanel RSI correlation");
+                let data = indicatorReadState.last100RSIValue;
+                return doParabolicCorrelation(data, "SellPanel RSI + parabolic");
             }
 
             const [applyButtonStyle, setApplyButtonStyle] = useState({

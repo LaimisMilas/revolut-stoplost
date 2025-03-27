@@ -75,8 +75,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 }
             }
             if (result === 200) {
-                result += await clickBuy(tradePare.key);
-                //result += 100;
+                //result += await clickBuy(tradePare.key);
+                result += 100;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
                 const msg = "BuyClicker clickBuy "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
@@ -113,9 +113,10 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
             return doParabolicCorrelation(cleanData(last100RSIValue), "Buy RSI + parabolic");
         }
+
         const doRSIParabolicCorrelation2 = async () => {
-            let data = indicatorReadState.getLastTickers(600 + 14, 30);
-            return doParabolicCorrelation(calculateRSI(data), "Buy RSI + parabolic");
+            let data = indicatorReadState.last100RSIValue;
+            return doParabolicCorrelation(data, "Buy RSI + parabolic");
         }
 
     }));

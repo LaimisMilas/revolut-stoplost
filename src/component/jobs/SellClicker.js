@@ -78,8 +78,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 }
             }
             if(result === 200){
-                result += await clickSell(tradePare.key);
-                //result += 100;
+                //result += await clickSell(tradePare.key);
+                result += 100;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
                 const msg = "SellClicker clickSell "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
@@ -96,9 +96,9 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 sellState.systemCfg.cfg.linkedInLike.root.run = false;
                 result += 100;
                 if(caller === "stopLost"){
-                    const newTargetPrice = indicatorReadState.lastPriceValue + ((indicatorReadState.lastPriceValue * 1)/100);
+                    const newTargetPrice = Number(indicatorReadState.lastPriceValue) + ((Number(indicatorReadState.lastPriceValue) * 1)/100);
                     buyState.getCurrentTradePare().targetPrice = Number(newTargetPrice).toFixed(2);
-                    const newRSIValue = indicatorReadState.lastRSIValue + ((indicatorReadState.lastRSIValue * 1)/100);
+                    const newRSIValue = Number(indicatorReadState.lastRSIValue) + ((Number(indicatorReadState.lastRSIValue) * 2)/100);
                     buyState.getCurrentTradePare().rsi = Number(newRSIValue).toFixed(0);
                     result += 100;
                 } else if(caller === "takeProf"){
@@ -141,8 +141,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         }
 
         const doRSIParabolicCorrelation2 = async () => {
-            let data = indicatorReadState.getLastTickers(600 + 14, 30);
-            return doParabolicCorrelation(calculateRSI(data), "Buy RSI + parabolic");
+            let data = indicatorReadState.last100RSIValue;
+            return doParabolicCorrelation(data, "Buy RSI + parabolic");
         }
 
     }));

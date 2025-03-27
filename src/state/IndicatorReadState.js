@@ -2,6 +2,7 @@ import { makeAutoObservable} from "mobx";
 import {getRSIIndicator, readLastPrice} from "../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
 import {downsampleArray} from "../utils/dataFilter";
+import {calculateRSI} from "../indicator/RSI14";
 
 export class IndicatorReadState {
 
@@ -18,6 +19,7 @@ export class IndicatorReadState {
     maxLengthRSIValue = 200;
     maxLengthPriceValue = 1000;
     tickerValue = [];
+    rsiTickerValue = [];
 
     constructor() {
         makeAutoObservable(this);
@@ -25,7 +27,7 @@ export class IndicatorReadState {
 
     setup(rootStore) {
         this.rootStore = rootStore;
-        this.setIntervalRsiRaed();
+        //this.setIntervalRsiRaed();
     }
 
     setIntervalRsiRaed(){
@@ -34,9 +36,9 @@ export class IndicatorReadState {
     }
 
     async updateValues() {
-        await this.updateLastPrice();
-        await this.updateLastRSI();
-        await this.updateLastRSI1K();
+        //await this.updateLastPrice();
+        //await this.updateLastRSI();
+        //await this.updateLastRSI1K();
     }
 
     async updateLastRSI() {
@@ -85,9 +87,16 @@ export class IndicatorReadState {
         const from = data.length - size;
         const to = data.length - 1;
         data = downsampleArray(data.slice(from, to), chunkSize);
+        this.lastPriceValue = data[data.length -1];
         return data;
     }
 
-
+    calculateRSITicker = (size, chunkSize) => {
+        let data = this.getLastTickers(size + 14, chunkSize);
+        this.last100RSIValue = calculateRSI(data);
+        if(this.last100RSIValue.length > 0){
+            this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
+        }
+    }
 
 }

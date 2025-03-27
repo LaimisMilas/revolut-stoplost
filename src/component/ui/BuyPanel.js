@@ -28,8 +28,8 @@ const BuyPanel =
             }
 
             const doRSIParabolicCorrelation2 = () => {
-                let data = indicatorReadState.getLastTickers(600 + 14, 30);
-                return doParabolicCorrelation(calculateRSI(data), "BuyPanel RSI correlation");
+                let data = indicatorReadState.last100RSIValue;
+                return doParabolicCorrelation(data, "BuyPanel RSI + parabolic");
             }
 
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);

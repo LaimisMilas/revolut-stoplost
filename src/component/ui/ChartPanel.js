@@ -29,14 +29,11 @@ const ChartPanel =
                 return downsampleArray(data, 30);
             }
             const getRSIData2 = () => {
-                // let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
-                let data = indicatorReadState.getLastTickers(600 + 14, 30);
-                return calculateRSI(data);
+                return indicatorReadState.last100RSIValue;
             }
 
            // const [rsiData, setRsiData] = useState(getRSIData);
             const [rsiData2, setRsiData2] = useState(getRSIData2);
-
 
             const getCartData = (data) => {
                 return {
@@ -57,6 +54,7 @@ const ChartPanel =
             const [chartData2, setChartData2] = useState(getCartData(rsiData2));
            // const [correlationIndex, setCorrelationIndex] = useState(doParabolicCorrelation(rsiData, "Chart RSI"));
             const [correlation2Index, setCorrelation2Index] = useState(doParabolicCorrelation(rsiData2, "Chart RSI"));
+            const [lastRsiValue, setLastRsiValue] = useState(indicatorReadState.lastRSIValue);
 
             useEffect(() => {
                // setRsiData(getRSIData());
@@ -65,6 +63,7 @@ const ChartPanel =
                 setChartData2(getCartData(rsiData2));
                 //setCorrelationIndex(doParabolicCorrelation(rsiData, "Chart RSI"));
                 setCorrelation2Index(doParabolicCorrelation(rsiData2, "Chart RSI"));
+                setLastRsiValue(indicatorReadState.lastRSIValue);
             }, [indicatorReadState.last100RSICounter]);
 
             return (
@@ -75,13 +74,17 @@ const ChartPanel =
                                 responsive: true,
                                 scales: {
                                     x: {title: {display: true, text: "Masyvo indeksas"}},
-                                    y: {title: {display: true, text: "RSI New"}},
+                                    y: {title: {display: true, text: "RSI"}},
                                 },
                             }}/>
                         </div>
                         <div className="checkbox-row">
-                            <label>New Correlation index</label>
+                            <label>Correlation</label>
                             <span>{correlation2Index}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>RSI14</label>
+                            <span>{lastRsiValue}</span>
                         </div>
                     </div>
                 </Draggable>
