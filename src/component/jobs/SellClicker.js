@@ -8,9 +8,6 @@ import {
     selectSellSwitch,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {cleanData} from "../../utils/dataFilter";
-import {doParabolicCorrelation} from "../../indicator/Correletion";
-import {calculateRSI} from "../../indicator/RSI14";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -44,7 +41,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 await sellOperation(tradePare, null , "stopLost");
             } else {
                 if(isTakeProfReached(tradePare)){
-                    const correlation = await doRSIParabolicCorrelation2();
+                    const correlation = indicatorReadState.parabolicCorrelation;
                     if(correlation < sellState.aspectCorrelation){
                         await sellOperation(tradePare, correlation, "takeProf");
                     } else {
@@ -79,7 +76,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             }
             if(result === 200){
                 result += await clickSell(tradePare.key);
-                //result += 100;
+               // result += 100;
                 let last100RSIValue = indicatorReadState.last100RSIValue;
                 const msg = "SellClicker clickSell "
                     + ", lastPriceValue: " + indicatorReadState.lastPriceValue
@@ -113,13 +110,11 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             return result;
         }
 
-        const isRSIUp = async (tradePare) => {
-                let assetValue = tradePare.takeProfRsi;
-                return indicatorReadState.lastRSIValue >= convertToNumber(assetValue);
-        }
-
         const isTakeProfReached = (tradePare) => {
             let lastPrice = indicatorReadState.lastPriceValue;
+            if(lastPrice <= 0){
+                return false;
+            }
             let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
             return currentProfit > convertToNumber(tradePare.takeProf);
@@ -127,22 +122,12 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
 
         const isStopLostReached = (tradePare) => {
             let lastPrice = indicatorReadState.lastPriceValue;
+            if(lastPrice <= 0){
+                return false;
+            }
             let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
             return currentProfit < convertToNumber(tradePare.stopLost);
-        }
-
-        const doRSIParabolicCorrelation = async () => {
-            const arrayIndex = 0;
-            let last100RSIValue = indicatorReadState.last100RSIValue;
-            last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
-            //last100RSIValue = simpleMovingAverage(last100RSIValue,indicatorReadState.period);
-            return doParabolicCorrelation(cleanData(last100RSIValue), "SELL RSI + parabolic");
-        }
-
-        const doRSIParabolicCorrelation2 = async () => {
-            let data = indicatorReadState.last100RSIValue;
-            return doParabolicCorrelation(data, "Buy RSI + parabolic");
         }
 
     }));

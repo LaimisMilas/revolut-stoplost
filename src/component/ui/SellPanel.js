@@ -3,9 +3,6 @@ import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import {convertToNumber} from "../../utils/RevolutUtils";
 import Draggable from "react-draggable";
-import {doParabolicCorrelation} from "../../indicator/Correletion";
-import {cleanData} from "../../utils/dataFilter";
-import {calculateRSI} from "../../indicator/RSI14";
 
 const SellPanel =
     inject("sellState", "sellPanelState","indicatorReadState")(
@@ -17,21 +14,12 @@ const SellPanel =
             }
 
             const calcCurrentProf = () => {
+                if(convertToNumber(indicatorReadState.lastPriceValue) === 0){
+                    return 0;
+                }
                 let value = ((convertToNumber(indicatorReadState.lastPriceValue) * 100) / tradePare.price) - 100;
-                return value.toPrecision(4);
+                return Number(value).toFixed(4);
             };
-
-            const doRSIParabolicCorrelation = () => {
-                const arrayIndex = 0;
-                let last100RSIValue = indicatorReadState.last100RSIValue;
-                last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
-                return doParabolicCorrelation(cleanData(last100RSIValue), "SellPanel RSI correlation");
-            }
-
-            const doRSIParabolicCorrelation2 = () => {
-                let data = indicatorReadState.last100RSIValue;
-                return doParabolicCorrelation(data, "SellPanel RSI + parabolic");
-            }
 
             const [applyButtonStyle, setApplyButtonStyle] = useState({
                 className: "apply-button",
@@ -39,7 +27,6 @@ const SellPanel =
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(sellPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(sellState.getTradePareDataByKey(parsePareFromURL()));
-            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation2());
 
             useEffect(() => {
                 setStopAllAction(sellPanelState.getIsActionsStop());
@@ -47,7 +34,7 @@ const SellPanel =
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setCurrentProf(calcCurrentProf());
-                setCurrentCorrelation(doRSIParabolicCorrelation2());
+                indicatorReadState.calcParabolicCorrelation();
             }, [sellState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const calcTakeProfPrice = () => {
@@ -160,7 +147,7 @@ const SellPanel =
                                         value={sellState.aspectCorrelation}
                                         onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
                                     />
-                                    <span>{currentCorrelation}</span>
+                                    <span>{indicatorReadState.parabolicCorrelation}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label

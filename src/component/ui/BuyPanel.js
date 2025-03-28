@@ -3,9 +3,6 @@ import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import Draggable from "react-draggable";
 import {convertToNumber} from "../../utils/RevolutUtils";
-import {doParabolicCorrelation} from "../../indicator/Correletion";
-import {cleanData} from "../../utils/dataFilter";
-import {calculateRSI} from "../../indicator/RSI14";
 
 const BuyPanel =
     inject("buyState", "buyPanelState", "indicatorReadState")(
@@ -20,28 +17,15 @@ const BuyPanel =
                 className: "apply-button",
             });
 
-            const doRSIParabolicCorrelation = () => {
-                const arrayIndex = 0;
-                let last100RSIValue = indicatorReadState.last100RSIValue;
-                last100RSIValue = last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length - 1);
-                return doParabolicCorrelation(cleanData(last100RSIValue), "BuyPanel RSI correlation");
-            }
-
-            const doRSIParabolicCorrelation2 = () => {
-                let data = indicatorReadState.last100RSIValue;
-                return doParabolicCorrelation(data, "BuyPanel RSI + parabolic");
-            }
-
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
             const [stopAllAction, setStopAllAction] = useState(buyPanelState.getIsActionsStop());
             const [tradePare, setTradePare] = useState(buyState.getTradePareDataByKey(parsePareFromURL()));
-            const [currentCorrelation, setCurrentCorrelation] = useState(doRSIParabolicCorrelation2());
             const [hiddenField, setHiddenField] = useState(true);
 
             useEffect(() => {
                 setStopAllAction(buyPanelState.getIsActionsStop());
                 setTradePare(buyState.getTradePareDataByKey(parsePareFromURL()))
-               setCurrentCorrelation(doRSIParabolicCorrelation2());
+                indicatorReadState.calcParabolicCorrelation();
             }, [buyState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const handleOnChangeEvent = (event, key) => {
@@ -95,11 +79,13 @@ const BuyPanel =
                                         htmlFor={buyPanelState.rowConfig.rsi.id}>{buyPanelState.rowConfig.rsi.label}</label>
                                     <input
                                         type="text"
+                                        className="halfInput"
                                         id={buyPanelState.rowConfig.rsi.id}
                                         name={buyPanelState.rowConfig.rsi.name}
                                         value={tradePare.rsi}
                                         onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.rsi.key)}
                                     />
+                                    <span>{indicatorReadState.lastRSIValue}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label>Aspect cor.</label>
@@ -109,7 +95,7 @@ const BuyPanel =
                                         value={buyState.aspectCorrelation}
                                         onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
                                     />
-                                    <span>{currentCorrelation}</span>
+                                    <span>{indicatorReadState.parabolicCorrelation}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label

@@ -36,8 +36,19 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                                 const result = data.find(item => item.pair === searchPair);
                                 result.time = getNowDate(date);
                                 result.seconds = date.getSeconds();
-                                chrome.tabs.sendMessage(source.tabId, { data: result });
+                                chrome.tabs.sendMessage(source.tabId, {url: "tickers", data: result });
                             }
+                        } else{
+                            if(params.response.url.includes("2/api/crypto-exchange/currencies/SOL-USD/chart/history")){
+                                //console.log("📥 Perimta užklausa:", params.response.url);
+                                //console.log("🔎 Atsakymas:", response.body);
+                                // 🔥 Siunčiame duomenis į content script
+                                if(response.body){
+                                    let data = JSON.parse(response.body);
+                                    chrome.tabs.sendMessage(source.tabId, {url: "history", data });
+                                }
+                            }
+
                         }
                     }
                 );

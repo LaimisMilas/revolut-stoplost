@@ -12,30 +12,13 @@ import {
     Tooltip,
     Legend
 } from "chart.js";
-import {cleanData, downsampleArray} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
-import {doParabolicCorrelation, doSinusoidCorrelation} from "../../indicator/Correletion";
-import {calculateRSI} from "../../indicator/RSI14";
-import {checkDivergence} from "../../utils/IndicatorsUtils";
 import {generateSineWaveData} from "../../utils/wave";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const ChartPanel =
     inject("indicatorReadState")(
         observer(({indicatorReadState}) => {
-
-            const arrayIndex = 0;
-
-            const getRSIData = () => {
-                let data = indicatorReadState.last100RSIValue.slice(arrayIndex, indicatorReadState.last100RSIValue.length);
-                return downsampleArray(data, 30);
-            }
-            const getRSIData2 = () => {
-                return indicatorReadState.last100RSIValue;
-            }
-
-           // const [rsiData, setRsiData] = useState(getRSIData);
-            const [rsiData2, setRsiData2] = useState(getRSIData2);
 
             const getCartData = (data) => {
                 return {
@@ -52,74 +35,79 @@ const ChartPanel =
                 ],
                 }
             };
-            //const [chartData, setChartData] = useState(getCartData(rsiData));
-            const [chartData2, setChartData2] = useState(getCartData(rsiData2));
-           // const [correlationIndex, setCorrelationIndex] = useState(doParabolicCorrelation(rsiData, "Chart RSI"));
-            const [correlation2Index, setCorrelation2Index] = useState(doParabolicCorrelation(rsiData2, "Chart RSI"));
-            const [sinusoidCorrelationIndex, setSinusoidCorrelationIndex] = useState(doSinusoidCorrelation(rsiData2));
-            const [lastRsiValue, setLastRsiValue] = useState(indicatorReadState.lastRSIValue);
-            const [divergence, setDivergence] = useState(checkDivergence(indicatorReadState.last100PriceValue,rsiData2));
+
+            const [checkBoxContainerState, setCheckBoxContainerState] = useState(true);
+            const [chartData, setChartData] = useState(getCartData(indicatorReadState.last100RSIValue));
+
+            const handleCollapseButtonClick = () => {
+                checkBoxContainerState === true ? setCheckBoxContainerState(false) : setCheckBoxContainerState(true);
+            }
 
             useEffect(() => {
-               // setRsiData(getRSIData());
-                setRsiData2(getRSIData2());
-                //setChartData(getCartData(rsiData));
-                setChartData2(getCartData(rsiData2));
-                //setCorrelationIndex(doParabolicCorrelation(rsiData, "Chart RSI"));
-                setCorrelation2Index(doParabolicCorrelation(rsiData2, "Chart RSI"));
-                setLastRsiValue(indicatorReadState.lastRSIValue);
-                setDivergence(checkDivergence(indicatorReadState.last100PriceValue,rsiData2));
-                setSinusoidCorrelationIndex(doSinusoidCorrelation(rsiData2))
+                setChartData(getCartData(indicatorReadState.last100RSIValue));
+                indicatorReadState.calcParabolicCorrelation();
+                indicatorReadState.calculateDivergence();
+                indicatorReadState.calcSinusoidCorrelation();
             }, [indicatorReadState.last100RSICounter]);
 
             return (
                 <Draggable>
                     <div className="console-box" id="chart-panel">
-                        <div className="checkbox-row">
-                            <Line data={chartData2} options={{
-                                responsive: true,
-                                scales: {
-                                    x: {title: {display: true, text: "Masyvo indeksas"}},
-                                    y: {title: {display: true, text: "RSI"}},
-                                },
-                            }}/>
-                        </div>
-                        <div className="checkbox-row">
-                            <label>Parabolic correlation</label>
-                            <span>{correlation2Index}</span>
-                        </div>
-                        <div className="checkbox-row">
-                            <label>Sinusoid correlation</label>
-                            <span>{sinusoidCorrelationIndex}</span>
-                        </div>
-                        <div className="checkbox-row">
-                            <label>RSI14</label>
-                            <span>{lastRsiValue}</span>
-                        </div>
-                        <div className="checkbox-row">
-                            <label>Divergence</label>
-                            <span>{divergence}</span>
-                        </div>
-                        <div className="checkbox-row">
-                            <Line data={{
-                                labels: rsiData2.map((_, i) => i),
-                                datasets: [
-                                    {
-                                        label: "Sinusoid kreivė",
-                                        data: generateSineWaveData(rsiData2.length - 1, 10),
-                                        borderColor: "rgba(75,192,192,1)",
-                                        backgroundColor: "rgba(75,192,192,0.2)",
-                                        pointRadius: 3,
-                                        tension: 0.4
-                                    }
-                                ],
-                            }} options={{
-                                responsive: true,
-                                scales: {
-                                    x: {title: {display: true, text: "Masyvo indeksas"}},
-                                    y: {title: {display: true, text: "RSI"}},
-                                },
-                            }}/>
+                         <span className="activeTime">
+                           <span
+                               className="panelTitle">Chart panel</span>
+                        </span>
+                        <button className="exit-button"
+                                onClick={() => handleCollapseButtonClick()}>
+                            {checkBoxContainerState === true ? "▼" : "▲"}
+                        </button>
+                        <div hidden={checkBoxContainerState}>
+                            <div className="checkbox-row">
+                                <Line data={chartData} options={{
+                                    responsive: true,
+                                    scales: {
+                                        x: {title: {display: true, text: "Masyvo indeksas"}},
+                                        y: {title: {display: true, text: "RSI"}},
+                                    },
+                                }}/>
+                            </div>
+                            <div className="checkbox-row">
+                                <label>Parabolic correlation</label>
+                                <span>{indicatorReadState.parabolicCorrelation}</span>
+                            </div>
+                            <div className="checkbox-row">
+                                <label>Sinusoid correlation</label>
+                                <span>{indicatorReadState.sinusoidCorrelation}</span>
+                            </div>
+                            <div className="checkbox-row">
+                                <label>RSI14</label>
+                                <span>{indicatorReadState.lastRSIValue}</span>
+                            </div>
+                            <div className="checkbox-row">
+                                <label>Divergence</label>
+                                <span>{indicatorReadState.divergence}</span>
+                            </div>
+                            <div className="checkbox-row">
+                                <Line data={{
+                                    labels: indicatorReadState.last100RSIValue.map((_, i) => i),
+                                    datasets: [
+                                        {
+                                            label: "Sinusoid kreivė",
+                                            data: generateSineWaveData(indicatorReadState.last100RSIValue.length - 1, 10),
+                                            borderColor: "rgba(75,192,192,1)",
+                                            backgroundColor: "rgba(75,192,192,0.2)",
+                                            pointRadius: 3,
+                                            tension: 0.4
+                                        }
+                                    ],
+                                }} options={{
+                                    responsive: true,
+                                    scales: {
+                                        x: {title: {display: true, text: "Masyvo indeksas"}},
+                                        y: {title: {display: true, text: "RSI"}},
+                                    },
+                                }}/>
+                            </div>
                         </div>
                     </div>
                 </Draggable>

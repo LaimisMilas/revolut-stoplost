@@ -35,19 +35,34 @@ const DataReader = inject("indicatorReadState")(
         let ticker = [];
 
         const doAction = async (result) => {
-            if (ticker.length > 0 && ticker[0].seconds !== result.seconds) {
-                let avgIndexPrice = ticker.reduce((sum, item) => sum + parseFloat(item.indexPrice), 0) / ticker.length;
-                let averagedData = {...result, indexPrice: avgIndexPrice.toFixed(6)};
-                indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, averagedData, 11250);
-                indicatorReadState.calculateRSITicker(600 + 14, 30);
-                indicatorReadState.updateLast100PricePrice();
-                indicatorReadState.calculateDivergence();
-                indicatorReadState.last100RSICounter ++;
-                ticker = [];
+            if(result.url === "tickers"){
+                if (ticker.length > 0 && ticker[0].seconds !== result.data.seconds) {
+                    let avgIndexPrice = ticker.reduce((sum, item) => sum + parseFloat(item.indexPrice), 0) / ticker.length;
+                    let averagedData = {...result.data, indexPrice: avgIndexPrice.toFixed(6)};
+                    indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, averagedData, 11250);
+                    indicatorReadState.calculateRSITicker(600 + 14, 30);
+                    indicatorReadState.updateLast100PricePrice();
+                    indicatorReadState.last100RSICounter ++;
+                    ticker = [];
+                }
+                ticker.push(result.data);
             }
-            ticker.push(result);
-        }
 
+            if(result.url === "history2"){
+                result.data.seconds = new Date().getSeconds();
+                result.data.indexPrice = result.data.c[1];
+                if (ticker.length > 0 && ticker[0].seconds !== result.data.seconds) {
+                    let avgIndexPrice = ticker.reduce((sum, item) => sum + parseFloat(item.indexPrice), 0) / ticker.length;
+                    let averagedData = {...result.data, indexPrice: avgIndexPrice.toFixed(6)};
+                    indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, averagedData, 11250);
+                    indicatorReadState.calculateRSITicker(600 + 14, 30);
+                    indicatorReadState.updateLast100PricePrice();
+                    indicatorReadState.last100RSICounter ++;
+                    ticker = [];
+                }
+                ticker.push(result.data);
+            }
+        }
     }));
 
 export default DataReader;

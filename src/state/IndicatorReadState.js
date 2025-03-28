@@ -4,6 +4,7 @@ import {Utils} from "html-evaluate-utils/Utils";
 import {downsampleArray} from "../utils/dataFilter";
 import {calculateRSI} from "../indicator/RSI14";
 import {checkDivergence} from "../utils/IndicatorsUtils";
+import {doParabolicCorrelation, doSinusoidCorrelation} from "../indicator/Correletion";
 
 export class IndicatorReadState {
 
@@ -21,6 +22,10 @@ export class IndicatorReadState {
     maxLengthPriceValue = 1000;
     tickerValue = [];
     rsiTickerValue = [];
+    divergence = "";
+    sinusoidCorrelation = 0;
+    parabolicCorrelation = 0;
+
 
     constructor() {
         makeAutoObservable(this);
@@ -105,7 +110,16 @@ export class IndicatorReadState {
     }
 
     calculateDivergence() {
-       this.divergence =  checkDivergence(this.last100PriceValue,this.last100RSIValue);
+       this.divergence = checkDivergence(this.last100PriceValue,this.last100RSIValue);
     }
+
+    calcSinusoidCorrelation() {
+       this.sinusoidCorrelation = doSinusoidCorrelation(this.last100RSIValue);
+    }
+
+    calcParabolicCorrelation() {
+        this.parabolicCorrelation = doParabolicCorrelation(this.last100RSIValue);
+    }
+
 
 }
