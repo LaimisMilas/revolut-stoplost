@@ -14,9 +14,10 @@ import {
 } from "chart.js";
 import {cleanData, downsampleArray} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
-import {doParabolicCorrelation} from "../../indicator/Correletion";
+import {doParabolicCorrelation, doSinusoidCorrelation} from "../../indicator/Correletion";
 import {calculateRSI} from "../../indicator/RSI14";
 import {checkDivergence} from "../../utils/IndicatorsUtils";
+import {generateSineWaveData} from "../../utils/wave";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const ChartPanel =
@@ -38,7 +39,7 @@ const ChartPanel =
 
             const getCartData = (data) => {
                 return {
-                    labels: data.map((_, i) => i + 1),
+                    labels: data.map((_, i) => i),
                         datasets: [
                     {
                         label: "RSI kreivė",
@@ -55,6 +56,7 @@ const ChartPanel =
             const [chartData2, setChartData2] = useState(getCartData(rsiData2));
            // const [correlationIndex, setCorrelationIndex] = useState(doParabolicCorrelation(rsiData, "Chart RSI"));
             const [correlation2Index, setCorrelation2Index] = useState(doParabolicCorrelation(rsiData2, "Chart RSI"));
+            const [sinusoidCorrelationIndex, setSinusoidCorrelationIndex] = useState(doSinusoidCorrelation(rsiData2));
             const [lastRsiValue, setLastRsiValue] = useState(indicatorReadState.lastRSIValue);
             const [divergence, setDivergence] = useState(checkDivergence(indicatorReadState.last100PriceValue,rsiData2));
 
@@ -67,6 +69,7 @@ const ChartPanel =
                 setCorrelation2Index(doParabolicCorrelation(rsiData2, "Chart RSI"));
                 setLastRsiValue(indicatorReadState.lastRSIValue);
                 setDivergence(checkDivergence(indicatorReadState.last100PriceValue,rsiData2));
+                setSinusoidCorrelationIndex(doSinusoidCorrelation(rsiData2))
             }, [indicatorReadState.last100RSICounter]);
 
             return (
@@ -82,8 +85,12 @@ const ChartPanel =
                             }}/>
                         </div>
                         <div className="checkbox-row">
-                            <label>Correlation</label>
+                            <label>Parabolic correlation</label>
                             <span>{correlation2Index}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>Sinusoid correlation</label>
+                            <span>{sinusoidCorrelationIndex}</span>
                         </div>
                         <div className="checkbox-row">
                             <label>RSI14</label>
@@ -92,6 +99,27 @@ const ChartPanel =
                         <div className="checkbox-row">
                             <label>Divergence</label>
                             <span>{divergence}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <Line data={{
+                                labels: rsiData2.map((_, i) => i),
+                                datasets: [
+                                    {
+                                        label: "Sinusoid kreivė",
+                                        data: generateSineWaveData(rsiData2.length - 1, 10),
+                                        borderColor: "rgba(75,192,192,1)",
+                                        backgroundColor: "rgba(75,192,192,0.2)",
+                                        pointRadius: 3,
+                                        tension: 0.4
+                                    }
+                                ],
+                            }} options={{
+                                responsive: true,
+                                scales: {
+                                    x: {title: {display: true, text: "Masyvo indeksas"}},
+                                    y: {title: {display: true, text: "RSI"}},
+                                },
+                            }}/>
                         </div>
                     </div>
                 </Draggable>

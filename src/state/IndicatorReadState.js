@@ -96,7 +96,7 @@ export class IndicatorReadState {
         return data;
     }
 
-    calculateRSI = (size, chunkSize) => {
+    calculateRSITicker = (size, chunkSize) => {
         let data = this.getLastTickers(size + 14, chunkSize);
         this.last100RSIValue = calculateRSI(data);
         if(this.last100RSIValue.length > 0){

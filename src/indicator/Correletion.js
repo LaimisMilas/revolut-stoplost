@@ -1,3 +1,4 @@
+import {generateSineWaveData} from "../utils/wave";
 
 export const pearsonCorrelation = (x, y) => {
     const n = x.length;
@@ -30,7 +31,19 @@ export const doParabolicCorrelation = (rsiValues, caller) => {
     // Skaičiuojame koreliaciją
     const correlation = pearsonCorrelation(rsiValues, parabolicValues);
 
-    console.log(`${caller} Koreliacija su parabole:`, correlation.toFixed(3));
+    return Number(correlation).toFixed(2);
+};
+
+export const doSinusoidCorrelation = (rsiValues) => {
+    const n = rsiValues.length;
+    if (n < 3) {
+        console.error("RSI reikšmių per mažai, reikia bent 3.");
+        return 0;
+    }
+
+    const sinusoidValues = generateSineWaveData(rsiValues.length-1, 10)
+
+    const correlation = pearsonCorrelation(rsiValues, sinusoidValues);
 
     return Number(correlation).toFixed(2);
 };
