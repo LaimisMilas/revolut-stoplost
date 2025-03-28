@@ -16,6 +16,7 @@ import {cleanData, downsampleArray} from "../../utils/dataFilter";
 import Draggable from "react-draggable";
 import {doParabolicCorrelation} from "../../indicator/Correletion";
 import {calculateRSI} from "../../indicator/RSI14";
+import {checkDivergence} from "../../utils/IndicatorsUtils";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const ChartPanel =
@@ -55,6 +56,7 @@ const ChartPanel =
            // const [correlationIndex, setCorrelationIndex] = useState(doParabolicCorrelation(rsiData, "Chart RSI"));
             const [correlation2Index, setCorrelation2Index] = useState(doParabolicCorrelation(rsiData2, "Chart RSI"));
             const [lastRsiValue, setLastRsiValue] = useState(indicatorReadState.lastRSIValue);
+            const [divergence, setDivergence] = useState(checkDivergence(indicatorReadState.last100PriceValue,rsiData2));
 
             useEffect(() => {
                // setRsiData(getRSIData());
@@ -64,6 +66,7 @@ const ChartPanel =
                 //setCorrelationIndex(doParabolicCorrelation(rsiData, "Chart RSI"));
                 setCorrelation2Index(doParabolicCorrelation(rsiData2, "Chart RSI"));
                 setLastRsiValue(indicatorReadState.lastRSIValue);
+                setDivergence(checkDivergence(indicatorReadState.last100PriceValue,rsiData2));
             }, [indicatorReadState.last100RSICounter]);
 
             return (
@@ -85,6 +88,10 @@ const ChartPanel =
                         <div className="checkbox-row">
                             <label>RSI14</label>
                             <span>{lastRsiValue}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>Divergence</label>
+                            <span>{divergence}</span>
                         </div>
                     </div>
                 </Draggable>

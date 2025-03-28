@@ -40,6 +40,8 @@ const DataReader = inject("indicatorReadState")(
                 let averagedData = {...result, indexPrice: avgIndexPrice.toFixed(6)};
                 indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, averagedData, 11250);
                 indicatorReadState.calculateRSITicker(600 + 14, 30);
+                indicatorReadState.updateLast100PricePrice();
+                indicatorReadState.calculateDivergence();
                 indicatorReadState.last100RSICounter ++;
                 ticker = [];
             }

@@ -3,6 +3,7 @@ import {getRSIIndicator, readLastPrice} from "../utils/RevolutUtils";
 import {Utils} from "html-evaluate-utils/Utils";
 import {downsampleArray} from "../utils/dataFilter";
 import {calculateRSI} from "../indicator/RSI14";
+import {checkDivergence} from "../utils/IndicatorsUtils";
 
 export class IndicatorReadState {
 
@@ -69,6 +70,10 @@ export class IndicatorReadState {
         }
     }
 
+    updateLast100PricePrice(){
+        this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
+    }
+
     pushWithLimit(arr, value, maxLength) {
         arr.push(value); // Pridedame į galą
         if (arr.length > maxLength) {
@@ -91,12 +96,16 @@ export class IndicatorReadState {
         return data;
     }
 
-    calculateRSITicker = (size, chunkSize) => {
+    calculateRSI = (size, chunkSize) => {
         let data = this.getLastTickers(size + 14, chunkSize);
         this.last100RSIValue = calculateRSI(data);
         if(this.last100RSIValue.length > 0){
             this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
         }
+    }
+
+    calculateDivergence() {
+       this.divergence =  checkDivergence(this.last100PriceValue,this.last100RSIValue);
     }
 
 }

@@ -1,12 +1,12 @@
-export function findDivergence(prices, rsi) {
-    const len = prices.length;
-    if (prices[len - 1] < prices[len - 2] && rsi[len - 1] > rsi[len - 2]) {
-        return "Bullish divergencija - galima kilimo pradžia!";
+
+export function checkDivergence(prices, rsi) {
+    if (prices[prices.length - 1] < prices[prices.length - 2] && rsi[rsi.length - 1] > rsi[rsi.length - 2]) {
+        return 'bullish';
     }
-    if (prices[len - 1] > prices[len - 2] && rsi[len - 1] < rsi[len - 2]) {
-        return "Bearish divergencija - galima korekcija!";
+    if (prices[prices.length - 1] > prices[prices.length - 2] && rsi[rsi.length - 1] < rsi[rsi.length - 2]) {
+        return 'bearish';
     }
-    return "Divergencijos nėra.";
+    return "none divergence";
 }
 
 export function detectFractalPattern(rsi, caller) {
