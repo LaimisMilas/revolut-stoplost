@@ -26,56 +26,15 @@ export class IndicatorReadState {
     sinusoidCorrelation = 0;
     parabolicCorrelation = 0;
 
-
     constructor() {
         makeAutoObservable(this);
     }
 
     setup(rootStore) {
         this.rootStore = rootStore;
-        //this.setIntervalRsiRaed();
     }
 
-    setIntervalRsiRaed(){
-        this.intervalRsiRaed = setInterval(
-            this.updateValues.bind(this), this.readDataPeriod);
-    }
-
-    async updateValues() {
-        //await this.updateLastPrice();
-        //await this.updateLastRSI();
-        //await this.updateLastRSI1K();
-    }
-
-    async updateLastRSI() {
-        if(Utils.getElByXPath("//iframe")){
-            let value = await getRSIIndicator();
-            if(value && value > 0){
-                this.lastRSIValue = value;
-                this.last100RSIValue = this.pushWithLimit(this.last100RSIValue, value, this.maxLengthRSIValue);
-                this.last100RSICounter ++;
-            }
-        }
-    }
-
-    async updateLastRSI1K() {
-        if(Utils.getElByXPath("//iframe")){
-            let value = await getRSIIndicator();
-            if(value && value > 0){
-                this.last1kRSIValue = this.pushWithLimit(this.last1kRSIValue, value, 1000);
-            }
-        }
-    }
-
-    async updateLastPrice() {
-        let value = await readLastPrice();
-        if(value && value > 0){
-            this.lastPriceValue = value;
-            this.last100PriceValue = this.pushWithLimit(this.last100PriceValue, value, this.maxLengthPriceValue);
-        }
-    }
-
-    updateLast100PricePrice(){
+    updateLast100Price(){
         this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
     }
 

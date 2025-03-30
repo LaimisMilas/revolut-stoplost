@@ -10,7 +10,10 @@ const SellPanel =
 
             const parsePareFromURL = () => {
                 let tmp = window.location.href.split("/trade/");
-                return tmp[1].split("-")[0];
+                if(window.location.href.includes("/trade/")){
+                    return tmp[1].split("-")[0];
+                }
+                return "SOL";
             }
 
             const calcCurrentProf = () => {

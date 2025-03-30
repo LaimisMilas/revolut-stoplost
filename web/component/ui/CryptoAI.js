@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ccxt from "ccxt";
 import { RSI, MACD } from "technicalindicators";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import {inject, observer} from "mobx-react";
@@ -11,20 +10,9 @@ const CryptoAI = inject("indicatorReadState")(
     const [signals, setSignals] = useState("");
 
     useEffect(() => {
-        window.addEventListener("message", async (event) => {
-            if (event.source !== window) return;
-            if (event.data.type === "EXTENSION_DATA") {
-                //await doAction(event.data.data);
-                console.log("lak");
-            }
-        });
         const fetchData = async () => {
             try {
-                const exchange = new ccxt.binance();
-                const ohlcv = await exchange.fetchOHLCV("BTC/USDT", "5m", undefined, 50);
-
-                const prices = ohlcv.map((candle) => candle[4]); // Uždarymo kainos
-                const timestamps = ohlcv.map((candle) => new Date(candle[0]).toLocaleTimeString());
+                const prices = indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 100 ,indicatorReadState.last100PriceValue.length - 1);
 
                 // RSI skaičiavimas
                 const rsiValues = RSI.calculate({ values: prices, period: 14 });
@@ -47,10 +35,10 @@ const CryptoAI = inject("indicatorReadState")(
                 if (lastRSI > 70 && lastMACD.macd < lastMACD.signal) signal = "SELL 📉";
 
                 // Atvaizduoti grafikui
-                const formattedData = timestamps.map((time, index) => ({
-                    time,
-                    price: prices[index],
-                    rsi: rsiValues[index] || 0,
+                const formattedData = prices.map((_, i) => ({
+                    i,
+                    price: prices[i],
+                    rsi: rsiValues[i-14] || 0,
                 }));
 
                 setData(formattedData);
@@ -67,11 +55,11 @@ const CryptoAI = inject("indicatorReadState")(
     }, []);
 
     return (
-        <div className="console-box" id="chart-panel" >
+        <div>
             <h2>BTC/USDT Trading Bot</h2>
             <h3>Signal: {signals}</h3>
             <LineChart width={600} height={300} data={data}>
-                <XAxis dataKey="time" />
+                <XAxis dataKey="i" />
                 <YAxis />
                 <Tooltip />
                 <CartesianGrid stroke="#ccc" />

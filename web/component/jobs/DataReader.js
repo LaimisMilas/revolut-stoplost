@@ -41,7 +41,7 @@ const DataReader = inject("indicatorReadState")(
                     let averagedData = {...result.data, indexPrice: avgIndexPrice.toFixed(6)};
                     indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, averagedData, 11250);
                     indicatorReadState.calculateRSITicker(600 + 14, 30);
-                    indicatorReadState.updateLast100PricePrice();
+                    indicatorReadState.updateLast100Price();
                     indicatorReadState.last100RSICounter ++;
                     ticker = [];
                 }
@@ -56,7 +56,7 @@ const DataReader = inject("indicatorReadState")(
                     let averagedData = {...result.data, indexPrice: avgIndexPrice.toFixed(6)};
                     indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, averagedData, 11250);
                     indicatorReadState.calculateRSITicker(600 + 14, 30);
-                    indicatorReadState.updateLast100PricePrice();
+                    indicatorReadState.updateLast100Price();
                     indicatorReadState.last100RSICounter ++;
                     ticker = [];
                 }
