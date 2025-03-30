@@ -1,10 +1,13 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/index.js',
+    entry: {
+        revolut: './src/index.js',
+        revolut_tab: './web/index.js'
+    },
     output: {
         path: path.resolve(__dirname, './package'),
-        filename: 'revolut-click.js',
+        filename: '[name].click.js',
     },
     mode: 'development', // arba 'production' development
     devtool: 'inline-source-map',

@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "dependencies": {
     "axios": "^1.7.9",
+    "ccxt": "^4.4.70",
     "chart.js": "^4.4.8",
     "clicker-common": "^1.0.44",
     "html-evaluate-utils": "^1.0.6",
@@ -17,7 +18,9 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
     "react-router-dom": "^6.20.0",
-    "react-validation": "^3.0.7"
+    "react-validation": "^3.0.7",
+    "recharts": "^2.15.1",
+    "technicalindicators": "^3.1.0"
   },
   "scripts": {
     "build": "yarn install && webpack --env production",

@@ -7,7 +7,7 @@
       "id": "laimis.milasius@gmail.com"
     }
   },
-  "version": "0.0.0.2",
+  "version": "0.0.0.3",
   "description": "It's about click. It's about buy/sell. Use it.",
   "icons": {
     "128": "images/icon_128.png",
@@ -19,7 +19,9 @@
     "debugger",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
-    "activeTab"
+    "activeTab",
+     "storage",
+    "scripting"
   ],
   "host_permissions": [
     "https://*.revolut.com/*"
@@ -27,7 +29,7 @@
   "content_scripts": [
     {
       "matches": ["https://exchange.revolut.com/trade/*"],
-      "js": ["revolut-click.js"]
+      "js": ["revolut.click.js"]
     },
     {
       "matches": ["https://*.revolut.com/*"],

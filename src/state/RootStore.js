@@ -13,7 +13,8 @@ export class RootStore {
     indicatorReadState = null;
     prefix = "lc_";
 
-    constructor() {
+    constructor(prefix = "lc_") {
+        this.prefix = prefix;
         this.sellState = new SellState();
         this.buyState = new BuyState();
         this.sellPanelState = new SellPanelState();

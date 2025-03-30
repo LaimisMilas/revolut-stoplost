@@ -9,6 +9,19 @@ function getNowDate(date){
     return fullYear + "-" + month + "-" + day + "T" + hours + ":" + minutes + ":" + seconds;
 }
 
+var cryptoTabId = null;
+
+chrome.action.onClicked.addListener((tab) => {
+    chrome.tabs.create({ url: "cryptoAI.html" }, (newTab) => {
+        cryptoTabId = newTab.id;
+        newTab.
+        chrome.storage.local.set({
+            sharedData: "Labas, pasauli!",
+            tabId: newTab.id // išsaugome tab ID
+        });
+    });
+});
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === "complete" && tab.url && tab.url.includes("revolut.com")) {
         console.log("🔎 Rastas Revolut tab'as:", tabId);
@@ -37,6 +50,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                                 result.time = getNowDate(date);
                                 result.seconds = date.getSeconds();
                                 chrome.tabs.sendMessage(source.tabId, {url: "tickers", data: result });
+                                if(cryptoTabId){
+                                    chrome.tabs.sendMessage(cryptoTabId, {url: "tickers", data: result });
+                                }
                             }
                         } else{
                             if(params.response.url.includes("2/api/crypto-exchange/currencies/SOL-USD/chart/history")){
