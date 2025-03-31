@@ -1,5 +1,5 @@
 {
-  "name": "Revolut buy/sell clicker",
+  "name": "buy/sell clicker",
   "action": {},
   "manifest_version": 3,
   "browser_specific_settings": {
@@ -19,9 +19,7 @@
     "debugger",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
-    "activeTab",
-     "storage",
-    "scripting"
+    "activeTab"
   ],
   "host_permissions": [
     "https://*.revolut.com/*"

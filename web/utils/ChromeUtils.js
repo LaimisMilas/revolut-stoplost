@@ -6,9 +6,3 @@ export function listenForMessages(callback) {
         }
     });
 }
-
-export function getStoredData(keys, callback) {
-    chrome.storage.local.get(keys, (data) => {
-        if (callback) callback(data);
-    });
-}

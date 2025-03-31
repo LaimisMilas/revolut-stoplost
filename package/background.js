@@ -14,11 +14,6 @@ var cryptoTabId = null;
 chrome.action.onClicked.addListener((tab) => {
     chrome.tabs.create({ url: "cryptoAI.html" }, (newTab) => {
         cryptoTabId = newTab.id;
-        newTab.
-        chrome.storage.local.set({
-            sharedData: "Labas, pasauli!",
-            tabId: newTab.id // išsaugome tab ID
-        });
     });
 });
 

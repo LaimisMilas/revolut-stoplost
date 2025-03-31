@@ -79,7 +79,7 @@ const BuyPanel =
                                 </div>
                                 <div className="checkbox-row">
                                     <label
-                                        htmlFor={buyPanelState.rowConfig.rsi.id}>{buyPanelState.rowConfig.rsi.label}</label>
+                                        htmlFor={buyPanelState.rowConfig.rsi.id}>Aspect {buyPanelState.rowConfig.rsi.label}</label>
                                     <input
                                         type="text"
                                         className="halfInput"
