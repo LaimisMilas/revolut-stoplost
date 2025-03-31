@@ -3,18 +3,23 @@ import { RSI, MACD } from "technicalindicators";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import {inject, observer} from "mobx-react";
 import {downsampleArray} from "../../../src/utils/dataFilter";
+import {fibonacciLevels, findSupportResistance} from "../../../src/utils/IndicatorsUtils";
 
 const CryptoAI = inject("indicatorReadState")(
     observer(({indicatorReadState}) => {
 
     const [data, setData] = useState([]);
     const [signals, setSignals] = useState("");
+    const [suppRes, setSuppRes] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 let prices = indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 626 ,indicatorReadState.last100PriceValue.length - 1);
                 prices = downsampleArray(prices, 30);
+
+                let ls = findSupportResistance(prices);
+                setSuppRes([ls.supports[ls.supports.length -1], ls.resistances[ls.resistances.length -1]]);
 
                 // RSI skaičiavimas
                 const rsiValues = RSI.calculate({ values: prices, period: 14 });
@@ -70,6 +75,8 @@ const CryptoAI = inject("indicatorReadState")(
                 <Line type="monotone" dataKey="price" stroke="#8884d8" />
                 <Line type="monotone" dataKey="rsi" stroke="#82ca9d" />
             </LineChart>
+            <div>Supports: {suppRes[0]}</div>
+            <div>Resistances: {suppRes[1]}</div>
         </div>
     );
     }));

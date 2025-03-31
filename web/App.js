@@ -8,6 +8,7 @@ import BuyPanel from "../src/component/ui/BuyPanel";
 import SellClicker from "./component/jobs/SellClicker";
 import BuyClicker from "./component/jobs/BuyClicker";
 import OrderList from "./component/ui/OrderList";
+import ChartPanel from "../src/component/ui/ChartPanel";
 
 const rootState = new RootStore("rc_");
 
@@ -28,6 +29,7 @@ const App = () => {
                 <BuyClicker/>
                 <DataReader/>
                 <CryptoAI/>
+                <ChartPanel/>
                 <OrderList/>
             </div>
         </Provider>

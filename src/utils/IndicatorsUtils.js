@@ -1,3 +1,25 @@
+export function findSupportResistance(prices) {
+    let supports = [];
+    let resistances = [];
+
+    for (let i = 1; i < prices.length - 1; i++) {
+        if (prices[i] < prices[i - 1] && prices[i] < prices[i + 1]) {
+            supports.push(Number(prices[i]).toFixed(2)); // Palaikymas (Low)
+        }
+        if (prices[i] > prices[i - 1] && prices[i] > prices[i + 1]) {
+            resistances.push(Number(prices[i]).toFixed(2)); // Pasipriešinimas (High)
+        }
+    }
+    return { supports, resistances };
+}
+
+export function fibonacciLevels(high, low) {
+    const levels = [0.236, 0.382, 0.5, 0.618, 0.786];
+    return levels.map(level => ({
+        level,
+        price: low + (high - low) * level
+    }));
+}
 
 export function checkDivergence(prices, rsi) {
     if (prices[prices.length - 1] < prices[prices.length - 2] && rsi[rsi.length - 1] > rsi[rsi.length - 2]) {

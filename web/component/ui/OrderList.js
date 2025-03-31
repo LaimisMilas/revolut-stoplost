@@ -10,7 +10,7 @@ const OrderList = inject("buyState", "sellState")(
         useEffect(() => {
             const data = buyState.msgs.concat(sellState.msgs);
             setOrders(data);
-        }, [sellState.msgs, buyState.msgs]);
+        }, [sellState.msgs.length, buyState.msgs.length]);
 
         const sortByDate = () => {
             const sortedOrders = [...orders].sort((a, b) => {
@@ -35,7 +35,7 @@ const OrderList = inject("buyState", "sellState")(
                         <th className="border px-4 py-2">Aspect correlation</th>
                         <th className="border px-4 py-2">Correlation</th>
                         <th className="border px-4 py-2 cursor-pointer" onClick={sortByDate}>
-                            Data {sortOrder === "asc" ? "▲" : "▼"}
+                            Date {sortOrder === "asc" ? "▲" : "▼"}
                         </th>
                         <th className="border px-4 py-2">Quantity</th>
                         <th className="border px-4 py-2">Price</th>
@@ -54,7 +54,7 @@ const OrderList = inject("buyState", "sellState")(
                             <td className="border px-4 py-2">{order.lastRSIValue}</td>
                             <td className="border px-4 py-2">{order.aspectCorrelation}</td>
                             <td className="border px-4 py-2">{order.correlation}</td>
-                            <td className="border px-4 py-2">{order.time}</td>
+                            <td className="border px-4 py-2">{new Date(order.time).toLocaleTimeString()}</td>
                             <td className="border px-4 py-2">{order.quantity}</td>
                             <td className="border px-4 py-2">{order.type === "SELL" ? order.price : ""}</td>
                             <td className="border px-4 py-2">{order.type === "BUY" ? order.rsi : ""}</td>
