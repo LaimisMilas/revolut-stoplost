@@ -57,11 +57,14 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 result += 100;
                 sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
-
                 const msg = {};
+                msg.name = "SOL-USD";
+                msg.price = Number(tradePare.price).toFixed(4);
+                msg.targetPrice = Number(tradePare.targetPrice).toFixed(4);
+                msg.rsi = Number(tradePare.rsi).toFixed(4);
+                msg.quantity = Number(tradePare.quantity).toFixed(4);
                 msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(4);
                 msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
-                msg.targetPrice = Number(tradePare.targetPrice).toFixed(4);
                 msg.aspectCorrelation = sellState.aspectCorrelation;
                 msg.correlation = correlation;
                 //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
