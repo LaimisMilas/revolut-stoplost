@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { RSI, MACD } from "technicalindicators";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import {inject, observer} from "mobx-react";
+import {downsampleArray} from "../../../src/utils/dataFilter";
 
 const CryptoAI = inject("indicatorReadState")(
     observer(({indicatorReadState}) => {
@@ -12,7 +13,8 @@ const CryptoAI = inject("indicatorReadState")(
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const prices = indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 100 ,indicatorReadState.last100PriceValue.length - 1);
+                let prices = indicatorReadState.last100PriceValue.slice(indicatorReadState.last100PriceValue.length - 626 ,indicatorReadState.last100PriceValue.length - 1);
+                prices = downsampleArray(prices, 30);
 
                 // RSI skaičiavimas
                 const rsiValues = RSI.calculate({ values: prices, period: 14 });
@@ -34,11 +36,13 @@ const CryptoAI = inject("indicatorReadState")(
                 if (lastRSI < 30 && lastMACD.macd > lastMACD.signal) signal = "BUY 📈";
                 if (lastRSI > 70 && lastMACD.macd < lastMACD.signal) signal = "SELL 📉";
 
+                prices = prices.slice(prices.length - 7, prices.length);
+
                 // Atvaizduoti grafikui
-                const formattedData = prices.map((_, i) => ({
-                    i,
-                    price: prices[i],
-                    rsi: rsiValues[i-14] || 0,
+                const formattedData = prices.map((_, index) => ({
+                    index: index,
+                    price: Number(prices[index]).toFixed(4),
+                    rsi: rsiValues[index] || 0,
                 }));
 
                 setData(formattedData);
@@ -59,7 +63,7 @@ const CryptoAI = inject("indicatorReadState")(
             <h2>BTC/USDT Trading Bot</h2>
             <h3>Signal: {signals}</h3>
             <LineChart width={600} height={300} data={data}>
-                <XAxis dataKey="i" />
+                <XAxis dataKey="index" />
                 <YAxis />
                 <Tooltip />
                 <CartesianGrid stroke="#ccc" />
