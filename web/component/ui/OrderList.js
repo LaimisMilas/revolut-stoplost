@@ -45,6 +45,10 @@ const OrderList = inject("buyState", "sellState")(
                         <th className="border px-4 py-2">Stop lost</th>
                         <th className="border px-4 py-2">Take prof</th>
                         <th className="border px-4 py-2">Earned</th>
+                        <td className="border px-4 py-2">Bullish</td>
+                        <td className="border px-4 py-2">Bearish</td>
+                        <td className="border px-4 py-2">Sinus</td>
+                        <td className="border px-4 py-2">Divrg</td>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,6 +67,10 @@ const OrderList = inject("buyState", "sellState")(
                             <td className="border px-4 py-2">{order.type === "SELL" ? order.stopLost : ""}</td>
                             <td className="border px-4 py-2">{order.type === "SELL" ? order.takeProf : ""}</td>
                             <td className="border px-4 py-2">{order.type === "SELL" ? Number(order.lastPriceValue - order.price).toFixed(2) : ""}</td>
+                            <td className="border px-4 py-2">{order.bullishLineCorrelation}</td>
+                            <td className="border px-4 py-2">{order.bearishLineCorrelation}</td>
+                            <td className="border px-4 py-2">{order.sinusoidCorrelation}</td>
+                            <td className="border px-4 py-2">{order.divergence}</td>
                         </tr>
                     ))}
                     </tbody>

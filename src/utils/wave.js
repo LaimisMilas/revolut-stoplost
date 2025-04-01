@@ -40,7 +40,7 @@ export const generateLeftLine = (numPoints = 6) => {
     for (let i = 0; i <= numPoints; i++) {
         const x = 2;
         const k = 0;
-        const y = k * x;
+        const y = k * x + 2;
         data.push(y);
     }
     return data;
