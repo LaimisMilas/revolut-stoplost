@@ -46,6 +46,7 @@ const DataReader = inject("indicatorReadState")(
                     ticker = [];
                 }
                 ticker.push(result.data);
+                sendData([result.data.indexPrice])
             }
 
             if(result.url === "history2"){
@@ -62,6 +63,27 @@ const DataReader = inject("indicatorReadState")(
                 }
                 ticker.push(result.data);
             }
+        }
+
+        const sendData = async (data) => {
+            // Konvertuojame į JSON string
+            const jsonData = JSON.stringify(data);
+
+            // Siunčiame POST užklausą su fetch
+            fetch('http://localhost:8080/data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: jsonData,  // Pridedame JSON duomenis į užklausą
+            })
+                .then(response => response.json())  // Apdorojame atsakymą kaip JSON
+                .then(data => {
+                   // console.log('Atsakymas:', data);  // Išspausdiname atsakymą į konsolę
+                })
+                .catch((error) => {
+                  //  console.error('Klaida:', error);
+                });
         }
     }));
 

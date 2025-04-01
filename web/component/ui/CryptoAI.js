@@ -77,6 +77,7 @@ const CryptoAI = inject("indicatorReadState")(
             </LineChart>
             <div>Supports: {suppRes[0]}</div>
             <div>Resistances: {suppRes[1]}</div>
+            <div>PricePrediction: {Number(indicatorReadState.pricePrediction).toFixed(4)}</div>
         </div>
     );
     }));

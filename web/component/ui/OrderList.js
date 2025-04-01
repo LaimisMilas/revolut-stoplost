@@ -3,24 +3,26 @@ import {inject, observer} from "mobx-react";
 
 const OrderList = inject("buyState", "sellState")(
     observer(({buyState, sellState}) => {
-
-        const [orders, setOrders] = useState([]);
-        const [sortOrder, setSortOrder] = useState("asc");
-
-        useEffect(() => {
-            const data = buyState.msgs.concat(sellState.msgs);
-            setOrders(data);
-        }, [sellState.msgs.length, buyState.msgs.length]);
-
-        const sortByDate = () => {
+        const sortByDate = (direct = "asc") => {
             const sortedOrders = [...orders].sort((a, b) => {
-                return sortOrder === "asc"
+                return sortOrder === direct
                     ? new Date(a.time) - new Date(b.time)
                     : new Date(b.time) - new Date(a.time);
             });
             setOrders(sortedOrders);
             setSortOrder(sortOrder === "asc" ? "desc" : "asc");
         };
+
+        const [orders, setOrders] = useState(buyState.msgs.concat(sellState.msgs));
+        const [sortOrder, setSortOrder] = useState("desc");
+
+        useEffect(() => {
+            const data = buyState.msgs.concat(sellState.msgs);
+            setOrders(data);
+            sortByDate("desc");
+        }, [sellState.msgs.length, buyState.msgs.length]);
+
+
 
         return (
             <div className="p-4">

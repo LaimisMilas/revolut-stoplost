@@ -25,6 +25,7 @@ export class IndicatorReadState {
     divergence = "";
     sinusoidCorrelation = 0;
     parabolicCorrelation = 0;
+    pricePrediction = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -80,5 +81,27 @@ export class IndicatorReadState {
         this.parabolicCorrelation = doParabolicCorrelation(this.last100RSIValue);
     }
 
+    getPrediction = async () => {
+
+        // Konvertuojame į JSON string
+        const jsonData = JSON.stringify(this.last100PriceValue.slice(this.last100PriceValue.length - 51, this.last100PriceValue.length -1));
+
+        // Siunčiame POST užklausą su fetch
+        fetch('http://localhost:8080/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: jsonData,  // Pridedame JSON duomenis į užklausą
+        })
+            .then(response => response.json())  // Apdorojame atsakymą kaip JSON
+            .then(data => {
+                this.pricePrediction = data.prediction;
+                console.log('Atsakymas:', data.prediction);  // Išspausdiname atsakymą į konsolę
+            })
+            .catch((error) => {
+                console.error('Klaida:', error);
+            });
+    }
 
 }

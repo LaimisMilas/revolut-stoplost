@@ -1,13 +1,5 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
-import {
-    clickBuy,
-    convertToNumber,
-    getNowDate,
-    selectBuySwitch,
-    selectSellSum,
-    writeQuantity
-} from "../../../src/utils/RevolutUtils";
 import {isRSIDown} from "../../../src/indicator/RSI14";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
@@ -16,7 +8,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                buyState.localInterval = setTimeout(executeWithInterval, 5000);
+                await indicatorReadState.getPrediction();
+                indicatorReadState.localInterval = setTimeout(executeWithInterval, 5000);
             };
             executeWithInterval().then();
             return () => {
