@@ -13,7 +13,7 @@ import {
     Legend
 } from "chart.js";
 import Draggable from "react-draggable";
-import {generateSineWaveData} from "../../utils/wave";
+import {generateBearishLine, generateLeftLine, generateSineWaveData} from "../../utils/wave";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const ChartPanel =
@@ -48,6 +48,9 @@ const ChartPanel =
                 indicatorReadState.calcParabolicCorrelation();
                 indicatorReadState.calculateDivergence();
                 indicatorReadState.calcSinusoidCorrelation();
+                indicatorReadState.calcBearishLineCorrelation();
+                indicatorReadState.calcBullishLineCorrelation();
+                indicatorReadState.calcLeftLineCorrelation();
             }, [indicatorReadState.last100RSICounter]);
 
             return (
@@ -88,25 +91,16 @@ const ChartPanel =
                                 <span>{indicatorReadState.divergence}</span>
                             </div>
                             <div className="checkbox-row">
-                                <Line data={{
-                                    labels: indicatorReadState.last100RSIValue.map((_, i) => i),
-                                    datasets: [
-                                        {
-                                            label: "Sinusoid kreivė",
-                                            data: generateSineWaveData(indicatorReadState.last100RSIValue.length - 1, 10),
-                                            borderColor: "rgba(75,192,192,1)",
-                                            backgroundColor: "rgba(75,192,192,0.2)",
-                                            pointRadius: 3,
-                                            tension: 0.4
-                                        }
-                                    ],
-                                }} options={{
-                                    responsive: true,
-                                    scales: {
-                                        x: {title: {display: true, text: "Masyvo indeksas"}},
-                                        y: {title: {display: true, text: "RSI"}},
-                                    },
-                                }}/>
+                                <label>Bearish line</label>
+                                <span>{indicatorReadState.bearishLineCorrelation}</span>
+                            </div>
+                            <div className="checkbox-row">
+                                <label>Bullish line</label>
+                                <span>{indicatorReadState.bullishLineCorrelation}</span>
+                            </div>
+                            <div className="checkbox-row">
+                                <label>Left line</label>
+                                <span>{indicatorReadState.leftLineCorrelation}</span>
                             </div>
                         </div>
                     </div>

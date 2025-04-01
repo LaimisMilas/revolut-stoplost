@@ -4,7 +4,13 @@ import {Utils} from "html-evaluate-utils/Utils";
 import {downsampleArray} from "../utils/dataFilter";
 import {calculateRSI} from "../indicator/RSI14";
 import {checkDivergence} from "../utils/IndicatorsUtils";
-import {doParabolicCorrelation, doSinusoidCorrelation} from "../indicator/Correletion";
+import {
+    doBearishLineCorrelation,
+    doBullishLineCorrelation,
+    doLeftLineCorrelation,
+    doParabolicCorrelation,
+    doSinusoidCorrelation
+} from "../indicator/Correletion";
 
 export class IndicatorReadState {
 
@@ -26,6 +32,9 @@ export class IndicatorReadState {
     sinusoidCorrelation = 0;
     parabolicCorrelation = 0;
     pricePrediction = 0;
+    leftLineCorrelation = 0;
+    bullishLineCorrelation = 0
+    bearishLineCorrelation = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -79,6 +88,18 @@ export class IndicatorReadState {
 
     calcParabolicCorrelation() {
         this.parabolicCorrelation = doParabolicCorrelation(this.last100RSIValue);
+    }
+
+    calcLeftLineCorrelation() {
+        this.leftLineCorrelation = doLeftLineCorrelation(this.last100RSIValue);
+    }
+
+    calcBullishLineCorrelation() {
+        this.bullishLineCorrelation = doBullishLineCorrelation(this.last100RSIValue);
+    }
+
+    calcBearishLineCorrelation() {
+        this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
 
     getPrediction = async () => {
