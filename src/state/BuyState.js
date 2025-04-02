@@ -22,6 +22,9 @@ export class BuyState {
     currentTradePare  = null;
     aspectCorrelation = 0.50;
     msgs = [];
+    trailingPrice = 0;
+    deltaRate = 0;
+    limitBuy = 0;
 
     constructor() {
         makeAutoObservable(this);

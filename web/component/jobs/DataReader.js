@@ -46,7 +46,7 @@ const DataReader = inject("indicatorReadState")(
                     ticker = [];
                 }
                 ticker.push(result.data);
-                sendData([result.data.indexPrice])
+                //sendData([result.data.indexPrice])
             }
 
             if(result.url === "history2"){

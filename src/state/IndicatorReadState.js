@@ -35,6 +35,11 @@ export class IndicatorReadState {
     leftLineCorrelation = 0;
     bullishLineCorrelation = 0
     bearishLineCorrelation = 0;
+    trailingRSI = 0;
+    deltaRate = 1;
+    limitRSIBuy = 30;
+    buyPointReached = false;
+    trailingActivateRSI = 30;
 
     constructor() {
         makeAutoObservable(this);
@@ -75,6 +80,7 @@ export class IndicatorReadState {
         this.last100RSIValue = calculateRSI(data);
         if(this.last100RSIValue.length > 0){
             this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
+          //  this.doTrailingAction();
         }
     }
 
@@ -101,11 +107,32 @@ export class IndicatorReadState {
     calcBearishLineCorrelation() {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
+    deltaValue = 0;
+    doTrailingAction(){
+        if(Number(this.lastRSIValue) <= Number(this.trailingActivateRSI) && !this.buyPointReached){
+            if(Number(this.trailingRSI) === 0){
+                this.trailingRSI = this.trailingActivateRSI;
+            }
+            this.deltaValue = (Number(this.trailingRSI) * Number(this.deltaRate))/100;
+            if(Number(this.lastRSIValue) < Number(this.trailingRSI) - this.deltaValue ){
+                this.trailingRSI = Number(this.lastRSIValue) + this.deltaValue;
+            } else {
+                if(Number(this.lastRSIValue) >= Number(this.trailingRSI)){
+                    this.buyPointReached = true;
+                }
+            }
+        } else {
+            if(Number(this.lastRSIValue) > Number(this.limitRSIBuy)){
+                this.buyPointReached = false;
+                this.trailingRSI = 0;
+            }
+        }
+    }
 
     getPrediction = async () => {
 
         // Konvertuojame į JSON string
-        const jsonData = JSON.stringify(this.last100PriceValue.slice(this.last100PriceValue.length - 51, this.last100PriceValue.length -1));
+        const jsonData = JSON.stringify(this.last100PriceValue.slice(this.last100PriceValue.length - 601, this.last100PriceValue.length -1));
 
         // Siunčiame POST užklausą su fetch
         fetch('http://localhost:8080/predict', {

@@ -8,3 +8,13 @@
 body{
     background-color: #1a1a1a;
 }
+
+#trailing-buy-panel{
+    right: 310px;
+    top: 200px;
+}
+
+.checkbox-row input.halfInput{
+    width: 50px;
+    margin-right: 10px;
+}

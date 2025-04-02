@@ -1,23 +1,11 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
-import {isRSIDown} from "../../../src/indicator/RSI14";
-
-const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
+const TrailingBuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState,sellState,indicatorReadState}) => {
 
         useEffect(() => {
-            const executeWithInterval = async () => {
-                await run();
-                await indicatorReadState.getPrediction();
-                indicatorReadState.localInterval = setTimeout(executeWithInterval, 5000);
-            };
-            executeWithInterval().then();
-            return () => {
-                if (buyState.localInterval) {
-                    clearInterval(buyState.localInterval);
-                }
-            }
-        }, [buyState.reset]);
+            run().then();
+        }, [indicatorReadState.buyPointReached]);
 
         const run = async () => {
             let root = buyState.systemCfg.cfg.linkedInLike.root;
@@ -31,14 +19,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
-            if (await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
-                const correlation = indicatorReadState.parabolicCorrelation;
-                if(correlation > buyState.aspectCorrelation){
-                    await buyOperation(tradePare, correlation);
-                } else {
-                    console.log("BuyClicker doBuy failure correlation: " + correlation);
-                }
-            }
+            const correlation = indicatorReadState.parabolicCorrelation;
+            await buyOperation(tradePare, correlation);
         }
 
         const buyOperation = async (tradePare, correlation) => {
@@ -78,5 +60,5 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
 
     }));
 
-export default BuyClicker;
+export default TrailingBuyClicker;
 

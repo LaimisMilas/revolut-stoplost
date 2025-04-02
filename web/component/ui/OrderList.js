@@ -14,7 +14,7 @@ const OrderList = inject("buyState", "sellState")(
         };
 
         const [orders, setOrders] = useState(buyState.msgs.concat(sellState.msgs));
-        const [sortOrder, setSortOrder] = useState("desc");
+        const [sortOrder, setSortOrder] = useState("asc");
 
         useEffect(() => {
             const data = buyState.msgs.concat(sellState.msgs);

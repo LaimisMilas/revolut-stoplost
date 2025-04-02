@@ -65,31 +65,33 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 }
-
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
-                const msg = {};
-                msg.type = "SELL";
-                msg.name = tradePare.name;
-                msg.price = Number(tradePare.price).toFixed(4);
-                msg.stopLost = Number(tradePare.stopLost).toFixed(4);
-                msg.takeProf = Number(tradePare.takeProf).toFixed(4);
-                msg.quantity = tradePare.quantity;
-                msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(4);
-                msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
-                msg.aspectCorrelation = sellState.aspectCorrelation;
-                msg.correlation = correlation;
-                msg.leftLineCorrelation = indicatorReadState.leftLineCorrelation;
-                msg.bullishLineCorrelation = indicatorReadState.bullishLineCorrelation;
-                msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
-                msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
-                msg.divergence = indicatorReadState.divergence;
-
-              //  msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
-                msg.time = Date.now();
-                sellState.saveMsg(msg);
+                await saveMsg(tradePare, correlation, "SELL");
             }
             return result;
+        }
+
+        const saveMsg = async (tradePare, correlation, type) => {
+            const msg = {};
+            msg.type = type;
+            msg.name = tradePare.name;
+            msg.price = Number(tradePare.price).toFixed(4);
+            msg.stopLost = Number(tradePare.stopLost).toFixed(4);
+            msg.takeProf = Number(tradePare.takeProf).toFixed(4);
+            msg.quantity = tradePare.quantity;
+            msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(4);
+            msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
+            msg.aspectCorrelation = sellState.aspectCorrelation;
+            msg.correlation = correlation;
+            msg.leftLineCorrelation = indicatorReadState.leftLineCorrelation;
+            msg.bullishLineCorrelation = indicatorReadState.bullishLineCorrelation;
+            msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
+            msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
+            msg.divergence = indicatorReadState.divergence;
+            //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
+            msg.time = Date.now();
+            sellState.saveMsg(msg);
         }
 
         const isTakeProfReached = (tradePare) => {
