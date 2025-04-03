@@ -35,11 +35,7 @@ export class IndicatorReadState {
     leftLineCorrelation = 0;
     bullishLineCorrelation = 0
     bearishLineCorrelation = 0;
-    trailingRSI = 0;
-    deltaRate = 1;
-    limitRSIBuy = 30;
-    buyPointReached = false;
-    trailingActivateRSI = 30;
+
 
     constructor() {
         makeAutoObservable(this);
@@ -80,7 +76,7 @@ export class IndicatorReadState {
         this.last100RSIValue = calculateRSI(data);
         if(this.last100RSIValue.length > 0){
             this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
-          //  this.doTrailingAction();
+            this.doTrailingAction();
         }
     }
 
@@ -107,25 +103,35 @@ export class IndicatorReadState {
     calcBearishLineCorrelation() {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
+
+    trailingPoint = 0;
+    deltaRate = 5;
+    buyPointReached = false;
+    trailingActivatePoint = 35;
     deltaValue = 0;
+    isTrailingActive = false;
 
     doTrailingAction(){
-        if(Number(this.lastRSIValue) <= Number(this.trailingActivateRSI) && !this.buyPointReached){
-            if(Number(this.trailingRSI) === 0){
-                this.trailingRSI = this.trailingActivateRSI;
+        if(Number(this.lastRSIValue) <= Number(this.trailingActivatePoint)){
+            if(!this.isTrailingActive){
+                this.trailingPoint = this.trailingActivatePoint;
+                this.deltaValue = (Number(this.trailingActivatePoint) * Number(this.deltaRate))/100;
+                this.isTrailingActive = true;
             }
-            this.deltaValue = (Number(this.trailingRSI) * Number(this.deltaRate))/100;
-            if(Number(this.lastRSIValue) < Number(this.trailingRSI) - this.deltaValue ){
-                this.trailingRSI = Number(this.lastRSIValue) + this.deltaValue;
+            if(Number(this.lastRSIValue) + Number(this.deltaValue) < Number(this.trailingPoint)){
+                this.trailingPoint = Number(this.lastRSIValue) + this.deltaValue;
             } else {
-                if(Number(this.lastRSIValue) >= Number(this.trailingRSI)){
+                if(Number(this.lastRSIValue) >= Number(this.trailingPoint)){
                     this.buyPointReached = true;
+                    this.isTrailingActive = false;
                 }
             }
         } else {
-            if(Number(this.lastRSIValue) > Number(this.limitRSIBuy)){
+            if(this.isTrailingActive){
                 this.buyPointReached = false;
-                this.trailingRSI = 0;
+                this.isTrailingActive = false;
+                this.trailingPoint = 0;
+                this.deltaValue = 0;
             }
         }
     }

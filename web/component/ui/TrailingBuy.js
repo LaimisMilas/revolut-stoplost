@@ -17,10 +17,7 @@ const TrailingBuy =
                     indicatorReadState.deltaRate = event.target.value;
                 }
                 if (key === "trailingPrice") {
-                    indicatorReadState.trailingActivateRSI = event.target.value;
-                }
-                if (key === "limitBuy") {
-                    indicatorReadState.limitRSIBuy = event.target.value;
+                    indicatorReadState.trailingActivatePoint = event.target.value;
                 }
 
                 buyState.updateSystemCfg = false;
@@ -51,10 +48,10 @@ const TrailingBuy =
                                         className="halfInput"
                                         id={"trailingPrice_id"}
                                         name={"trailingPrice_name"}
-                                        value={Number(indicatorReadState.trailingActivateRSI).toFixed(2)}
+                                        value={Number(indicatorReadState.trailingActivatePoint).toFixed(2)}
                                         onChange={(event) => handleOnChangeEvent(event, "trailingPrice")}
                                     />
-                                    <span>{Number(indicatorReadState.trailingRSI).toFixed(2)}</span>
+                                    <span>{Number(indicatorReadState.trailingPoint).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label
@@ -71,18 +68,17 @@ const TrailingBuy =
                                 </div>
                                 <div className="checkbox-row">
                                     <label
-                                        htmlFor={"limitBuy_id"}>Limit Buy</label>
-                                    <input
-                                        type="text"
-                                        id={"limitBuy_id"}
-                                        name={"limitBuy_name"}
-                                        value={indicatorReadState.limitRSIBuy}
-                                        onChange={(event) => handleOnChangeEvent(event, "limitBuy")}
-                                    />
+                                        htmlFor={"limitBuy_id"}>Last RSI</label>
+                                    <span>{Number(indicatorReadState.lastRSIValue).toFixed(2)}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label
+                                        htmlFor={"limitBuy_id"}>RSI+Delta</label>
+                                    <span>{(Number(indicatorReadState.lastRSIValue) + Number(indicatorReadState.deltaValue)).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label>Buy point reached</label>
-                                    <span>{indicatorReadState.buyPointReached ? "true":"false"}</span>
+                                    <span>{indicatorReadState.buyPointReached ? "true" : "false"}</span>
                                 </div>
                             </div>
                         </div>
