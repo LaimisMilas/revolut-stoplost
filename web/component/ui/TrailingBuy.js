@@ -15,9 +15,11 @@ const TrailingBuy =
 
                 if (key === "deltaRate") {
                     indicatorReadState.deltaRate = event.target.value;
+                    indicatorReadState.isTrailingActive = false;
                 }
                 if (key === "trailingPrice") {
                     indicatorReadState.trailingActivatePoint = event.target.value;
+                    indicatorReadState.isTrailingActive = false;
                 }
 
                 buyState.updateSystemCfg = false;

@@ -8,7 +8,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                await indicatorReadState.getPrediction();
+                //await indicatorReadState.getPrediction();
                 indicatorReadState.localInterval = setTimeout(executeWithInterval, 5000);
             };
             executeWithInterval().then();
@@ -28,16 +28,14 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
 
         const doBuy = async () => {
             let tradePare = buyState.getCurrentTradePare();
-            if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
+            if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
-            if (await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
-                const correlation = indicatorReadState.parabolicCorrelation;
-                if(correlation > buyState.aspectCorrelation){
-                    await buyOperation(tradePare, correlation);
-                } else {
-                    console.log("BuyClicker doBuy failure correlation: " + correlation);
-                }
+
+            // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
+            const correlation = indicatorReadState.parabolicCorrelation > buyState.aspectCorrelation;
+            if (indicatorReadState.buyPointReached) {
+                await buyOperation(tradePare, correlation);
             }
         }
 
@@ -50,12 +48,16 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 result += 100;
                 sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
+                indicatorReadState.buyPointReached = false;
+                indicatorReadState.isTrailingActive = false;
+                indicatorReadState.trailingPoint = 0;
+                indicatorReadState.deltaValue = 0;
                 await saveMsg(tradePare, correlation, "BUY");
             }
             return result;
         }
 
-        const saveMsg = async (tradePare,correlation, type) => {
+        const saveMsg = async (tradePare, correlation, type) => {
             const msg = {};
             msg.type = type;
             msg.name = tradePare.name;

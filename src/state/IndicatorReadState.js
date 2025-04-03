@@ -107,13 +107,14 @@ export class IndicatorReadState {
     trailingPoint = 0;
     deltaRate = 5;
     buyPointReached = false;
-    trailingActivatePoint = 35;
+    trailingActivatePoint = 30;
     deltaValue = 0;
     isTrailingActive = false;
 
     doTrailingAction(){
         if(Number(this.lastRSIValue) <= Number(this.trailingActivatePoint)){
             if(!this.isTrailingActive){
+                this.buyPointReached = false;
                 this.trailingPoint = this.trailingActivatePoint;
                 this.deltaValue = (Number(this.trailingActivatePoint) * Number(this.deltaRate))/100;
                 this.isTrailingActive = true;
@@ -123,12 +124,10 @@ export class IndicatorReadState {
             } else {
                 if(Number(this.lastRSIValue) >= Number(this.trailingPoint)){
                     this.buyPointReached = true;
-                    this.isTrailingActive = false;
                 }
             }
         } else {
             if(this.isTrailingActive){
-                this.buyPointReached = false;
                 this.isTrailingActive = false;
                 this.trailingPoint = 0;
                 this.deltaValue = 0;
