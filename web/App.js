@@ -9,8 +9,6 @@ import SellClicker from "./component/jobs/SellClicker";
 import BuyClicker from "./component/jobs/BuyClicker";
 import OrderList from "./component/ui/OrderList";
 import ChartPanel from "../src/component/ui/ChartPanel";
-import TrailingBuy from "./component/ui/TrailingBuy";
-import TrailingBuyClicker from "./component/jobs/TralingBuyClicker";
 
 const rootState = new RootStore("rc_");
 

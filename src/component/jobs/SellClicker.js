@@ -95,8 +95,9 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 if(caller === "stopLost"){
                     const newTargetPrice = Number(indicatorReadState.lastPriceValue) + ((Number(indicatorReadState.lastPriceValue) * 1)/100);
                     buyState.getCurrentTradePare().targetPrice = Number(newTargetPrice).toFixed(2);
-                    const newRSIValue = Number(indicatorReadState.lastRSIValue) + ((Number(indicatorReadState.lastRSIValue) * 2)/100);
-                    buyState.getCurrentTradePare().rsi = Number(newRSIValue).toFixed(0);
+                    //const newRSIValue = Number(indicatorReadState.lastRSIValue) + ((Number(indicatorReadState.lastRSIValue) * 2)/100);
+                   // buyState.getCurrentTradePare().rsi = Number(newRSIValue).toFixed(0);
+                    buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 } else if(caller === "takeProf"){
                     buyState.getCurrentTradePare().targetPrice = Number(indicatorReadState.lastPriceValue);

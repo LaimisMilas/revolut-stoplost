@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {isRSIDown} from "../../../src/indicator/RSI14";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
-    observer(({buyState,sellState,indicatorReadState}) => {
+    observer(({buyState, sellState, indicatorReadState}) => {
 
         useEffect(() => {
             const executeWithInterval = async () => {

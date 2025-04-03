@@ -108,6 +108,7 @@ export class IndicatorReadState {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
     deltaValue = 0;
+
     doTrailingAction(){
         if(Number(this.lastRSIValue) <= Number(this.trailingActivateRSI) && !this.buyPointReached){
             if(Number(this.trailingRSI) === 0){

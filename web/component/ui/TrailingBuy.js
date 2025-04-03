@@ -6,20 +6,12 @@ const TrailingBuy =
     inject("buyState", "buyPanelState", "indicatorReadState")(
         observer(({buyState, buyPanelState, indicatorReadState}) => {
 
-            const [applyButtonStyle, setApplyButtonStyle] = useState({
-                className: "apply-button",
-            });
-
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
-            const [stopAllAction, setStopAllAction] = useState(buyPanelState.getIsActionsStop());
-
 
             useEffect(() => {
-                setStopAllAction(buyPanelState.getIsActionsStop());
             }, []);
 
             const handleOnChangeEvent = (event, key) => {
-                setApplyButtonStyle({className: "apply-button-save"});
 
                 if (key === "deltaRate") {
                     indicatorReadState.deltaRate = event.target.value;
@@ -34,21 +26,8 @@ const TrailingBuy =
                 buyState.updateSystemCfg = false;
             };
 
-            const handleApplyButtonClick = () => {
-                setApplyButtonStyle({className: "apply-button-apply"});
-                setTimeout(
-                    () => setApplyButtonStyle({className: "apply-button"}), 700
-                )
-                buyState.updateSystemCfg = true;
-            };
-
             const handleCollapseButtonClick = () => {
                 checkBoxContainerState === true ? setCheckBoxContainerState(false) : setCheckBoxContainerState(true);
-            }
-
-            const handleStopButtonClick = () => {
-                stopAllAction === false ? setStopAllAction(true) : setStopAllAction(false);
-                buyState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
             }
 
             return (
@@ -105,16 +84,6 @@ const TrailingBuy =
                                     <label>Buy point reached</label>
                                     <span>{indicatorReadState.buyPointReached ? "true":"false"}</span>
                                 </div>
-                                <button className={applyButtonStyle.className}
-                                        onClick={handleApplyButtonClick}>Apply
-                                </button>
-                                <button
-                                    className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
-                                    onClick={handleStopButtonClick}>
-                                    {
-                                        stopAllAction === false ? "Stop" : "Start"
-                                    }
-                                </button>
                             </div>
                         </div>
                     </div>

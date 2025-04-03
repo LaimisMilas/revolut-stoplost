@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {inject, observer} from "mobx-react";
+import TrailingBuy from "./trailingBuy";
 
 const OrderList = inject("buyState", "sellState")(
     observer(({buyState, sellState}) => {
@@ -75,6 +76,7 @@ const OrderList = inject("buyState", "sellState")(
                     ))}
                     </tbody>
                 </table>
+                <TrailingBuy initialPrice={160.01} onBuy={161.122} trailingPercent={5}/>
             </div>
         );
     }));
