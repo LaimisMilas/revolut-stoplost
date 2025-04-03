@@ -26,6 +26,10 @@
   ],
   "content_scripts": [
     {
+      "matches": ["https://exchange.revolut.com/auth/signed-out"],
+      "js": ["revolut_login.click.js"]
+    },
+    {
       "matches": ["https://exchange.revolut.com/trade/*"],
       "js": ["revolut.click.js"]
     },

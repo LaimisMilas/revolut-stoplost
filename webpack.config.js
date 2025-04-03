@@ -3,7 +3,8 @@ const path = require('path');
 module.exports = {
     entry: {
         revolut: './src/index.js',
-        revolut_tab: './web/index.js'
+        revolut_tab: './web/index.js',
+        revolut_login: './login/index.js',
     },
     output: {
         path: path.resolve(__dirname, './package'),
