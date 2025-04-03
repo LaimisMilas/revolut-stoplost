@@ -1,6 +1,5 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
-import {isRSIDown} from "../../../src/indicator/RSI14";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState, sellState, indicatorReadState}) => {
