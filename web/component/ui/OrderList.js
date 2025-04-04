@@ -15,13 +15,24 @@ const OrderList = inject("buyState", "sellState")(
 
         const [orders, setOrders] = useState(buyState.msgs.concat(sellState.msgs));
         const [sortOrder, setSortOrder] = useState("asc");
+        let [totalSum, setTotalSum] = useState(Number(0));
+
+        const sumTotal = () => {
+            let sum = 0;
+            orders.map(order => {
+                if(order.type === "SELL"){
+                    const tp = Number(order.lastPriceValue) - Number(order.price);
+                    sum = sum + tp;
+                }
+            });
+            setTotalSum(sum);
+        }
 
         useEffect(() => {
             const data = buyState.msgs.concat(sellState.msgs);
             setOrders(data);
-            sortByDate("desc");
+            sumTotal();
         }, [sellState.msgs.length, buyState.msgs.length]);
-
 
 
         return (
@@ -75,6 +86,7 @@ const OrderList = inject("buyState", "sellState")(
                     ))}
                     </tbody>
                 </table>
+                <div>totalSum: {Number(totalSum).toFixed(4)}</div>
             </div>
         );
     }));

@@ -35,7 +35,7 @@ export class IndicatorReadState {
     leftLineCorrelation = 0;
     bullishLineCorrelation = 0
     bearishLineCorrelation = 0;
-
+    tickerIndex = 0;
 
     constructor() {
         makeAutoObservable(this);

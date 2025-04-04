@@ -3,11 +3,14 @@ import {inject, observer} from "mobx-react";
 import Draggable from "react-draggable";
 
 const TrailingBuy =
-    inject("buyState", "buyPanelState", "indicatorReadState")(
-        observer(({buyState, buyPanelState, indicatorReadState}) => {
+    inject("buyState", "sellState", "buyPanelState", "indicatorReadState")(
+        observer(({buyState,sellState, buyPanelState, indicatorReadState}) => {
 
+            const [stopAllAction, setStopAllAction] = useState(false);
             const [checkBoxContainerState, setCheckBoxContainerState] = useState(false);
-
+            const [applyButtonStyle, setApplyButtonStyle] = useState({
+                className: "apply-button",
+            });
             useEffect(() => {
             }, []);
 
@@ -28,6 +31,21 @@ const TrailingBuy =
             const handleCollapseButtonClick = () => {
                 checkBoxContainerState === true ? setCheckBoxContainerState(false) : setCheckBoxContainerState(true);
             }
+
+            const handleStopButtonClick = () => {
+                stopAllAction === false ? setStopAllAction(true) : setStopAllAction(false);
+               // sellState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
+            }
+
+            const handleApplyButtonClick = () => {
+                setApplyButtonStyle({className: "apply-button-apply"});
+                buyState.msgs = [];
+                sellState.msgs = [];
+                sellState.rootStore.saveStorage();
+                setTimeout(
+                    () => setApplyButtonStyle({className: "apply-button"}), 700
+                )
+            };
 
             return (
                 <Draggable>
@@ -82,6 +100,19 @@ const TrailingBuy =
                                     <label>Buy point reached</label>
                                     <span>{indicatorReadState.buyPointReached ? "true" : "false"}</span>
                                 </div>
+                                <div className="checkbox-row">
+                                    <label>TickerIndex</label>
+                                    <span>{indicatorReadState.tickerIndex}</span>
+                                </div>
+                                <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Delete MSG
+                                </button>
+                                <button
+                                    className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
+                                    onClick={handleStopButtonClick}>
+                                    {
+                                        stopAllAction === false ? "Stop" : "Start"
+                                    }
+                                </button>
                             </div>
                         </div>
                     </div>
