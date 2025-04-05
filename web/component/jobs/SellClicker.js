@@ -15,7 +15,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                sellState.localInterval = setTimeout(executeWithInterval, 500);
+                sellState.localInterval = setTimeout(executeWithInterval, 75);
             };
             executeWithInterval().then();
             return () => {
@@ -66,7 +66,14 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 }
+
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;
+                indicatorReadState.buyPointReached = false;
+                indicatorReadState.isTrailingActive = false;
+                indicatorReadState.trailingPoint = 0;
+                indicatorReadState.deltaValue = 0;
+                indicatorReadState.trailingBuyBot.reset();
+
                 result += 100;
                 await saveMsg(tradePare, correlation, "SELL");
             }

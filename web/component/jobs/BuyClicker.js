@@ -7,8 +7,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                //await indicatorReadState.getPrediction();
-                indicatorReadState.localInterval = setTimeout(executeWithInterval, 500);
+                indicatorReadState.localInterval = setTimeout(executeWithInterval, 75);
             };
             executeWithInterval().then();
             return () => {
@@ -32,8 +31,9 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             }
 
             // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
-            const correlation = indicatorReadState.parabolicCorrelation > buyState.aspectCorrelation;
-            if (indicatorReadState.buyPointReached) {
+            const correlation = indicatorReadState.parabolicCorrelation; // > buyState.aspectCorrelation;
+            // indicatorReadState.buyPointReached;
+            if (indicatorReadState.trailingBuyBot.shouldBuy()) {
                 await buyOperation(tradePare, correlation);
             }
         }
@@ -51,6 +51,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 indicatorReadState.isTrailingActive = false;
                 indicatorReadState.trailingPoint = 0;
                 indicatorReadState.deltaValue = 0;
+                indicatorReadState.trailingBuyBot.reset();
                 await saveMsg(tradePare, correlation, "BUY");
             }
             return result;

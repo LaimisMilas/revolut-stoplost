@@ -195,3 +195,13 @@
     /* height: 25px; */
     margin-top: 0;
 }
+
+#trailing-buy-panel{
+    right: 310px;
+    top: 200px;
+}
+
+#list-order-panel{
+    right: 455px;
+    top: 600px;
+}

@@ -1,10 +1,11 @@
 import {inject, observer} from "mobx-react";
 import {useEffect, useState} from "react";
+import {tickers} from "./static_ticker";
 
 const FaceDataReader = inject("indicatorReadState")(
     observer(({indicatorReadState}) => {
 
-        const [tickerValue, setTickerValue] = useState(indicatorReadState.tickerValue);
+        const [tickerValue, setTickerValue] = useState(tickers);
 
         function addEventListener(){
             window.addEventListener("message", async (event) => {
@@ -27,7 +28,7 @@ const FaceDataReader = inject("indicatorReadState")(
                 await doAction(indicatorReadState.tickerIndex);
                 updateIndex();
                 if(indicatorReadState.tickerIndex < 11250){
-                    myInterval = setTimeout(executeWithInterval, 100);
+                    myInterval = setTimeout(executeWithInterval, 75);
                 }
             };
             executeWithInterval().then();

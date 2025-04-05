@@ -1,16 +1,13 @@
 import React from 'react';
 import {Provider} from "mobx-react";
 import {RootStore} from "../src/state/RootStore";
-import DataReader from "./component/jobs/DataReader";
 import SellPanel from "../src/component/ui/SellPanel";
 import BuyPanel from "../src/component/ui/BuyPanel";
 import SellClicker from "./component/jobs/SellClicker";
 import BuyClicker from "./component/jobs/BuyClicker";
 import OrderList from "./component/ui/OrderList";
-import ChartPanel from "../src/component/ui/ChartPanel";
-import TrailingBuy from "./component/ui/TrailingBuy";
-import CryptoAI from "./component/ui/CryptoAI";
 import FaceDataReader from "./component/jobs/FaceDataReader";
+import TrailingBuyBotPanel from "./component/ui/TrailingBuyBotPanel";
 
 const rootState = new RootStore("rc_");
 
@@ -30,9 +27,8 @@ const App = () => {
                 <SellClicker/>
                 <BuyClicker/>
                 <FaceDataReader/>
-                <ChartPanel/>
                 <OrderList/>
-                <TrailingBuy/>
+                <TrailingBuyBotPanel/>
             </div>
         </Provider>
     );

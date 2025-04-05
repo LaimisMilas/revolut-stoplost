@@ -38,13 +38,9 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
-            if (await isRSIDown(tradePare, indicatorReadState.lastRSIValue)) {
-                const correlation = indicatorReadState.parabolicCorrelation;
-                if(correlation > buyState.aspectCorrelation){
-                    await buyOperation(tradePare, correlation);
-                } else {
-                    console.log("BuyClicker doBuy failure correlation: " + correlation);
-                }
+            const correlation = indicatorReadState.parabolicCorrelation;
+            if (indicatorReadState.buyPointReached) {
+                await buyOperation(tradePare, correlation);
             }
         }
 
@@ -74,17 +70,6 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if (result === 200) {
                 result += await clickBuy(tradePare.key);
                 //result += 100;
-                let last100RSIValue = indicatorReadState.last100RSIValue;
-                const msg = "BuyClicker clickBuy "
-                    + ", lastPriceValue: " + indicatorReadState.lastPriceValue
-                    + ", lastRSIValue: " + indicatorReadState.lastRSIValue
-                    + ", targetPrice: " + tradePare.targetPrice
-                    + ", aspectCorrelation: " + buyState.aspectCorrelation
-                    + ", correlation: " + correlation
-                    + ", RSI data: " + JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1))
-                    + ", time: " + getNowDate();
-                buyState.saveMsg(msg);
-                console.log(msg);
             }
 
             if (result === 300) {
@@ -94,9 +79,35 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 result += 100;
                 sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
+                indicatorReadState.buyPointReached = false;
+                indicatorReadState.isTrailingActive = false;
+                indicatorReadState.trailingPoint = 0;
+                indicatorReadState.deltaValue = 0;
+                await saveMsg(tradePare, correlation, "BUY");
             }
             console.log("BuyClicker buyOperation " + tradePare.name + " done status: " + result);
             return result;
+        }
+
+        const saveMsg = async (tradePare, correlation, type) => {
+            const msg = {};
+            msg.type = type;
+            msg.name = tradePare.name;
+            msg.targetPrice = Number(tradePare.targetPrice).toFixed(4);
+            msg.rsi = Number(tradePare.rsi).toFixed(2);
+            msg.quantity = tradePare.quantity;
+            msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(4);
+            msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
+            msg.aspectCorrelation = buyState.aspectCorrelation;
+            msg.correlation = correlation;
+            msg.leftLineCorrelation = indicatorReadState.leftLineCorrelation;
+            msg.bullishLineCorrelation = indicatorReadState.bullishLineCorrelation;
+            msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
+            msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
+            msg.divergence = indicatorReadState.divergence;
+            //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
+            msg.time = Date.now();
+            buyState.saveMsg(msg);
         }
 
     }));

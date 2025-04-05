@@ -37,16 +37,6 @@ const TrailingBuy =
                // sellState.systemCfg.cfg.linkedInLike.root.run = stopAllAction;
             }
 
-            const handleApplyButtonClick = () => {
-                setApplyButtonStyle({className: "apply-button-apply"});
-                buyState.msgs = [];
-                sellState.msgs = [];
-                sellState.rootStore.saveStorage();
-                setTimeout(
-                    () => setApplyButtonStyle({className: "apply-button"}), 700
-                )
-            };
-
             return (
                 <Draggable>
                     <div className="console-box" id="trailing-buy-panel" hidden={buyPanelState.stopAllAction}>
@@ -93,8 +83,8 @@ const TrailingBuy =
                                 </div>
                                 <div className="checkbox-row">
                                     <label
-                                        htmlFor={"limitBuy_id"}>RSI+Delta</label>
-                                    <span>{(Number(indicatorReadState.lastRSIValue) + Number(indicatorReadState.deltaValue)).toFixed(2)}</span>
+                                        htmlFor={"limitBuy_id"}>RSI-Delta</label>
+                                    <span>{(Number(indicatorReadState.lastRSIValue) - Number(indicatorReadState.deltaValue)).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label>Buy point reached</label>
@@ -104,8 +94,7 @@ const TrailingBuy =
                                     <label>TickerIndex</label>
                                     <span>{indicatorReadState.tickerIndex}</span>
                                 </div>
-                                <button className={applyButtonStyle.className} onClick={handleApplyButtonClick}>Delete MSG
-                                </button>
+
                                 <button
                                     className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
                                     onClick={handleStopButtonClick}>

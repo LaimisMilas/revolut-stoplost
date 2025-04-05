@@ -77,17 +77,6 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(result === 200){
                 result += await clickSell(tradePare.key);
                // result += 100;
-                let last100RSIValue = indicatorReadState.last100RSIValue;
-                const msg = "SellClicker clickSell "
-                    + ", lastPriceValue: " + indicatorReadState.lastPriceValue
-                    + ", lastRSIValue: " + indicatorReadState.lastRSIValue
-                    + ", targetPrice: " + tradePare.targetPrice
-                    + ", aspectCorrelation: " + sellState.aspectCorrelation
-                    + ", correlation: " + correlation
-                    + ", RSI data: " + JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1))
-                    + ", time: " + getNowDate();
-                sellState.saveMsg(msg);
-                console.log(msg);
             }
             if(result === 300){
                 sellState.systemCfg.cfg.linkedInLike.root.run = false;
@@ -106,6 +95,11 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 }
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
+                indicatorReadState.buyPointReached = false;
+                indicatorReadState.isTrailingActive = false;
+                indicatorReadState.trailingPoint = 0;
+                indicatorReadState.deltaValue = 0;
+                await saveMsg(tradePare, correlation, "SELL");
             }
             console.log("StopLostClicker sellOperation "+ tradePare.name + " done status: " + result);
             return result;
@@ -129,6 +123,28 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             let buyPrice = convertToNumber(tradePare.price);
             let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
             return currentProfit < convertToNumber(tradePare.stopLost);
+        }
+
+        const saveMsg = async (tradePare, correlation, type) => {
+            const msg = {};
+            msg.type = type;
+            msg.name = tradePare.name;
+            msg.price = Number(tradePare.price).toFixed(4);
+            msg.stopLost = Number(tradePare.stopLost).toFixed(4);
+            msg.takeProf = Number(tradePare.takeProf).toFixed(4);
+            msg.quantity = tradePare.quantity;
+            msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(4);
+            msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
+            msg.aspectCorrelation = sellState.aspectCorrelation;
+            msg.correlation = correlation;
+            msg.leftLineCorrelation = indicatorReadState.leftLineCorrelation;
+            msg.bullishLineCorrelation = indicatorReadState.bullishLineCorrelation;
+            msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
+            msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
+            msg.divergence = indicatorReadState.divergence;
+            //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
+            msg.time = Date.now();
+            sellState.saveMsg(msg);
         }
 
     }));
