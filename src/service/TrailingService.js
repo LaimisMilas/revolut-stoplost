@@ -1,6 +1,6 @@
 import { makeAutoObservable} from "mobx";
 import {TrailingBuyBot} from "../indicator/TrailingBuyBot";
-
+import {TrailingSellBot} from "../indicator/TrailingSellBot";
 export class TrailingService {
 
     rootStore = null;
@@ -14,6 +14,7 @@ export class TrailingService {
     deltaValue = 0;
 
     trailingBuyBot = null;
+    trailingSellBot = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -22,6 +23,7 @@ export class TrailingService {
     setup(rootStore) {
         this.rootStore = rootStore;
         this.trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 40, trailingPercent: 5 });
+        this.trailingSellBot = new TrailingSellBot({ trailingActivateRSI: 60, trailingPercent: 5 });
     }
 
     doTrailingAction(){
@@ -52,6 +54,10 @@ export class TrailingService {
 
     updateTrailingBuyBot(){
         this.trailingBuyBot.updateRSI(Number(this.lastRSIValue));
+    }
+
+    updateTrailingSellBot(){
+        this.trailingSellBot.updateRSI(Number(this.lastRSIValue));
     }
 
 }

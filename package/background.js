@@ -50,13 +50,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                                 }
                             }
                         } else{
+                            // history tai paskutiniu 15 min, zvake
                             if(params.response.url.includes("2/api/crypto-exchange/currencies/SOL-USD/chart/history")){
-                                //console.log("📥 Perimta užklausa:", params.response.url);
-                                //console.log("🔎 Atsakymas:", response.body);
-                                // 🔥 Siunčiame duomenis į content script
                                 if(response.body){
                                     let data = JSON.parse(response.body);
                                     chrome.tabs.sendMessage(source.tabId, {url: "history", data });
+                                    if(cryptoTabId){
+                                        chrome.tabs.sendMessage(cryptoTabId, {url: "history", data});
+                                    }
                                 }
                             }
 

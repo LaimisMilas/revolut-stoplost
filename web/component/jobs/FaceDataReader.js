@@ -1,17 +1,17 @@
 import {inject, observer} from "mobx-react";
 import {useEffect, useState} from "react";
-import {tickers} from "./static_ticker";
+import {tickersDownTrend} from "./ticker_dow_trend";
 
-const FaceDataReader = inject("indicatorReadState")(
-    observer(({indicatorReadState}) => {
+const FaceDataReader = inject("indicatorReadState", "tickerService")(
+    observer(({indicatorReadState, tickerService}) => {
 
-        const [tickerValue, setTickerValue] = useState(tickers);
+        const [tickerValue, setTickerValue] = useState(tickersDownTrend);
 
         function addEventListener(){
             window.addEventListener("message", async (event) => {
                 if (event.source !== window) return;
                 if (event.data.type === "EXTENSION_DATA") {
-                   // await doAction(event.data.data);
+                    await saveHistoryData(event.data.data);
                 }
             });
         }
@@ -38,6 +38,12 @@ const FaceDataReader = inject("indicatorReadState")(
                 }
             }
         }, []);
+
+        const saveHistoryData = (result) => {
+            if(result.url === "history"){
+                tickerService.pushNewHistory(result.data);
+            }
+        }
 
 
         const doAction = async (tickerIndex) => {

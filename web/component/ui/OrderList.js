@@ -65,6 +65,7 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                 onClick={() => handleCollapseButtonClick()}>
                             {checkBoxContainerState === true ? "▼" : "▲"}
                         </button>
+                        <span>Bendra suma: {sellProfit.toFixed(2)} </span>
                         <button onClick={deleteAllMessages}>Delete MSG
                         </button>
                         <div hidden={checkBoxContainerState}>
@@ -117,9 +118,6 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                     ))}
                                     </tbody>
                                 </table>
-                            </div>
-                            <div className="mt-2 font-semibold">
-                                Bendra suma: {sellProfit.toFixed(2)}
                             </div>
                         </div>
                     </div>

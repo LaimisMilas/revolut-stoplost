@@ -24,7 +24,6 @@ const DataReader = inject("indicatorReadState","tickerService")(
                 if (secTickerBuffer.length > 0 && secTickerBuffer[0].seconds !== result.data.seconds) {
                     let avgSecPrice = secTickerBuffer.reduce((sum, item) => sum + parseFloat(item.indexPrice), 0) / secTickerBuffer.length;
                     let updatedTicker = {...result.data, indexPrice: avgSecPrice.toFixed(6)};
-                    tickerService.pushNewTicker(updatedTicker);
                     indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, updatedTicker, 11250);
                     indicatorReadState.calculateRSITicker(600 + 14, 30);
                     indicatorReadState.updateLast100Price();
@@ -34,19 +33,8 @@ const DataReader = inject("indicatorReadState","tickerService")(
                 secTickerBuffer.push(result.data);
             }
 
-            if(result.url === "history2"){
-                result.data.seconds = new Date().getSeconds();
-                result.data.indexPrice = result.data.c[1];
-                if (secTickerBuffer.length > 0 && secTickerBuffer[0].seconds !== result.data.seconds) {
-                    let avgIndexPrice = secTickerBuffer.reduce((sum, item) => sum + parseFloat(item.indexPrice), 0) / secTickerBuffer.length;
-                    let averagedData = {...result.data, indexPrice: avgIndexPrice.toFixed(6)};
-                    indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, averagedData, 11250);
-                    indicatorReadState.calculateRSITicker(600 + 14, 30);
-                    indicatorReadState.updateLast100Price();
-                    indicatorReadState.last100RSICounter ++;
-                    secTickerBuffer = [];
-                }
-                secTickerBuffer.push(result.data);
+            if(result.url === "history"){
+                tickerService.pushNewHistory(result.data);
             }
         }
     }));

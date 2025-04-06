@@ -34,7 +34,7 @@ export class RootStore {
         this.buyPanelState.setup(this, this.buyState);
         this.indicatorReadState.setup(this);
         this.trailingService.setup(this);
-        this.tickerService.setup(this);
+        this.tickerService.setup(this, this.indicatorReadState);
         this.addToStoreRegister();
         const storeState = LocalStorageManager.getStorage("lc_store_state");
         if (storeState && storeState === 1) {
@@ -72,6 +72,7 @@ export class RootStore {
         this.sellState.msgs = this.reduce(LocalStorageManager.getStorage("lc_sell_msgs"), this.sellState.msgs);
         this.buyState.msgs = this.reduce(LocalStorageManager.getStorage("lc_buy_msgs"), this.buyState.msgs);
         this.indicatorReadState.tickerValue = this.reduce(LocalStorageManager.getStorage("lc_tickerValue"), this.indicatorReadState.tickerValue);
+        this.tickerService.historyData = this.reduce(LocalStorageManager.getStorage("lc_historyData"), this.tickerService.historyData);
     }
 
     reduce(acc, bcc){
@@ -96,6 +97,7 @@ export class RootStore {
         this.sellState.msgs = this.reduce(this.sellState.msgs, LocalStorageManager.getStorage("lc_sell_msgs"));
         this.buyState.msgs = this.reduce(this.buyState.msgs, LocalStorageManager.getStorage("lc_buy_msgs"));
         this.indicatorReadState.tickerValue = this.reduce(this.indicatorReadState.tickerValue, LocalStorageManager.getStorage("lc_tickerValue"));
+        this.tickerService.historyData = this.reduce(this.tickerService.historyData, LocalStorageManager.getStorage("lc_historyData"));
     }
 
     saveStorage() {
@@ -116,6 +118,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_sell_msgs", this.sellState.msgs);
         LocalStorageManager.flash("lc_buy_msgs", this.buyState.msgs);
         LocalStorageManager.flash("lc_tickerValue", this.indicatorReadState.tickerValue);
+        LocalStorageManager.flash("lc_historyData", this.tickerService.historyData);
       }
 
     initializeLocalStorage() {
@@ -135,6 +138,7 @@ export class RootStore {
         LocalStorageManager.flash("lc_sell_msgs", this.sellState.msgs);
         LocalStorageManager.flash("lc_buy_msgs", this.buyState.msgs);
         LocalStorageManager.flash("lc_tickerValue", this.indicatorReadState.tickerValue);
+        LocalStorageManager.flash("lc_historyData", this.tickerService.historyData);
     }
 
     registryStoreObject = new Map();

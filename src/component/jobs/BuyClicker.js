@@ -39,7 +39,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 return;
             }
             const correlation = indicatorReadState.parabolicCorrelation;
-            if (indicatorReadState.buyPointReached) {
+            if (indicatorReadState.buyPointReached && correlation > buyState.aspectCorrelation) {
                 await buyOperation(tradePare, correlation);
             }
         }

@@ -17,6 +17,15 @@ export function calculateEMA(data, period) {
     return ema;
 }
 
+export function getTrendByEMA(prices) {
+    const ema12 = calculateEMA(prices, 12);
+    const ema26 = calculateEMA(prices, 26);
+
+    const latestEma12 = ema12[ema12.length - 1];
+    const latestEma26 = ema26[ema26.length - 1];
+    return latestEma12 > latestEma26 ? 'up' : 'down';
+}
+
 export function findMACDCrossovers(prices) {
     let ema12 = calculateEMA(prices, 12);
     let ema26 = calculateEMA(prices, 26);

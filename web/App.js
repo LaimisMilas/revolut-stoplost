@@ -20,6 +20,8 @@ const App = () => {
             sellPanelState={rootState.sellPanelState}
             buyPanelState={rootState.buyPanelState}
             indicatorReadState={rootState.indicatorReadState}
+            trailingService={rootState.trailingService}
+            tickerService={rootState.tickerService}
         >
             <div className="webApp">
                 <SellPanel/>

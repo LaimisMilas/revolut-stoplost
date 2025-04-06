@@ -1,8 +1,9 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
+import {calcStopLost, calcStopLostTakeProf, calcTakeProfit, calculateTP_SL} from "../../../src/indicator/ATR";
 
-const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
-    observer(({buyState, sellState, indicatorReadState}) => {
+const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerService")(
+    observer(({buyState, sellState, indicatorReadState, tickerService}) => {
 
         useEffect(() => {
             const executeWithInterval = async () => {
@@ -29,11 +30,10 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
-
             // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
-            const correlation = indicatorReadState.parabolicCorrelation; // > buyState.aspectCorrelation;
+            const correlation = indicatorReadState.parabolicCorrelation > buyState.aspectCorrelation;
             // indicatorReadState.buyPointReached;
-            if (indicatorReadState.trailingBuyBot.shouldBuy()) {
+            if (indicatorReadState.trailingBuyBot.shouldBuy() && correlation) {
                 await buyOperation(tradePare, correlation);
             }
         }
@@ -47,6 +47,13 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 result += 100;
                 sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
+                if(tickerService.historyData.length < 0){
+                    const price = sellState.getCurrentTradePare().price;
+                    const trend = indicatorReadState.trendByPrice;
+                    const values = calcStopLostTakeProf(price, tickerService.historyData, trend);
+                    sellState.getCurrentTradePare().stopLost = values.stopLoss;
+                    sellState.getCurrentTradePare().takeProf = values.takeProfit;
+                }
                 indicatorReadState.buyPointReached = false;
                 indicatorReadState.isTrailingActive = false;
                 indicatorReadState.trailingPoint = 0;
