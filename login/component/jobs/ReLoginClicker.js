@@ -7,6 +7,7 @@ const ReLoginClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState, sellState, indicatorReadState}) => {
 
         useEffect(() => {
+console.log("lak");
             const executeWithInterval = async () => {
                 await doLogin();
                 indicatorReadState.localInterval = setTimeout(executeWithInterval, 1000);
@@ -27,7 +28,7 @@ const ReLoginClicker = inject("buyState", "sellState", "indicatorReadState")(
         }
 
         const clickLogin = async () => {
-            let el = Utils.getElByXPath("//button/span[contains(text(), 'Prisijungti')]/..");
+            let el = Utils.getElByXPath("//button[contains(text(), 'Prisijungti')]");
             if(el){
                 el.click();
                 await sleep(11300);

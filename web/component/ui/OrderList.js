@@ -119,7 +119,7 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                 </table>
                             </div>
                             <div className="mt-2 font-semibold">
-                                Bendra suma: {sellProfit.toFixed(2)} €
+                                Bendra suma: {sellProfit.toFixed(2)}
                             </div>
                         </div>
                     </div>

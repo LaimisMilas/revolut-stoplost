@@ -78,7 +78,6 @@ export class IndicatorReadState {
             this.last100RSIValue = calculateRSI(data);
             if(this.last100RSIValue.length > 0){
                 this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
-                // this.doTrailingAction();
                 this.updateTrailingBuyBot();
             }
         }
@@ -108,43 +107,9 @@ export class IndicatorReadState {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
 
-    trailingPoint = 0;
-    deltaRate = 5;
-    buyPointReached = false;
-    trailingActivatePoint = 40;
-    deltaValue = 0;
-    isTrailingActive = false;
-
-    doTrailingAction(){
-        if(Number(this.lastRSIValue) < Number(this.trailingActivatePoint)){
-            if(!this.isTrailingActive){
-                this.trailingPoint = this.trailingActivatePoint;
-                this.deltaValue = (Number(this.trailingActivatePoint) * Number(this.deltaRate))/100;
-                this.buyPointReached = false;
-                this.isTrailingActive = true;
-            }
-            if(Number(this.lastRSIValue) < Number(this.trailingPoint)){
-                if(Number(this.lastRSIValue) < Number(this.trailingPoint - this.deltaValue)){
-                    this.trailingPoint = Number(this.lastRSIValue);
-                }
-            } else {
-                if(Number(this.lastRSIValue) > Number(this.trailingPoint)){
-                    this.buyPointReached = true;
-                }
-            }
-        } else {
-            if(this.isTrailingActive){
-                this.isTrailingActive = false;
-                this.trailingPoint = 0;
-                this.deltaValue = 0;
-            }
-        }
-    }
-
     trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 40, trailingPercent: 5 });
 
     updateTrailingBuyBot(){
-
         this.trailingBuyBot.updateRSI(Number(this.lastRSIValue));
     }
 

@@ -4,6 +4,8 @@ import {LocalStorageManager} from "../storage/LocalStorageManager";
 import {BuyState} from "./BuyState";
 import {BuyPanelState} from "./BuyPanelState";
 import {IndicatorReadState} from "./IndicatorReadState";
+import {TrailingService} from "../service/TrailingService";
+import {TickerService} from "../service/TickerService";
 export class RootStore {
 
     sellState = null;
@@ -20,6 +22,8 @@ export class RootStore {
         this.sellPanelState = new SellPanelState();
         this.buyPanelState = new BuyPanelState();
         this.indicatorReadState = new IndicatorReadState();
+        this.trailingService = new TrailingService();
+        this.tickerService = new TickerService();
         this.setupStoreRelationships(" RootStore.constructor()");
     }
 
@@ -29,6 +33,8 @@ export class RootStore {
         this.sellPanelState.setup(this, this.sellState);
         this.buyPanelState.setup(this, this.buyState);
         this.indicatorReadState.setup(this);
+        this.trailingService.setup(this);
+        this.tickerService.setup(this);
         this.addToStoreRegister();
         const storeState = LocalStorageManager.getStorage("lc_store_state");
         if (storeState && storeState === 1) {

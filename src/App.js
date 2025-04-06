@@ -1,12 +1,9 @@
 import React from 'react';
 import {Provider} from "mobx-react";
-
 import {RootStore} from "./state/RootStore";
 import SellClicker from "./component/jobs/SellClicker";
-
 import BuyClicker from "./component/jobs/BuyClicker";
 import DataReader from "./component/jobs/DataReader";
-
 import SellPanel from "./component/ui/SellPanel";
 import BuyPanel from "./component/ui/BuyPanel";
 import TrailingBuy from "../web/component/ui/TrailingBuy";
@@ -23,6 +20,8 @@ const App = () => {
             sellPanelState={rootState.sellPanelState}
             buyPanelState={rootState.buyPanelState}
             indicatorReadState={rootState.indicatorReadState}
+            trailingService={rootState.trailingService}
+            tickerService={rootState.tickerService}
         >
             <div className="App">
                 <SellPanel/>
