@@ -32,11 +32,7 @@ const BuyPanel =
             }, [buyState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const handleOnChangeEvent = (event, key) => {
-                if(key === "aspectCorrelation"){
-                    buyState.aspectCorrelation = convertToNumber(event.target.value);
-                } else{
-                    tradePare[key] = event.target.value;
-                }
+                tradePare[key] = event.target.value;
                 setApplyButtonStyle({className: "apply-button-save"});
                 buyState.updateSystemCfg = false;
             };
@@ -95,7 +91,7 @@ const BuyPanel =
                                     <input
                                         className="halfInput"
                                         type="text"
-                                        value={buyState.aspectCorrelation}
+                                        value={tradePare.aspectCorrelation}
                                         onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
                                     />
                                     <span>{indicatorReadState.parabolicCorrelation}</span>

@@ -4,7 +4,8 @@ export var trade_pares = {
         "name": "SOL-USD",
         "targetPrice": 123,
         "rsi": 30,
-        "quantity": "25%"
+        "quantity": "100%",
+        "aspectCorrelation": 0.5
     },
     "XRP":{
         "key": "XRP",

@@ -55,11 +55,7 @@ const SellPanel =
             const [currentProf, setCurrentProf] = useState(calcCurrentProf());
 
             const handleOnChangeEvent = (event, key) => {
-                if(key === "aspectCorrelation"){
-                    sellState.aspectCorrelation = convertToNumber(event.target.value);
-                } else{
-                    tradePare[key] = event.target.value;
-                }
+                tradePare[key] = event.target.value;
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setApplyButtonStyle({className: "apply-button-save"});
@@ -147,7 +143,7 @@ const SellPanel =
                                     <input
                                         className="halfInput"
                                         type="text"
-                                        value={sellState.aspectCorrelation}
+                                        value={tradePare.aspectCorrelation}
                                         onChange={(event) => handleOnChangeEvent(event, "aspectCorrelation")}
                                     />
                                     <span>{indicatorReadState.parabolicCorrelation}</span>

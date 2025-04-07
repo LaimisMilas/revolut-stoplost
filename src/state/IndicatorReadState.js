@@ -47,7 +47,9 @@ export class IndicatorReadState {
     }
 
     updateLast100Price(){
-        this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
+        if(this.tickerValue){
+            this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
+        }
     }
 
     pushWithLimit(arr, value, maxLength) {
@@ -64,12 +66,15 @@ export class IndicatorReadState {
     //327 = 15min. 109 = 5min. norint matyti MACD reikia bent 26 po 109
     // tai chunkSize = 109, 26 x 109 = 2834(mini data set)
     getLastTickers(size = 300, chunkSize = 1){
-        let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
-        const from = data.length - size;
-        const to = data.length - 1;
-        data = downsampleArray(data.slice(from, to), chunkSize);
-        this.lastPriceValue = data[data.length -1];
-        return data;
+        if(this.tickerValue.length > 0){
+            let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
+            const from = data.length - size;
+            const to = data.length - 1;
+            data = downsampleArray(data.slice(from, to), chunkSize);
+            this.lastPriceValue = data[data.length -1];
+            return data;
+        }
+        return null;
     }
 
     calculateRSITicker = (size, chunkSize) => {
@@ -122,7 +127,9 @@ export class IndicatorReadState {
     trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 40, trailingPercent: 10 });
 
     updateTrailingBuyBot(){
-        this.trailingBuyBot.updateRSI(Number(this.lastRSIValue));
+        if(this.lastRSIValue){
+            this.trailingBuyBot.updateRSI(Number(this.lastRSIValue));
+        }
     }
 
     trailingActivatePoint = 40;
@@ -158,23 +165,27 @@ export class IndicatorReadState {
         }
     }
 
-    trendByPrice = "up";
-    trendByPrice1min = "up";
+    trendByPrice = "";
+    trendByPrice1min = "";
 
     calculateTrendByEMA() {
-        const prices = this.last100PriceValue // this.getLastTickers(600 + 14, 30);
-        this.trendByPrice = getTrendByEMA(prices);
-        this.trendByPrice1min = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length, 15));
+        if(this.last100PriceValue.length > 0){
+            const prices = this.last100PriceValue; // this.getLastTickers(600 + 14, 30);
+            this.trendByPrice = getTrendByEMA(prices);
+            this.trendByPrice1min = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length, 15));
+        }
     }
 
-    aroonTrend = "up";
+    aroonTrend = "";
 
     calculateAroon(){
-        const result = calculateAroon(this.getLastTickers(this.last100PriceValue.length, 15));
-        const aroonUp = result[0];
-        const aroonDown = result[1];
-        const diff = (aroonUp[aroonUp.length-1] - aroonDown[aroonDown.length-1]).toFixed(2)
-        this.aroonTrend = aroonUp[aroonUp.length-1] > aroonDown[aroonDown.length-1] ? "up:" + diff : "down:" + diff;
+        if(this.last100PriceValue.length > 0){
+            const result = calculateAroon(this.getLastTickers(this.last100PriceValue.length, 15));
+            const aroonUp = result[0];
+            const aroonDown = result[1];
+            const diff = (aroonUp[aroonUp.length-1] - aroonDown[aroonDown.length-1]).toFixed(2);
+            this.aroonTrend = aroonUp[aroonUp.length-1] > aroonDown[aroonDown.length-1] ? "up:" + diff : "down:" + diff;
+        }
     }
 
     getPrediction = async () => {

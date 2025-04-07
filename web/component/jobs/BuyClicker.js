@@ -31,7 +31,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
                 return;
             }
             // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
-            const correlation = indicatorReadState.parabolicCorrelation > buyState.aspectCorrelation;
+            const correlation = indicatorReadState.parabolicCorrelation > tradePare.aspectCorrelation;
             // indicatorReadState.buyPointReached;
             const aroon = indicatorReadState.aroonTrend.split(":");
 

@@ -3,10 +3,11 @@ export var trade_pares = {
         "key": "SOL",
         "name": "SOL-USD",
         "price": 123,
-        "stopLost": -1,
-        "takeProf": 5,
+        "stopLost": -0.4,
+        "takeProf": 1.0,
         "takeProfRsi": 70,
-        "quantity": "25%"
+        "quantity": "25%",
+        "aspectCorrelation": -0.5
     },
     "XRP":{
         "key": "XRP",

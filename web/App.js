@@ -8,7 +8,9 @@ import BuyClicker from "./component/jobs/BuyClicker";
 import OrderList from "./component/ui/OrderList";
 import FaceDataReader from "./component/jobs/FaceDataReader";
 import TrailingBuyBotPanel from "./component/ui/TrailingBuyBotPanel";
+import {LocalStorageManager} from "../src/storage/LocalStorageManager";
 
+LocalStorageManager.flash("lc_store_state", 0);
 const rootState = new RootStore("rc_");
 
 const App = () => {

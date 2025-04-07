@@ -28,7 +28,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
 
         const run = async () => {
             let root = buyState.systemCfg.cfg.linkedInLike.root;
-            if (root.run) {
+            if (root.run ) {
                 await doBuy();
             }
         }
@@ -39,14 +39,14 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 return;
             }
             const correlation = indicatorReadState.parabolicCorrelation;
-            if (indicatorReadState.buyPointReached && correlation > buyState.aspectCorrelation && indicatorReadState.trendByPrice1min === "up") {
+            if (indicatorReadState.buyPointReached && correlation > tradePare.aspectCorrelation && indicatorReadState.trendByPrice1min === "up") {
                 await buyOperation(tradePare, correlation);
             }
         }
 
         const buyOperation = async (tradePare, correlation) => {
             let result = await selectBuySwitch();
-            if (result === 100) {0.50
+            if (result === 100) {
                 let quantityValue = tradePare.quantity;
                 if (quantityValue.includes('%')) {
                     quantityValue = quantityValue.toString()
