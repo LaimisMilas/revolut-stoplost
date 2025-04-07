@@ -91,10 +91,21 @@ const TrailingBuy =
                                     <span>{indicatorReadState.buyPointReached ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
+                                    <label>Trend 1sec.</label>
+                                    <span>{indicatorReadState.trendByPrice}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>Trend 1min.</label>
+                                    <span>{indicatorReadState.trendByPrice1min}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>Aroon trend</label>
+                                    <span>{indicatorReadState.aroonTrend}</span>
+                                </div>
+                                <div className="checkbox-row">
                                     <label>TickerIndex</label>
                                     <span>{indicatorReadState.tickerIndex}</span>
                                 </div>
-
                                 <button
                                     className={stopAllAction === true ? "stop-button stop-all-action-true" : "stop-button"}
                                     onClick={handleStopButtonClick}>

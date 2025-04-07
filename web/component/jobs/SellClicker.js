@@ -40,7 +40,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(isStopLostReached(tradePare)){
                 await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
             } else {
-                if(isTakeProfReached(tradePare)){
+                if(isTakeProfReached(tradePare) && indicatorReadState.trendByPrice === "down"){
                     const correlation = indicatorReadState.parabolicCorrelation;
                     if(correlation < sellState.aspectCorrelation){
                         await sellOperation(tradePare, correlation, "takeProf");
@@ -97,6 +97,10 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
             msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
             msg.divergence = indicatorReadState.divergence;
+            msg.trendByPrice = indicatorReadState.trendByPrice;
+            msg.trendByPrice1min = indicatorReadState.trendByPrice1min;
+            msg.aroonTrend = indicatorReadState.aroonTrend;
+
             //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
             msg.time = Date.now();
             sellState.saveMsg(msg);

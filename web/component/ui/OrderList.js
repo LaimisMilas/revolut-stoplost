@@ -92,6 +92,9 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                         <td className="border px-4 py-2">Bearish</td>
                                         <td className="border px-4 py-2">Sinus</td>
                                         <td className="border px-4 py-2">Divrg</td>
+                                        <td className="border px-4 py-2">trend1sec</td>
+                                        <td className="border px-4 py-2">trend1min</td>
+                                        <td className="border px-4 py-2">Aroon</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -114,6 +117,9 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                             <td className="border px-4 py-2">{order.bearishLineCorrelation}</td>
                                             <td className="border px-4 py-2">{order.sinusoidCorrelation}</td>
                                             <td className="border px-4 py-2">{order.divergence}</td>
+                                            <td className="border px-4 py-2">{order.trendByPrice}</td>
+                                            <td className="border px-4 py-2">{order.trendByPrice1min}</td>
+                                            <td className="border px-4 py-2">{order.aroonTrend}</td>
                                         </tr>
                                     ))}
                                     </tbody>

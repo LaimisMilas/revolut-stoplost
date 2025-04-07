@@ -60,6 +60,19 @@ const TrailingBuyBotPanel =
                                     <span>{Number(indicatorReadState.lastRSIValue).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
+                                    <label>Trend 1 sec.</label>
+                                    <span>{indicatorReadState.trendByPrice}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>Trend 1min.</label>
+                                    <span>{indicatorReadState.trendByPrice1min}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>Aroon trend</label>
+                                    <span>{indicatorReadState.aroonTrend}</span>
+                                </div>
+
+                                <div className="checkbox-row">
                                     <label>TickerIndex</label>
                                     <span>{indicatorReadState.tickerIndex}</span>
                                 </div>

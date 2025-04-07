@@ -21,5 +21,5 @@ export const calculateAroon = (prices, period = 14) => {
         aroonDown.push(downValue);
     }
 
-    return { aroonUp, aroonDown };
+    return [ aroonUp, aroonDown ];
 };

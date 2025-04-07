@@ -33,7 +33,12 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
             // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
             const correlation = indicatorReadState.parabolicCorrelation > buyState.aspectCorrelation;
             // indicatorReadState.buyPointReached;
-            if (indicatorReadState.trailingBuyBot.shouldBuy() && correlation) {
+            const aroon = indicatorReadState.aroonTrend.split(":");
+
+            if (indicatorReadState.trailingBuyBot.shouldBuy()
+                && correlation
+                && indicatorReadState.trendByPrice === "up"
+                && aroon[0].includes("up")) {
                 await buyOperation(tradePare, correlation);
             }
         }
@@ -80,6 +85,9 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
             msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
             msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
             msg.divergence = indicatorReadState.divergence;
+            msg.trendByPrice = indicatorReadState.trendByPrice;
+            msg.trendByPrice1min = indicatorReadState.trendByPrice1min;
+            msg.aroonTrend = indicatorReadState.aroonTrend;
             //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
             msg.time = Date.now();
             buyState.saveMsg(msg);

@@ -11,6 +11,7 @@ import {
 } from "../indicator/Correletion";
 import {TrailingBuyBot} from "../indicator/TrailingBuyBot";
 import {getTrendByEMA} from "../indicator/MACD";
+import {calculateAroon} from "../indicator/Aroon";
 
 export class IndicatorReadState {
 
@@ -78,6 +79,7 @@ export class IndicatorReadState {
             if(this.last100RSIValue.length > 0){
                 this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
                 this.calculateTrendByEMA();
+                this.calculateAroon();
                 this.updateTrailingBuyBot();
                 this.doTrailingAction();
             }
@@ -157,9 +159,22 @@ export class IndicatorReadState {
     }
 
     trendByPrice = "up";
+    trendByPrice1min = "up";
 
     calculateTrendByEMA() {
-        this.trendByPrice = getTrendByEMA(this.last100RSIValue);
+        const prices = this.last100PriceValue // this.getLastTickers(600 + 14, 30);
+        this.trendByPrice = getTrendByEMA(prices);
+        this.trendByPrice1min = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length, 15));
+    }
+
+    aroonTrend = "up";
+
+    calculateAroon(){
+        const result = calculateAroon(this.getLastTickers(this.last100PriceValue.length, 15));
+        const aroonUp = result[0];
+        const aroonDown = result[1];
+        const diff = (aroonUp[aroonUp.length-1] - aroonDown[aroonDown.length-1]).toFixed(2)
+        this.aroonTrend = aroonUp[aroonUp.length-1] > aroonDown[aroonDown.length-1] ? "up:" + diff : "down:" + diff;
     }
 
     getPrediction = async () => {

@@ -39,14 +39,14 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 return;
             }
             const correlation = indicatorReadState.parabolicCorrelation;
-            if (indicatorReadState.buyPointReached && correlation > buyState.aspectCorrelation) {
+            if (indicatorReadState.buyPointReached && correlation > buyState.aspectCorrelation && indicatorReadState.trendByPrice1min === "up") {
                 await buyOperation(tradePare, correlation);
             }
         }
 
         const buyOperation = async (tradePare, correlation) => {
             let result = await selectBuySwitch();
-            if (result === 100) {
+            if (result === 100) {0.50
                 let quantityValue = tradePare.quantity;
                 if (quantityValue.includes('%')) {
                     quantityValue = quantityValue.toString()
