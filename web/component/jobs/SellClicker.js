@@ -15,7 +15,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                sellState.localInterval = setTimeout(executeWithInterval, 1175);
+                sellState.localInterval = setTimeout(executeWithInterval, 175);
             };
             executeWithInterval().then();
             return () => {
