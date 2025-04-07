@@ -3,12 +3,10 @@ import {useEffect} from "react";
 import {
     clickBuy,
     convertToNumber,
-    getNowDate,
     selectBuySwitch,
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {isRSIDown} from "../../indicator/RSI14";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState,sellState,indicatorReadState}) => {
@@ -69,7 +67,6 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             }
             if (result === 200) {
                 result += await clickBuy(tradePare.key);
-                //result += 100;
             }
 
             if (result === 300) {

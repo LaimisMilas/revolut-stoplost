@@ -76,7 +76,6 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             }
             if(result === 200){
                 result += await clickSell(tradePare.key);
-               // result += 100;
             }
             if(result === 300){
                 sellState.systemCfg.cfg.linkedInLike.root.run = false;
