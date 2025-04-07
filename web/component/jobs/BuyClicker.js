@@ -8,7 +8,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                indicatorReadState.localInterval = setTimeout(executeWithInterval, 75);
+                indicatorReadState.localInterval = setTimeout(executeWithInterval, 1175);
             };
             executeWithInterval().then();
             return () => {

@@ -39,7 +39,7 @@ export class TickerService {
         if (this.tickers.length > this.maxTickerLength) {
             this.tickers = this.tickers.slice(this.tickers.length - this.maxTickerLength, this.tickers.length);
             this.parsePrices(600 + 14, 30);
-            this.indicatorReadState.calculateRSI(this.prices);
+            this.indicatorReadState.updateIndicator(this.prices);
         }
     }
 

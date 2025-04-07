@@ -2,7 +2,6 @@ import {inject, observer} from 'mobx-react';
 import React, {useEffect, useState} from 'react';
 import './css/CfgPanel.css';
 import Draggable from "react-draggable";
-import {convertToNumber} from "../../utils/RevolutUtils";
 
 const BuyPanel =
     inject("buyState", "buyPanelState", "indicatorReadState")(

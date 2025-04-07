@@ -91,7 +91,21 @@ export class IndicatorReadState {
         }
     }
 
-    calculateRSI = (prices) => {
+    updateIndicator(prices){
+        this.updateRSI(prices);
+        this.calculateDivergence();
+        this.calcSinusoidCorrelation();
+        this.calcParabolicCorrelation();
+        this.calcLeftLineCorrelation();
+        this.calcBullishLineCorrelation();
+        this.calcBearishLineCorrelation();
+        this.updateTrailingBuyBot();
+        this.doTrailingAction();
+        this.calculateTrendByEMA();
+        this.calculateAroon();
+    }
+
+    updateRSI(prices){
         if(prices.length >= 14){
             this.last100RSIValue = calculateRSI(prices);
             if(this.last100RSIValue.length > 0){

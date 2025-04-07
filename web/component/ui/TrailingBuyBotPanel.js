@@ -14,7 +14,7 @@ const TrailingBuyBotPanel =
 
             return (
                 <Draggable>
-                    <div className="console-box" id="trailing-buy-panel" hidden={buyPanelState.stopAllAction}>
+                    <div className="console-box" id="trailing-buy-bot-panel" hidden={buyPanelState.stopAllAction}>
                         <div className="tab-container">
                         <span className="activeTime">
                            <span

@@ -9,12 +9,22 @@ body{
     background-color: #1a1a1a;
 }
 
-#trailing-buy-panel{
-    right: 310px;
-    top: 200px;
+#trailing-buy-bot-panel{
+    right: 1px;
+    top: 550px;
 }
 
 .checkbox-row input.halfInput{
     width: 50px;
     margin-right: 10px;
+}
+
+#test_root_12 #buy-panel{
+    right: 1px;
+    top: 300px;
+}
+
+#test_root_12 #list-order-panel{
+    right: 455px;
+    top: 0px;
 }

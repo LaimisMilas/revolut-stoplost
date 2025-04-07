@@ -6,8 +6,8 @@ import {BuyPanelState} from "./BuyPanelState";
 import {IndicatorReadState} from "./IndicatorReadState";
 import {TrailingService} from "../service/TrailingService";
 import {TickerService} from "../service/TickerService";
-export class RootStore {
 
+export class RootStore {
     sellState = null;
     buyState = null;
     sellPanelState = null;
@@ -24,10 +24,11 @@ export class RootStore {
         this.indicatorReadState = new IndicatorReadState();
         this.trailingService = new TrailingService();
         this.tickerService = new TickerService();
-        this.setupStoreRelationships(" RootStore.constructor()");
+        this.setupLocalStorageMap(); // <- svarbu
+        this.setupStoreRelationships("RootStore.constructor()");
     }
 
-    setupStoreRelationships(caller) {
+    setupStoreRelationships() {
         this.sellState.setup(this, this.sellPanelState);
         this.buyState.setup(this, this.buyPanelState);
         this.sellPanelState.setup(this, this.sellState);
@@ -35,135 +36,85 @@ export class RootStore {
         this.indicatorReadState.setup(this);
         this.trailingService.setup(this);
         this.tickerService.setup(this, this.indicatorReadState);
-        this.addToStoreRegister();
-        const storeState = LocalStorageManager.getStorage("lc_store_state");
+
+        const storeState = LocalStorageManager.getStorage(this.prefix + "store_state");
         if (storeState && storeState === 1) {
-            this.reverseLoudLocalStorage(caller);
+            this.reverseLoudLocalStorage();
         } else {
-            this.initializeLocalStorage(caller);
+            this.saveStorage(true); // initial persist
         }
-        this.setIntervalSaveStorage(" RootStore.setupStoreRelationships() end, caller:" + caller);
+
+        this.setIntervalSaveStorage();
     }
 
     intervalSaveStorageTimeOut = 30000;
     intervalSaveStorage = null;
-    setIntervalSaveStorage(){
+    setIntervalSaveStorage() {
         this.intervalSaveStorage = setInterval(
-            this.saveStorage.bind(this),
-            this.intervalSaveStorageTimeOut,
-            "RootStore.setIntervalSaveStorage()");
+            () => this.saveStorage(),
+            this.intervalSaveStorageTimeOut
+        );
     }
 
-    loudLocalStorage() {
-        /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
-     //   this.sellState.userCfg = {...LocalStorageManager.getStorage("lc_cfg"), ...this.sellState.userCfg};
-        this.sellState.systemCfg = {...LocalStorageManager.getStorage("lc_systemCfg"), ...this.sellState.systemCfg};
-        this.sellState.tradePares = {...LocalStorageManager.getStorage("lc_sell_tradePares"), ...this.sellState.tradePares};
-        this.buyState.tradePares = {...LocalStorageManager.getStorage("lc_buy_tradePares"), ...this.buyState.tradePares};
-   //     this.buyState.userCfg = {...LocalStorageManager.getStorage("lc_buy_cfg"), ...this.buyState.userCfg};
-        this.buyState.systemCfg = {...LocalStorageManager.getStorage("lc_buy_systemCfg"), ...this.buyState.systemCfg};
-        this.sellPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_rowConfig"), ...this.sellPanelState.rowConfig};
-        this.buyPanelState.rowConfig = {...LocalStorageManager.getStorage("lc_buy_rowConfig"), ...this.buyPanelState.rowConfig};
-        this.indicatorReadState.last100RSIValue = this.reduce(LocalStorageManager.getStorage("lc_last100RSIValue"), this.indicatorReadState.last100RSIValue);
-        this.indicatorReadState.last100PriceValue = this.reduce(LocalStorageManager.getStorage("lc_last100PriceValue"), this.indicatorReadState.last100PriceValue);
-        this.indicatorReadState.last1kRSIValue = this.reduce(LocalStorageManager.getStorage("lc_last1kRSIValue"), this.indicatorReadState.last1kRSIValue);
-        this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
-        this.sellState.aspectCorrelation = LocalStorageManager.getStorage("lc_sel_aspectCorrelation");
-        this.sellState.msgs = this.reduce(LocalStorageManager.getStorage("lc_sell_msgs"), this.sellState.msgs);
-        this.buyState.msgs = this.reduce(LocalStorageManager.getStorage("lc_buy_msgs"), this.buyState.msgs);
-        this.indicatorReadState.tickerValue = this.reduce(LocalStorageManager.getStorage("lc_tickerValue"), this.indicatorReadState.tickerValue);
-        this.tickerService.historyData = this.reduce(LocalStorageManager.getStorage("lc_historyData"), this.tickerService.historyData);
+    reduce(acc, bcc) {
+        return acc.concat(bcc || []);
     }
 
-    reduce(acc, bcc){
-        return acc.concat(bcc);
+    setupLocalStorageMap() {
+        this.localStorageMap = [
+            { key: "sell_systemCfg", ref: () => this.sellState.systemCfg, merge: "assign" },
+            { key: "sell_tradePares", ref: () => this.sellState.tradePares, merge: "assign" },
+            { key: "buy_tradePares", ref: () => this.buyState.tradePares, merge: "assign" },
+            { key: "buy_systemCfg", ref: () => this.buyState.systemCfg, merge: "assign" },
+            { key: "sell_rowConfig", ref: () => this.sellPanelState.rowConfig, merge: "assign" },
+            { key: "buy_rowConfig", ref: () => this.buyPanelState.rowConfig, merge: "assign" },
+            { key: "last100RSIValue", ref: () => this.indicatorReadState.last100RSIValue, merge: "concat" },
+            { key: "last100PriceValue", ref: () => this.indicatorReadState.last100PriceValue, merge: "concat" },
+            { key: "last1kRSIValue", ref: () => this.indicatorReadState.last1kRSIValue, merge: "concat" },
+            { key: "buy_aspectCorrelation", ref: { parent: () => this.buyState, field: "aspectCorrelation" }, merge: "replace" },
+            { key: "sell_aspectCorrelation", ref: { parent: () => this.sellState, field: "aspectCorrelation" }, merge: "replace" },
+            { key: "sell_msgs", ref: () => this.sellState.msgs, merge: "concat" },
+            { key: "buy_msgs", ref: () => this.buyState.msgs, merge: "concat" },
+            { key: "tickerValue", ref: () => this.indicatorReadState.tickerValue, merge: "concat" },
+            { key: "historyData", ref: () => this.tickerService.historyData, merge: "concat" },
+        ];
+    }
+
+    saveStorage(isInitial = false) {
+        this.localStorageMap.forEach(entry => {
+            const value = typeof entry.ref === "function"
+                ? entry.ref()
+                : entry.ref.parent()[entry.ref.field];
+
+            LocalStorageManager.flash(this.prefix + entry.key, value);
+        });
+
+        if (isInitial) {
+            LocalStorageManager.flash(this.prefix + "store_state", 1);
+        }
     }
 
     reverseLoudLocalStorage() {
-        /** gražinamas rezultatas yra JSON formatu, parsinamas iš string objekto */
-       // this.sellState.userCfg = {...this.sellState.userCfg, ...LocalStorageManager.getStorage("lc_cfg")};
-        this.sellState.systemCfg = {...this.sellState.systemCfg, ...LocalStorageManager.getStorage("lc_systemCfg")};
-        this.sellState.tradePares = {...this.sellState.tradePares, ...LocalStorageManager.getStorage("lc_sell_tradePares")};
-        this.buyState.tradePares = {...this.buyState.tradePares, ...LocalStorageManager.getStorage("lc_buy_tradePares")};
-       // this.buyState.userCfg = {...this.buyState.userCfg, ...LocalStorageManager.getStorage("lc_buy_cfg")};
-        this.buyState.systemCfg = {...this.buyState.systemCfg, ...LocalStorageManager.getStorage("lc_buy_systemCfg")};
-        this.sellPanelState.rowConfig = {...this.sellPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_rowConfig")};
-        this.buyPanelState.rowConfig = {...this.buyPanelState.rowConfig, ...LocalStorageManager.getStorage("lc_buy_rowConfig")};
-        this.indicatorReadState.last100RSIValue = this.reduce(this.indicatorReadState.last100RSIValue, LocalStorageManager.getStorage("lc_last100RSIValue"));
-        this.indicatorReadState.last100PriceValue = this.reduce(this.indicatorReadState.last100PriceValue, LocalStorageManager.getStorage("lc_last100PriceValue"));
-        this.indicatorReadState.last1kRSIValue = this.reduce(this.indicatorReadState.last1kRSIValue, LocalStorageManager.getStorage("lc_last1kRSIValue"));
-        this.buyState.aspectCorrelation = LocalStorageManager.getStorage("lc_buy_aspectCorrelation");
-        this.sellState.aspectCorrelation = LocalStorageManager.getStorage("lc_sell_aspectCorrelation");
-        this.sellState.msgs = this.reduce(this.sellState.msgs, LocalStorageManager.getStorage("lc_sell_msgs"));
-        this.buyState.msgs = this.reduce(this.buyState.msgs, LocalStorageManager.getStorage("lc_buy_msgs"));
-        this.indicatorReadState.tickerValue = this.reduce(this.indicatorReadState.tickerValue, LocalStorageManager.getStorage("lc_tickerValue"));
-        this.tickerService.historyData = this.reduce(this.tickerService.historyData, LocalStorageManager.getStorage("lc_historyData"));
-    }
+        this.localStorageMap.forEach(entry => {
+            const stored = LocalStorageManager.getStorage(this.prefix + entry.key);
+            if (stored == null) return;
 
-    saveStorage() {
-       // LocalStorageManager.flash("lc_cfg", this.sellState.userCfg);
-        LocalStorageManager.flash("lc_systemCfg", this.sellState.systemCfg);
-        LocalStorageManager.flash("lc_sell_tradePares", this.sellState.tradePares);
-        LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
-     //   LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
-        LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
-        LocalStorageManager.flash("lc_rowConfig", this.sellPanelState.rowConfig);
-        LocalStorageManager.flash("lc_buy_rowConfig", this.buyPanelState.rowConfig);
-        LocalStorageManager.flash("lc_store_state", 1);
-        LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
-        LocalStorageManager.flash("lc_last100PriceValue", this.indicatorReadState.last100PriceValue);
-        LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
-        LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
-        LocalStorageManager.flash("lc_sell_aspectCorrelation", this.sellState.aspectCorrelation);
-        LocalStorageManager.flash("lc_sell_msgs", this.sellState.msgs);
-        LocalStorageManager.flash("lc_buy_msgs", this.buyState.msgs);
-        LocalStorageManager.flash("lc_tickerValue", this.indicatorReadState.tickerValue);
-        LocalStorageManager.flash("lc_historyData", this.tickerService.historyData);
-      }
-
-    initializeLocalStorage() {
-   //     LocalStorageManager.flash("lc_cfg", this.sellState.userCfg);
-        LocalStorageManager.flash("lc_systemCfg", this.sellState.systemCfg);
-        LocalStorageManager.flash("lc_sell_tradePares", this.sellState.tradePares);
-        LocalStorageManager.flash("lc_buy_tradePares", this.buyState.tradePares);
-    //    LocalStorageManager.flash("lc_buy_cfg", this.buyState.userCfg);
-        LocalStorageManager.flash("lc_buy_systemCfg", this.buyState.systemCfg);
-        LocalStorageManager.flash("lc_rowConfig", this.sellPanelState.rowConfig);
-        LocalStorageManager.flash("lc_buy_rowConfig", this.buyPanelState.rowConfig);
-        LocalStorageManager.flash("lc_store_state", 1);
-        LocalStorageManager.flash("lc_last100RSIValue", this.indicatorReadState.last100RSIValue);
-        LocalStorageManager.flash("lc_last1kRSIValue", this.indicatorReadState.last1kRSIValue);
-        LocalStorageManager.flash("lc_buy_aspectCorrelation", this.buyState.aspectCorrelation);
-        LocalStorageManager.flash("lc_sell_aspectCorrelation", this.sellState.aspectCorrelation);
-        LocalStorageManager.flash("lc_sell_msgs", this.sellState.msgs);
-        LocalStorageManager.flash("lc_buy_msgs", this.buyState.msgs);
-        LocalStorageManager.flash("lc_tickerValue", this.indicatorReadState.tickerValue);
-        LocalStorageManager.flash("lc_historyData", this.tickerService.historyData);
-    }
-
-    registryStoreObject = new Map();
-
-    addToStoreRegister(){
-        this.registryStoreObject.set("lc_cfg",{"obj": this.sellState.userCfg, "reduce": false});
-        this.registryStoreObject.set("lc_systemCfg",{"obj": this.sellState.systemCfg, "reduce": false});
-        this.registryStoreObject.set("lc_sell_tradePares",{"obj": this.sellState.tradePares, "reduce": false});
-        this.registryStoreObject.set("lc_buy_tradePares",{"obj": this.buyState.tradePares, "reduce": false});
-        this.registryStoreObject.set("lc_buy_cfg",{"obj": this.buyState.userCfg, "reduce": false});
-        this.registryStoreObject.set("lc_buy_systemCfg",{"obj": this.buyState.systemCfg, "reduce": false});
-        this.registryStoreObject.set("lc_rowConfig",{"obj": this.sellPanelState.rowConfig, "reduce": false});
-        this.registryStoreObject.set("lc_buy_rowConfig",{"obj": this.buyPanelState.rowConfig, "reduce": false});
-        this.registryStoreObject.set("lc_last100RSIValue",{"obj": this.indicatorReadState.last100RSIValue, "reduce": true});
-        this.registryStoreObject.set("lc_last100PriceValue",{"obj": this.indicatorReadState.last100PriceValue, "reduce": true});
-        this.registryStoreObject.set("lc_last1kRSIValue",{"obj": this.indicatorReadState.last1kRSIValue, "reduce": true});
-    }
-
-    reverse() {
-        this.registryStoreObject.forEach((reg) => {
-            if(reg.value.reduce){
-                reg.value.obj = this.reduce(reg.value.obj, LocalStorageManager.getStorage(reg.key));
-            } else {
-                reg.value.obj = {...reg.value.obj, ...LocalStorageManager.getStorage(reg.key)};
+            if (typeof entry.ref === "function") {
+                const target = entry.ref();
+                switch (entry.merge) {
+                    case "assign":
+                        Object.assign(target, stored);
+                        break;
+                    case "concat":
+                        if (Array.isArray(target)) {
+                            target.push(...stored);
+                        }
+                        break;
+                }
+            } else if (entry.ref.parent && entry.ref.field) {
+                const parent = entry.ref.parent();
+                parent[entry.ref.field] = stored;
             }
-        })
+        });
     }
 }

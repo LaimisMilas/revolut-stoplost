@@ -28,7 +28,7 @@ const FaceDataReader = inject("indicatorReadState", "tickerService")(
                 await doAction(indicatorReadState.tickerIndex);
                 updateIndex();
                 if(indicatorReadState.tickerIndex < 11250){
-                    myInterval = setTimeout(executeWithInterval, 75);
+                    myInterval = setTimeout(executeWithInterval, 1175);
                 }
             };
             executeWithInterval().then();

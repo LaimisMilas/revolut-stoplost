@@ -8,7 +8,7 @@ listenForMessages((message) => {
     console.log("📩 Gauti duomenys iš background.js:", message.data);
 });
 
-const rootElementId = "labas_as_krabas_root";
+const rootElementId = "test_root_12";
 injectElement('//body', createElementByTagName("div", rootElementId));
 const rootElement = document.getElementById(rootElementId);
 
