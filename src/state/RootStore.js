@@ -35,7 +35,7 @@ export class RootStore {
         this.buyPanelState.setup(this, this.buyState);
         this.indicatorReadState.setup(this);
         this.trailingService.setup(this);
-        this.tickerService.setup(this, this.indicatorReadState);
+        this.tickerService.setup(this);
 
         const storeState = LocalStorageManager.getStorage(this.prefix + "store_state");
         if (storeState && storeState === 1) {
@@ -77,6 +77,8 @@ export class RootStore {
             { key: "buy_msgs", ref: () => this.buyState.msgs, merge: "concat" },
             { key: "tickerValue", ref: () => this.indicatorReadState.tickerValue, merge: "concat" },
             { key: "historyData", ref: () => this.tickerService.historyData, merge: "concat" },
+            { key: "prices_data", ref: () => this.tickerService.prices, merge: "concat" },
+            { key: "last_price_value", ref: { parent: () => this.tickerService, field: "lastPriceValue" }, merge: "replace" },
         ];
     }
 

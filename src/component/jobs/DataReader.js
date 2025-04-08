@@ -24,10 +24,14 @@ const DataReader = inject("indicatorReadState","tickerService")(
                 if (secTickerBuffer.length > 0 && secTickerBuffer[0].seconds !== result.data.seconds) {
                     let avgSecPrice = secTickerBuffer.reduce((sum, item) => sum + parseFloat(item.indexPrice), 0) / secTickerBuffer.length;
                     let updatedTicker = {...result.data, indexPrice: avgSecPrice.toFixed(6)};
+
+                    tickerService.pushNewTicker(updatedTicker);
+
                     indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, updatedTicker, 11250);
                     indicatorReadState.calculateRSITicker(600 + 14, 30);
                     indicatorReadState.updateLast100Price();
                     indicatorReadState.last100RSICounter ++;
+
                     secTickerBuffer = [];
                 }
                 secTickerBuffer.push(result.data);

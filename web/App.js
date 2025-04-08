@@ -6,7 +6,7 @@ import BuyPanel from "../src/component/ui/BuyPanel";
 import SellClicker from "./component/jobs/SellClicker";
 import BuyClicker from "./component/jobs/BuyClicker";
 import OrderList from "./component/ui/OrderList";
-import FaceDataReader from "./component/jobs/FaceDataReader";
+import FakeDataReader from "./component/jobs/FakeDataReader";
 import TrailingBuyBotPanel from "./component/ui/TrailingBuyBotPanel";
 import {LocalStorageManager} from "../src/storage/LocalStorageManager";
 
@@ -30,7 +30,7 @@ const App = () => {
                 <BuyPanel/>
                 <SellClicker/>
                 <BuyClicker/>
-                <FaceDataReader/>
+                <FakeDataReader/>
                 <OrderList/>
                 <TrailingBuyBotPanel/>
             </div>

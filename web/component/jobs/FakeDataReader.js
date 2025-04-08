@@ -2,7 +2,7 @@ import {inject, observer} from "mobx-react";
 import {useEffect, useState} from "react";
 import {tickersDownTrend} from "./ticker_dow_trend";
 
-const FaceDataReader = inject("indicatorReadState", "tickerService")(
+const FakeDataReader = inject("indicatorReadState", "tickerService")(
     observer(({indicatorReadState, tickerService}) => {
 
         const [tickerValue, setTickerValue] = useState(tickersDownTrend);
@@ -45,10 +45,10 @@ const FaceDataReader = inject("indicatorReadState", "tickerService")(
             }
         }
 
-
         const doAction = async (tickerIndex) => {
             const newValue = tickerValue[tickerIndex];
                 indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, newValue, 11250);
+                //vienas ticker yra 1sec. tai 30 = 1/2 minutes.
                 indicatorReadState.calculateRSITicker(600 + 14, 30);
                 indicatorReadState.updateLast100Price();
                 indicatorReadState.last100RSICounter++;
@@ -56,5 +56,5 @@ const FaceDataReader = inject("indicatorReadState", "tickerService")(
 
     }));
 
-export default FaceDataReader;
+export default FakeDataReader;
 

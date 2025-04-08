@@ -185,8 +185,9 @@ export class IndicatorReadState {
     calculateTrendByEMA() {
         if(this.last100PriceValue.length > 0){
             const prices = this.last100PriceValue; // this.getLastTickers(600 + 14, 30);
-            this.trendByPrice = getTrendByEMA(prices);
-            this.trendByPrice1min = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length, 15));
+            //this.trendByPrice = getTrendByEMA(prices);
+            this.trendByPrice = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length - (30*7), 7));
+            this.trendByPrice1min = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length, 7));
         }
     }
 
