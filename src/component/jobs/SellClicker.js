@@ -134,13 +134,16 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             msg.quantity = tradePare.quantity;
             msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(4);
             msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
-            msg.aspectCorrelation = sellState.aspectCorrelation;
+            msg.aspectCorrelation = tradePare.aspectCorrelation;
             msg.correlation = correlation;
             msg.leftLineCorrelation = indicatorReadState.leftLineCorrelation;
             msg.bullishLineCorrelation = indicatorReadState.bullishLineCorrelation;
             msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
             msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
             msg.divergence = indicatorReadState.divergence;
+            msg.trendByPrice = indicatorReadState.trendByPrice;
+            msg.trendByPrice1min = indicatorReadState.trendByPrice1min;
+            msg.aroonTrend = indicatorReadState.aroonTrend;
             //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
             msg.time = Date.now();
             sellState.saveMsg(msg);

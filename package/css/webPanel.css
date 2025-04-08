@@ -55,3 +55,8 @@ body{
     padding: 3px;
     width: 130px;
 }
+
+#test_root_12 .deleteMSG{
+    float: right;
+    margin-right: 10px;
+}

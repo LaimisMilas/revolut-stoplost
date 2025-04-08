@@ -8,6 +8,7 @@ import {
     selectSellSwitch,
     writeQuantity
 } from "../../../src/utils/RevolutUtils";
+import {TrailingBuyBot} from "../../../src/indicator/TrailingBuyBot";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -15,7 +16,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                sellState.localInterval = setTimeout(executeWithInterval, 175);
+                sellState.localInterval = setTimeout(executeWithInterval, 75);
             };
             executeWithInterval().then();
             return () => {
@@ -59,15 +60,19 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     buyState.getCurrentTradePare().targetPrice = Number(newTargetPrice).toFixed(2);
                    // const newRSIValue = Number(indicatorReadState.lastRSIValue) + ((Number(indicatorReadState.lastRSIValue) * 2)/100);
                    // buyState.getCurrentTradePare().rsi = Number(newRSIValue).toFixed(0);
-                    buyState.getCurrentTradePare().rsi = 30;
+                   // buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 } else if(caller === "takeProf"){
                     buyState.getCurrentTradePare().targetPrice = Number(indicatorReadState.lastPriceValue);
-                    buyState.getCurrentTradePare().rsi = 30;
+                  //  buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 }
+                const rsi = indicatorReadState.lastRSIValue;
+                indicatorReadState.trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: rsi, trailingPercent: 10 });
 
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;
+                sellState.getCurrentTradePare().takeProf = 1.2;
+
                 indicatorReadState.buyPointReached = false;
                 indicatorReadState.isTrailingActive = false;
                 indicatorReadState.trailingPoint = 0;

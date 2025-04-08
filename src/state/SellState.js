@@ -56,6 +56,7 @@ export class SellState {
             data.takeProfRsi = tradeDate.takeProfRsi;
             data.price = tradeDate.price;
             data.quantity = tradeDate.quantity;
+            data.aspectCorrelation = tradeDate.aspectCorrelation;
             this.tradePares[tradeDate.key] = data;
         } else {
             this.tradePares[tradeDate.key] = tradeDate;

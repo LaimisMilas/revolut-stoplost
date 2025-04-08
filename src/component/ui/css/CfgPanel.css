@@ -205,3 +205,8 @@
     right: 455px;
     top: 600px;
 }
+
+.deleteMSG{
+    float: right;
+    margin-right: 10px;
+}

@@ -49,6 +49,7 @@ export class IndicatorReadState {
     updateLast100Price(){
         if(this.tickerValue){
             this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
+            this.calculateTrendByEMA();
         }
     }
 
@@ -83,7 +84,6 @@ export class IndicatorReadState {
             this.last100RSIValue = calculateRSI(data);
             if(this.last100RSIValue.length > 0){
                 this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
-                this.calculateTrendByEMA();
                 this.calculateAroon();
                 this.updateTrailingBuyBot();
                 this.doTrailingAction();
@@ -138,7 +138,7 @@ export class IndicatorReadState {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
 
-    trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 40, trailingPercent: 10 });
+    trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 50, trailingPercent: 10 });
 
     updateTrailingBuyBot(){
         if(this.lastRSIValue){
@@ -183,23 +183,37 @@ export class IndicatorReadState {
     trendByPrice1min = "";
 
     calculateTrendByEMA() {
-        if(this.last100PriceValue.length > 0){
-            const prices = this.last100PriceValue; // this.getLastTickers(600 + 14, 30);
-            //this.trendByPrice = getTrendByEMA(prices);
-            this.trendByPrice = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length - (30*7), 7));
-            this.trendByPrice1min = getTrendByEMA(this.getLastTickers(this.last100PriceValue.length, 7));
+        const dataLength = 900; // 900 / 60 = 15min.
+        const chunkSizeShort = 1;// 1*5 = 5s
+        const chunkSizeLong = 5; // 1*10 = 10s
+        if(dataLength / chunkSizeLong > 26 && this.last100PriceValue.length > dataLength){ // 900/26 = 34 galima didinti chunkSize iki 34
+
+            let prices = this.last100PriceValue;
+            prices = prices.slice(prices.length - dataLength, prices.length);
+            prices = downsampleArray(prices, chunkSizeShort);
+            //kad suskaicioti EMA reikia min 26 kainu tai dataLength/chunkSize turi gautis daugiau uz 26
+            this.trendByPrice = getTrendByEMA(prices);
+
+            prices = this.last100PriceValue;
+            prices = prices.slice(prices.length - dataLength, prices.length);
+            prices = downsampleArray(prices, chunkSizeLong);
+            this.trendByPrice1min = getTrendByEMA(prices);
         }
     }
 
     aroonTrend = "";
 
     calculateAroon(){
-        if(this.last100PriceValue.length > 0){
-            const result = calculateAroon(this.getLastTickers(this.last100PriceValue.length, 15));
+        const dataLength = 900;
+        if(this.last100PriceValue.length > dataLength){
+
+            let prices = this.last100PriceValue;
+            prices = prices.slice(prices.length - dataLength, prices.length);
+            const result = calculateAroon(prices, 15);
             const aroonUp = result[0];
             const aroonDown = result[1];
-            const diff = (aroonUp[aroonUp.length-1] - aroonDown[aroonDown.length-1]).toFixed(2);
-            this.aroonTrend = aroonUp[aroonUp.length-1] > aroonDown[aroonDown.length-1] ? "up:" + diff : "down:" + diff;
+            const diff = (aroonUp[aroonUp.length - 1] - aroonDown[aroonDown.length - 1]).toFixed(2);
+            this.aroonTrend = aroonUp[aroonUp.length - 1] > aroonDown[aroonDown.length - 1] ? "up:" + diff : "down:" + diff;
         }
     }
 

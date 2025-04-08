@@ -8,7 +8,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                indicatorReadState.localInterval = setTimeout(executeWithInterval, 175);
+                indicatorReadState.localInterval = setTimeout(executeWithInterval, 75);
             };
             executeWithInterval().then();
             return () => {
@@ -31,12 +31,12 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
                 return;
             }
             // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
-            const correlation = indicatorReadState.parabolicCorrelation > tradePare.aspectCorrelation;
+            const correlation = indicatorReadState.parabolicCorrelation;
             // indicatorReadState.buyPointReached;
             const aroon = indicatorReadState.aroonTrend.split(":");
 
             if (indicatorReadState.trailingBuyBot.shouldBuy()
-                && correlation
+                && correlation > tradePare.aspectCorrelation
                 && indicatorReadState.trendByPrice1min === "up") {
                 await buyOperation(tradePare, correlation);
             }
@@ -51,6 +51,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
                 result += 100;
                 sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
+
                 if(tickerService.historyData.length < 0){
                     const price = sellState.getCurrentTradePare().price;
                     const trend = indicatorReadState.trendByPrice;
@@ -58,6 +59,15 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
                     sellState.getCurrentTradePare().stopLost = values.stopLoss;
                     sellState.getCurrentTradePare().takeProf = values.takeProfit;
                 }
+
+                if(indicatorReadState.lastRSIValue > 40){
+                    sellState.getCurrentTradePare().takeProf = 0.5;
+                } else if(indicatorReadState.lastRSIValue > 45){
+                    sellState.getCurrentTradePare().takeProf = 0.2;
+                } else if(indicatorReadState.lastRSIValue < 20){
+                    sellState.getCurrentTradePare().takeProf = 1.2;
+                }
+
                 indicatorReadState.buyPointReached = false;
                 indicatorReadState.isTrailingActive = false;
                 indicatorReadState.trailingPoint = 0;

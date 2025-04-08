@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useMemo} from "react";
 import {inject, observer} from "mobx-react";
 import Draggable from "react-draggable";
+import {IndicatorReadState} from "../../../src/state/IndicatorReadState";
 
 const OrderList = inject("buyState", "sellState", "buyPanelState")(
     observer(({buyState, sellState, buyPanelState}) => {
@@ -50,6 +51,7 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
         const deleteAllMessages = () => {
             buyState.msgs = [];
             sellState.msgs = [];
+            sellState.rootStore.indicatorReadState.tickerIndex = 1;
             sellState.rootStore.saveStorage();
         };
 
@@ -66,7 +68,7 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                             {checkBoxContainerState === true ? "▼" : "▲"}
                         </button>
                         <span>Bendra suma: {sellProfit.toFixed(2)} </span>
-                        <button onClick={deleteAllMessages}>Delete MSG
+                        <button className="deleteMSG" onClick={deleteAllMessages}>Delete MSG
                         </button>
                         <div hidden={checkBoxContainerState}>
                             <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-lg shadow-sm">

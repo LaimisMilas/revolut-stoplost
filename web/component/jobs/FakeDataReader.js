@@ -28,7 +28,7 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
                 await doAction(indicatorReadState.tickerIndex);
                 updateIndex();
                 if(indicatorReadState.tickerIndex < 11250){
-                    myInterval = setTimeout(executeWithInterval, 175);
+                    myInterval = setTimeout(executeWithInterval, 75);
                 }
             };
             executeWithInterval().then();
