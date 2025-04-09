@@ -10,8 +10,8 @@ import {
 import {calcStopLost, calcStopLostTakeProf, calcTakeProfit, calculateTP_SL} from "../../../src/indicator/ATR";
 
 
-const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
-    observer(({buyState,sellState,indicatorReadState}) => {
+const BuyClicker = inject("buyState", "sellState", "indicatorReadState", "tickerService")(
+    observer(({buyState,sellState,indicatorReadState, tickerService}) => {
 
         useEffect(() => {
             const executeWithInterval = async () => {
