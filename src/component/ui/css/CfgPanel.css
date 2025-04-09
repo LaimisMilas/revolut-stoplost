@@ -201,6 +201,11 @@
     top: 200px;
 }
 
+#trailing-buy-bot-panel{
+    right: 1px;
+    top: 350px;
+}
+
 #list-order-panel{
     right: 455px;
     top: 600px;
