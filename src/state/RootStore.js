@@ -80,6 +80,7 @@ export class RootStore {
             { key: "prices_data", ref: () => this.tickerService.prices, merge: "concat" },
             { key: "last_price_value", ref: { parent: () => this.tickerService, field: "lastPriceValue" }, merge: "replace" },
          //   { key: "ticker_index", ref: { parent: () => this.indicatorReadState, field: "tickerIndex" }, merge: "replace" },
+            { key: "count_try_sell", ref: { parent: () => this.sellState, field: "countTrySell" }, merge: "replace" },
         ];
     }
 

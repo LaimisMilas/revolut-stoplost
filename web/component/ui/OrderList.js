@@ -71,7 +71,7 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                         <button className="deleteMSG" onClick={deleteAllMessages}>Delete MSG
                         </button>
                         <div hidden={checkBoxContainerState}>
-                            <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-lg shadow-sm">
+                            <div className="table-scroll-container">
                                 <table className="min-w-full bg-white">
                                     <thead className="sticky top-0 bg-gray-100 z-10">
                                     <tr className="bg-gray-100">

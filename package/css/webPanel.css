@@ -60,3 +60,10 @@ body{
     float: right;
     margin-right: 10px;
 }
+
+.table-scroll-container {
+    max-height: 600px; /* reguliuok pagal poreikį */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}

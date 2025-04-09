@@ -47,7 +47,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
             } else {
                 if(isTakeProfReached(tradePare) && indicatorReadState.trendByPrice1min === "down"){
-                    const correlation = indicatorReadState.parabolicCorrelation;
+                    const correlation = Number(indicatorReadState.parabolicCorrelation);
                     if(correlation < Number(tradePare.aspectCorrelation)){
                         await sellOperation(tradePare, correlation, "takeProf");
                     }
@@ -65,6 +65,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 discountTP(0.0001);
             }
             sellState.countTrySell ++;
+            sellState.rootStore.saveStorage();
         }
 
         const sellOperation = async (tradePare, correlation, caller) => {
