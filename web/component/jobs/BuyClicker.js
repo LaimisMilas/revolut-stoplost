@@ -8,7 +8,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                indicatorReadState.localInterval = setTimeout(executeWithInterval, 75);
+                indicatorReadState.localInterval = setTimeout(executeWithInterval, 175);
             };
             executeWithInterval().then();
             return () => {
@@ -60,12 +60,18 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
                     sellState.getCurrentTradePare().takeProf = values.takeProfit;
                 }
 
-                if(indicatorReadState.lastRSIValue > 40){
-                    sellState.getCurrentTradePare().takeProf = 0.5;
-                } else if(indicatorReadState.lastRSIValue > 45){
+                if(indicatorReadState.lastRSIValue > 45){
                     sellState.getCurrentTradePare().takeProf = 0.2;
-                } else if(indicatorReadState.lastRSIValue < 20){
+                } else if(indicatorReadState.lastRSIValue > 40){
+                    sellState.getCurrentTradePare().takeProf = 0.5;
+                } else if(indicatorReadState.lastRSIValue > 35){
+                    sellState.getCurrentTradePare().takeProf = 0.8;
+                } else if(indicatorReadState.lastRSIValue > 30){
                     sellState.getCurrentTradePare().takeProf = 1.2;
+                } else if(indicatorReadState.lastRSIValue > 25){
+                    sellState.getCurrentTradePare().takeProf = 1.4;
+                } else {
+                    sellState.getCurrentTradePare().takeProf = 1.6;
                 }
 
                 indicatorReadState.buyPointReached = false;

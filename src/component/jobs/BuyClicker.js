@@ -7,6 +7,8 @@ import {
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
+import {calcStopLost, calcStopLostTakeProf, calcTakeProfit, calculateTP_SL} from "../../../src/indicator/ATR";
+
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState,sellState,indicatorReadState}) => {
@@ -33,13 +35,17 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
 
         const doBuy = async () => {
             let tradePare = buyState.getCurrentTradePare();
-            if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
+            if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
+            // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
             const correlation = indicatorReadState.parabolicCorrelation;
-            if (indicatorReadState.buyPointReached
+            // indicatorReadState.buyPointReached;
+            const aroon = indicatorReadState.aroonTrend.split(":");
+
+            if (indicatorReadState.trailingBuyBot.shouldBuy()
                 && correlation > tradePare.aspectCorrelation
-                && indicatorReadState.trendByPrice === "up") {
+                && indicatorReadState.trendByPrice1min === "up") {
                 await buyOperation(tradePare, correlation);
             }
         }
@@ -68,7 +74,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 }
             }
             if (result === 200) {
-                result += await clickBuy(tradePare.key);
+               // result += await clickBuy(tradePare.key);
+                result += 100;
             }
 
             if (result === 300) {
@@ -78,13 +85,35 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 result += 100;
                 sellState.systemCfg.cfg.linkedInLike.root.run = true;
                 result += 100;
+
+                if(tickerService.historyData.length < 0){
+                    const price = sellState.getCurrentTradePare().price;
+                    const trend = indicatorReadState.trendByPrice;
+                    const values = calcStopLostTakeProf(price, tickerService.historyData, trend);
+                    sellState.getCurrentTradePare().stopLost = values.stopLoss;
+                    sellState.getCurrentTradePare().takeProf = values.takeProfit;
+                }
+
+                if(indicatorReadState.lastRSIValue > 45){
+                    sellState.getCurrentTradePare().takeProf = 0.2;
+                } else if(indicatorReadState.lastRSIValue > 40){
+                    sellState.getCurrentTradePare().takeProf = 0.5;
+                } else if(indicatorReadState.lastRSIValue > 35){
+                    sellState.getCurrentTradePare().takeProf = 0.8;
+                } else if(indicatorReadState.lastRSIValue > 30){
+                    sellState.getCurrentTradePare().takeProf = 1.2;
+                } else if(indicatorReadState.lastRSIValue > 25){
+                    sellState.getCurrentTradePare().takeProf = 1.4;
+                } else {
+                    sellState.getCurrentTradePare().takeProf = 1.6;
+                }
+
                 indicatorReadState.buyPointReached = false;
                 indicatorReadState.isTrailingActive = false;
                 indicatorReadState.trailingPoint = 0;
                 indicatorReadState.deltaValue = 0;
                 await saveMsg(tradePare, correlation, "BUY");
             }
-            console.log("BuyClicker buyOperation " + tradePare.name + " done status: " + result);
             return result;
         }
 

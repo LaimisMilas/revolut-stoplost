@@ -71,7 +71,10 @@ const TrailingBuyBotPanel =
                                     <label>Aroon trend</label>
                                     <span>{indicatorReadState.aroonTrend}</span>
                                 </div>
-
+                                <div className="checkbox-row">
+                                    <label>Try sell counter</label>
+                                    <span>{sellState.countTrySell}</span>
+                                </div>
                                 <div className="checkbox-row">
                                     <label>TickerIndex</label>
                                     <span>{indicatorReadState.tickerIndex}</span>

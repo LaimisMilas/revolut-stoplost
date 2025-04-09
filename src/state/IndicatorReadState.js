@@ -17,9 +17,9 @@ export class IndicatorReadState {
 
     rootStore = null;
     intervalRsiRaed = null;
-    lastRSIValue = 0;
+    lastRSIValue = 0.00;
     last100RSIValue = [];
-    lastPriceValue = 0;
+    lastPriceValue = 0.00;
     last100PriceValue = [];
     last1kRSIValue = [];
     last100RSICounter = 0;
@@ -148,7 +148,7 @@ export class IndicatorReadState {
 
     trailingActivatePoint = 40;
     isTrailingActive = false;
-    trailingPoint = 0;
+    trailingPoint = 0.00;
     deltaRate = 10;
     buyPointReached = false;
     deltaValue = 0;

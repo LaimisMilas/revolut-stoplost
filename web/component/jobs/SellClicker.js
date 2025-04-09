@@ -16,7 +16,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                sellState.localInterval = setTimeout(executeWithInterval, 75);
+                sellState.localInterval = setTimeout(executeWithInterval, 175);
             };
             executeWithInterval().then();
             return () => {
@@ -31,6 +31,11 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if (root.run) {
                 await doSell();
             }
+        }
+
+        function discountTP(discount) {
+            const newTP = sellState.getCurrentTradePare().takeProf - discount;
+            sellState.getCurrentTradePare().takeProf = newTP;
         }
 
         const doSell = async () => {
@@ -48,6 +53,18 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     }
                 }
             }
+            if(sellState.countTrySell > 600){
+                discountTP(0.00001);
+            } else if (sellState.countTrySell > 500){
+                discountTP(0.00001);
+            }
+            else if (sellState.countTrySell > 300){
+                discountTP(0.0001);
+            }
+            else if (sellState.countTrySell > 200){
+                discountTP(0.0001);
+            }
+            sellState.countTrySell ++;
         }
 
         const sellOperation = async (tradePare, correlation, caller) => {
@@ -67,7 +84,10 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                   //  buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 }
-                const rsi = indicatorReadState.lastRSIValue;
+                let rsi = indicatorReadState.lastRSIValue;
+                if(rsi < 40){
+                    rsi = 50;
+                }
                 indicatorReadState.trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: rsi, trailingPercent: 10 });
 
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;
@@ -79,6 +99,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 indicatorReadState.deltaValue = 0;
                 indicatorReadState.trailingBuyBot.reset();
 
+                sellState.countTrySell  = 0;
+
                 result += 100;
                 await saveMsg(tradePare, correlation, "SELL");
             }
@@ -89,11 +111,11 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             const msg = {};
             msg.type = type;
             msg.name = tradePare.name;
-            msg.price = Number(tradePare.price).toFixed(4);
-            msg.stopLost = Number(tradePare.stopLost).toFixed(4);
-            msg.takeProf = Number(tradePare.takeProf).toFixed(4);
+            msg.price = Number(tradePare.price).toFixed(2);
+            msg.stopLost = sellState.getCurrentTradePare().stopLost
+            msg.takeProf = sellState.getCurrentTradePare().takeProf;
             msg.quantity = tradePare.quantity;
-            msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(4);
+            msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(2);
             msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
             msg.aspectCorrelation = sellState.aspectCorrelation;
             msg.correlation = correlation;

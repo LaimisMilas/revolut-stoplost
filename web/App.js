@@ -10,7 +10,7 @@ import FakeDataReader from "./component/jobs/FakeDataReader";
 import TrailingBuyBotPanel from "./component/ui/TrailingBuyBotPanel";
 import {LocalStorageManager} from "../src/storage/LocalStorageManager";
 
-LocalStorageManager.flash("rc_store_state", 0);
+//LocalStorageManager.flash("rc_store_state", 0);
 const rootState = new RootStore("rc_");
 
 const App = () => {

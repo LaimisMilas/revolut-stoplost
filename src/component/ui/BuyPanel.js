@@ -73,19 +73,6 @@ const BuyPanel =
                                     <span>{tradePare.name}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
-                                        htmlFor={buyPanelState.rowConfig.rsi.id}>Aspect {buyPanelState.rowConfig.rsi.label}</label>
-                                    <input
-                                        type="text"
-                                        className="halfInput"
-                                        id={buyPanelState.rowConfig.rsi.id}
-                                        name={buyPanelState.rowConfig.rsi.name}
-                                        value={tradePare.rsi}
-                                        onChange={(event) => handleOnChangeEvent(event, buyPanelState.rowConfig.rsi.key)}
-                                    />
-                                    <span>{indicatorReadState.lastRSIValue}</span>
-                                </div>
-                                <div className="checkbox-row">
                                     <label>Aspect cor.</label>
                                     <input
                                         className="halfInput"

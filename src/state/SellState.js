@@ -21,6 +21,7 @@ export class SellState {
     currentTradePare  = null;
     aspectCorrelation = -0.50;
     msgs = [];
+    countTrySell = 0;
 
     constructor() {
         makeAutoObservable(this);

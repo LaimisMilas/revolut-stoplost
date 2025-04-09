@@ -6,8 +6,8 @@ import BuyClicker from "./component/jobs/BuyClicker";
 import DataReader from "./component/jobs/DataReader";
 import SellPanel from "./component/ui/SellPanel";
 import BuyPanel from "./component/ui/BuyPanel";
-import TrailingBuy from "../web/component/ui/TrailingBuy";
 import OrderList from "../web/component/ui/OrderList";
+import TrailingBuyBotPanel from "../web/component/ui/TrailingBuyBotPanel";
 
 const rootState = new RootStore();
 
@@ -29,8 +29,8 @@ const App = () => {
                 <SellClicker/>
                 <BuyClicker/>
                 <DataReader/>
-                <TrailingBuy/>
                 <OrderList/>
+                <TrailingBuyBotPanel/>
             </div>
         </Provider>
     );
