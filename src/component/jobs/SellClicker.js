@@ -46,7 +46,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(isStopLostReached(tradePare)){
                 await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
             } else {
-                if(isTakeProfReached(tradePare) && indicatorReadState.trendByPrice === "down"){
+                if(isTakeProfReached(tradePare) && indicatorReadState.trendByPrice1min === "down"){
                     const correlation = indicatorReadState.parabolicCorrelation;
                     if(correlation < Number(tradePare.aspectCorrelation)){
                         await sellOperation(tradePare, correlation, "takeProf");
