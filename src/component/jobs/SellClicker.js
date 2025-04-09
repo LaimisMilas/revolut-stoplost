@@ -132,8 +132,6 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             return result;
         }
 
-
-
         const saveMsg = async (tradePare, correlation, type) => {
             const msg = {};
             msg.type = type;
