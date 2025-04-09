@@ -44,7 +44,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState", "ticker
             const aroon = indicatorReadState.aroonTrend.split(":");
 
             if (indicatorReadState.trailingBuyBot.shouldBuy()
-                && correlation > tradePare.aspectCorrelation
+                && correlation > Number(tradePare.aspectCorrelation)
                 && indicatorReadState.trendByPrice1min === "up") {
                 await buyOperation(tradePare, correlation);
             }
