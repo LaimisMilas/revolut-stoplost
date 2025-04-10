@@ -50,6 +50,7 @@ export class IndicatorReadState {
         if(this.tickerValue){
             this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
             this.calculateTrendByEMA();
+            this.calculateDynamicTrend();
         }
     }
 
@@ -138,7 +139,7 @@ export class IndicatorReadState {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
 
-    trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 50, trailingPercent: 10 });
+    trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 90, trailingPercent: 10 });
 
     updateTrailingBuyBot(){
         if(this.lastRSIValue){
@@ -198,6 +199,19 @@ export class IndicatorReadState {
             prices = prices.slice(prices.length - dataLength, prices.length);
             prices = downsampleArray(prices, chunkSizeLong);
             this.trendByPrice1min = getTrendByEMA(prices);
+        }
+    }
+
+    dynamicTrendDataLength = 900;
+    dynamicTrendChunkSize = 5;
+
+    calculateDynamicTrend() {
+        if(this.dynamicTrendDataLength / this.dynamicTrendChunkSize > 26
+            && this.last100PriceValue.length > this.dynamicTrendDataLength){
+            let prices = this.last100PriceValue;
+            prices = prices.slice(prices.length - this.dynamicTrendDataLength, prices.length);
+            prices = downsampleArray(prices, this.dynamicTrendDataLength);
+            this.trendDynamic = getTrendByEMA(prices);
         }
     }
 

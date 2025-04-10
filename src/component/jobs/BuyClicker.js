@@ -74,8 +74,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState", "ticker
                 }
             }
             if (result === 200) {
-               // result += await clickBuy(tradePare.key);
-                result += 100;
+                result += await clickBuy(tradePare.key);
+               // result += 100;
             }
 
             if (result === 300) {

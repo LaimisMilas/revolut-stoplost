@@ -37,9 +37,26 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
 
             if (indicatorReadState.trailingBuyBot.shouldBuy()
                 && correlation > tradePare.aspectCorrelation
-                && indicatorReadState.trendByPrice1min === "up") {
+                && indicatorReadState.trendDynamic === "up") {
                 await buyOperation(tradePare, correlation);
             }
+
+            if(buyState.countTryBuy > 600){
+                indicatorReadState.dynamicTrendChunkSize = 1
+            }
+            else if (sellState.countTryBuy > 500){
+                indicatorReadState.dynamicTrendChunkSize = 2
+            }
+            else if (buyState.countTryBuy > 300){
+                indicatorReadState.dynamicTrendChunkSize = 3
+            }
+            else if (buyState.countTryBuy > 200){
+                indicatorReadState.dynamicTrendChunkSize = 4
+            }
+            else {
+                indicatorReadState.dynamicTrendChunkSize = 5
+            }
+            buyState.countTryBuy ++;
         }
 
         const buyOperation = async (tradePare, correlation) => {
@@ -79,6 +96,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
                 indicatorReadState.trailingPoint = 0;
                 indicatorReadState.deltaValue = 0;
                 indicatorReadState.trailingBuyBot.reset();
+
+                buyState.countTryBuy = 0;
                 await saveMsg(tradePare, correlation, "BUY");
             }
             return result;

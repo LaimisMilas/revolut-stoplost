@@ -81,6 +81,9 @@ export class RootStore {
             { key: "last_price_value", ref: { parent: () => this.tickerService, field: "lastPriceValue" }, merge: "replace" },
          //   { key: "ticker_index", ref: { parent: () => this.indicatorReadState, field: "tickerIndex" }, merge: "replace" },
             { key: "count_try_sell", ref: { parent: () => this.sellState, field: "countTrySell" }, merge: "replace" },
+            { key: "count_try_buy", ref: { parent: () => this.buyState, field: "countTryBuy" }, merge: "replace" },
+            { key: "dynamic_trend_data_length", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendDataLength" }, merge: "replace" },
+            { key: "dynamic_trend_chunk_size", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendChunkSize" }, merge: "replace" },
         ];
     }
 

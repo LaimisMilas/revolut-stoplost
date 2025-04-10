@@ -25,6 +25,7 @@ export class BuyState {
     trailingPrice = 0;
     deltaRate = 0;
     limitBuy = 0;
+    countTryBuy = 0;
 
     constructor() {
         makeAutoObservable(this);

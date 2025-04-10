@@ -68,6 +68,11 @@ const TrailingBuyBotPanel =
                                     <span>{indicatorReadState.trendByPrice1min}</span>
                                 </div>
                                 <div className="checkbox-row">
+                                    <label>Trend dynamic</label>
+                                    <span>{indicatorReadState.dynamicTrendChunkSize}</span>
+                                    <span>{indicatorReadState.trendDynamic}</span>
+                                </div>
+                                <div className="checkbox-row">
                                     <label>Aroon trend</label>
                                     <span>{indicatorReadState.aroonTrend}</span>
                                 </div>
