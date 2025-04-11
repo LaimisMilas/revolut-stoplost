@@ -41,22 +41,23 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
                 await buyOperation(tradePare, correlation);
             }
 
-            if(buyState.countTryBuy > 600){
+            if(buyState.countTryBuy > 800){
                 indicatorReadState.dynamicTrendChunkSize = 1
             }
-            else if (sellState.countTryBuy > 500){
+            else if (sellState.countTryBuy > 600){
                 indicatorReadState.dynamicTrendChunkSize = 2
             }
-            else if (buyState.countTryBuy > 300){
+            else if (buyState.countTryBuy > 400){
                 indicatorReadState.dynamicTrendChunkSize = 3
             }
-            else if (buyState.countTryBuy > 200){
+            else if (buyState.countTryBuy > 300){
                 indicatorReadState.dynamicTrendChunkSize = 4
             }
             else {
                 indicatorReadState.dynamicTrendChunkSize = 5
             }
             buyState.countTryBuy ++;
+            buyState.rootStore.saveStorage();
         }
 
         const buyOperation = async (tradePare, correlation) => {

@@ -97,6 +97,8 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                         <td className="border px-4 py-2">Trend 1sec</td>
                                         <td className="border px-4 py-2">Trend 1min</td>
                                         <td className="border px-4 py-2">Aroon</td>
+                                        <td className="border px-4 py-2">Trail</td>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -122,6 +124,7 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                             <td className="border px-4 py-2">{order.trendByPrice}</td>
                                             <td className="border px-4 py-2">{order.trendByPrice1min}</td>
                                             <td className="border px-4 py-2">{order.aroonTrend}</td>
+                                            <td className="border px-4 py-2">{order.trailing}</td>
                                         </tr>
                                     ))}
                                     </tbody>

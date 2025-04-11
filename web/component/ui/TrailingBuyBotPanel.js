@@ -28,15 +28,17 @@ const TrailingBuyBotPanel =
                                 <div className="checkbox-row">
                                     <label
                                         htmlFor={"limitBuy_id"}>isActive</label>
-                                    <span>{indicatorReadState.trailingBuyBot.isTrailingActive ? "true" : "false"}</span>
+                                    <span>sell:{indicatorReadState.trailingSellBot.isTrailingActive ? "true" : "false"}</span>
+                                    <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.isTrailingActive ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
+                                <label
                                         htmlFor={"limitBuy_id"}>ActivateRSI</label>
-                                    <span>{Number(indicatorReadState.trailingBuyBot.trailingActivateRSI).toFixed(2)}</span>
+                                    <span>sell:{Number(indicatorReadState.trailingSellBot.trailingActivateRSI).toFixed(2)}</span>
+                                    <span>&nbsp;buy:{Number(indicatorReadState.trailingBuyBot.trailingActivateRSI).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
+                                <label
                                         htmlFor={"limitBuy_id"}>Percent</label>
                                     <span>{Number(indicatorReadState.trailingBuyBot.trailingPercent)}</span>
                                 </div>
@@ -51,11 +53,12 @@ const TrailingBuyBotPanel =
                                     <span>{indicatorReadState.trailingBuyBot.trailingPoint}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label>buySignal</label>
-                                    <span>{indicatorReadState.trailingBuyBot.buySignal ? "true" : "false"}</span>
+                                    <label>Trail signal</label>
+                                    <span>sell:{indicatorReadState.trailingSellBot.sellSignal ? "true" : "false"}</span>
+                                    <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.buySignal ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
+                                <label
                                         htmlFor={"limitBuy_id"}>Last RSI</label>
                                     <span>{Number(indicatorReadState.lastRSIValue).toFixed(2)}</span>
                                 </div>
@@ -69,16 +72,17 @@ const TrailingBuyBotPanel =
                                 </div>
                                 <div className="checkbox-row">
                                     <label>Trend dynamic</label>
-                                    <span>{indicatorReadState.dynamicTrendChunkSize}</span>
                                     <span>{indicatorReadState.trendDynamic}</span>
+                                    <span>&nbsp; ch:{indicatorReadState.dynamicTrendChunkSize}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>Try counter</label>
+                                    <span>sell:{sellState.countTrySell}</span>
+                                    <span>&nbsp; buy:{buyState.countTryBuy}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label>Aroon trend</label>
                                     <span>{indicatorReadState.aroonTrend}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Try sell counter</label>
-                                    <span>{sellState.countTrySell}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label>TickerIndex</label>

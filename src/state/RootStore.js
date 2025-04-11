@@ -71,19 +71,19 @@ export class RootStore {
             { key: "last100RSIValue", ref: () => this.indicatorReadState.last100RSIValue, merge: "concat" },
             { key: "last100PriceValue", ref: () => this.indicatorReadState.last100PriceValue, merge: "concat" },
             { key: "last1kRSIValue", ref: () => this.indicatorReadState.last1kRSIValue, merge: "concat" },
-            { key: "buy_aspectCorrelation", ref: { parent: () => this.buyState, field: "aspectCorrelation" }, merge: "replace" },
-            { key: "sell_aspectCorrelation", ref: { parent: () => this.sellState, field: "aspectCorrelation" }, merge: "replace" },
-            { key: "sell_msgs", ref: () => this.sellState.msgs, merge: "concat" },
-            { key: "buy_msgs", ref: () => this.buyState.msgs, merge: "concat" },
+            { key: "buy_aspectCorrelation", ref: { parent: () => this.buyState, field: "aspectCorrelation" }, merge: "replace", defaultValue: 0 },
+            { key: "sell_aspectCorrelation", ref: { parent: () => this.sellState, field: "aspectCorrelation" }, merge: "replace", defaultValue: 0 },
+            { key: "sell_msgs", ref: () => this.sellState.msgs, merge: "concat" , defaultValue: []},
+            { key: "buy_msgs", ref: () => this.buyState.msgs, merge: "concat" , defaultValue: []},
             { key: "tickerValue", ref: () => this.indicatorReadState.tickerValue, merge: "concat" },
-            { key: "historyData", ref: () => this.tickerService.historyData, merge: "concat" },
-            { key: "prices_data", ref: () => this.tickerService.prices, merge: "concat" },
-            { key: "last_price_value", ref: { parent: () => this.tickerService, field: "lastPriceValue" }, merge: "replace" },
+            { key: "historyData", ref: () => this.tickerService.historyData, merge: "concat", defaultValue: []},
+            { key: "prices_data", ref: () => this.tickerService.prices, merge: "concat", defaultValue: [] },
+            { key: "last_price_value", ref: { parent: () => this.tickerService, field: "lastPriceValue" }, merge: "replace", defaultValue: 0 },
          //   { key: "ticker_index", ref: { parent: () => this.indicatorReadState, field: "tickerIndex" }, merge: "replace" },
-            { key: "count_try_sell", ref: { parent: () => this.sellState, field: "countTrySell" }, merge: "replace" },
-            { key: "count_try_buy", ref: { parent: () => this.buyState, field: "countTryBuy" }, merge: "replace" },
-            { key: "dynamic_trend_data_length", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendDataLength" }, merge: "replace" },
-            { key: "dynamic_trend_chunk_size", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendChunkSize" }, merge: "replace" },
+            { key: "count_try_sell", ref: { parent: () => this.sellState, field: "countTrySell" }, merge: "replace", defaultValue: 0 },
+            { key: "count_try_buy", ref: { parent: () => this.buyState, field: "countTryBuy" }, merge: "replace", defaultValue: 0},
+            { key: "dynamic_trend_data_length", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendDataLength" }, merge: "replace", defaultValue: 0},
+            { key: "dynamic_trend_chunk_size", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendChunkSize" }, merge: "replace", defaultValue: 0},
         ];
     }
 
@@ -103,7 +103,9 @@ export class RootStore {
 
     reverseLoudLocalStorage() {
         this.localStorageMap.forEach(entry => {
-            const stored = LocalStorageManager.getStorage(this.prefix + entry.key);
+           // const stored = LocalStorageManager.getStorage(this.prefix + entry.key);
+            const stored = LocalStorageManager.getStorage(this.prefix + entry.key) ?? entry.defaultValue;
+
             if (stored == null) return;
 
             if (typeof entry.ref === "function") {

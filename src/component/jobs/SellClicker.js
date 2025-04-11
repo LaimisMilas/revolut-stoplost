@@ -46,7 +46,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(isStopLostReached(tradePare)){
                 await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
             } else {
-                if(isTakeProfReached(tradePare) && indicatorReadState.trendByPrice1min === "down"){
+                if(isTakeProfReached(tradePare) && indicatorReadState.trendDynamic === "down"){
                     const correlation = Number(indicatorReadState.parabolicCorrelation);
                     if(correlation < Number(tradePare.aspectCorrelation)){
                         await sellOperation(tradePare, correlation, "takeProf");
@@ -54,15 +54,32 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 }
             }
             if(sellState.countTrySell > 600){
-                discountTP(0.00001);
-            } else if (sellState.countTrySell > 500){
-                discountTP(0.00001);
+                discountTP(0.0001);
+            }
+            else if (sellState.countTrySell > 500){
+                discountTP(0.0001);
             }
             else if (sellState.countTrySell > 300){
                 discountTP(0.0001);
             }
             else if (sellState.countTrySell > 200){
                 discountTP(0.0001);
+            }
+
+            if(sellState.countTryBuy > 1200){
+                indicatorReadState.dynamicTrendChunkSize = 1
+            }
+            else if (sellState.countTryBuy > 900){
+                indicatorReadState.dynamicTrendChunkSize = 2
+            }
+            else if (sellState.countTryBuy > 600){
+                indicatorReadState.dynamicTrendChunkSize = 3
+            }
+            else if (sellState.countTryBuy > 300){
+                indicatorReadState.dynamicTrendChunkSize = 4
+            }
+            else {
+                indicatorReadState.dynamicTrendChunkSize = 5
             }
             sellState.countTrySell ++;
             sellState.rootStore.saveStorage();
@@ -116,6 +133,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 }
                 indicatorReadState.trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: rsi, trailingPercent: 10 });
 
+                indicatorReadState.trailingSellBot.shouldSell();
+
                 buyState.systemCfg.cfg.linkedInLike.root.run = true;
                 sellState.getCurrentTradePare().takeProf = 1.2;
 
@@ -153,6 +172,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             msg.trendByPrice = indicatorReadState.trendByPrice;
             msg.trendByPrice1min = indicatorReadState.trendByPrice1min;
             msg.aroonTrend = indicatorReadState.aroonTrend;
+            msg.trailing = indicatorReadState.trailingSellBot.shouldSell();
 
             //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
             msg.time = Date.now();

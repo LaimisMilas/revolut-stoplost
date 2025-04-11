@@ -12,6 +12,7 @@ import {
 import {TrailingBuyBot} from "../indicator/TrailingBuyBot";
 import {getTrendByEMA} from "../indicator/MACD";
 import {calculateAroon} from "../indicator/Aroon";
+import {TrailingSellBot} from "../indicator/TrailingSellBot";
 
 export class IndicatorReadState {
 
@@ -51,6 +52,7 @@ export class IndicatorReadState {
             this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
             this.calculateTrendByEMA();
             this.calculateDynamicTrend();
+            this.calcBullishLineCorrelation();
         }
     }
 
@@ -139,11 +141,13 @@ export class IndicatorReadState {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
     }
 
-    trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 90, trailingPercent: 10 });
+    trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 });
+    trailingSellBot = new TrailingSellBot({ trailingActivateRSI: 10, trailingPercent: 10 });
 
     updateTrailingBuyBot(){
         if(this.lastRSIValue){
             this.trailingBuyBot.updateRSI(Number(this.lastRSIValue));
+            this.trailingSellBot.updateRSI(Number(this.lastRSIValue));
         }
     }
 
@@ -210,7 +214,7 @@ export class IndicatorReadState {
             && this.last100PriceValue.length > this.dynamicTrendDataLength){
             let prices = this.last100PriceValue;
             prices = prices.slice(prices.length - this.dynamicTrendDataLength, prices.length);
-            prices = downsampleArray(prices, this.dynamicTrendDataLength);
+            prices = downsampleArray(prices, this.dynamicTrendChunkSize);
             this.trendDynamic = getTrendByEMA(prices);
         }
     }

@@ -46,7 +46,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(isStopLostReached(tradePare)){
                 await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
             } else {
-                if(isTakeProfReached(tradePare) && indicatorReadState.trendByPrice1min === "down"){
+                if(isTakeProfReached(tradePare) && indicatorReadState.trendDynamic === "down"){
                     const correlation = Number(indicatorReadState.parabolicCorrelation);
                     if(correlation < Number(tradePare.aspectCorrelation)){
                         await sellOperation(tradePare, correlation, "takeProf");
@@ -54,17 +54,24 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 }
             }
             if(sellState.countTrySell > 600){
-                discountTP(0.00001);
+                discountTP(0.01);
+                indicatorReadState.dynamicTrendChunkSize = 2;
             } else if (sellState.countTrySell > 500){
-                discountTP(0.00001);
+                discountTP(0.001);
+                indicatorReadState.dynamicTrendChunkSize = 3;
             }
             else if (sellState.countTrySell > 300){
                 discountTP(0.0001);
+                indicatorReadState.dynamicTrendChunkSize = 4
             }
             else if (sellState.countTrySell > 200){
                 discountTP(0.0001);
+                indicatorReadState.dynamicTrendChunkSize = 5
+            } else {
+                indicatorReadState.dynamicTrendChunkSize = 6
             }
             sellState.countTrySell ++;
+            sellState.rootStore.saveStorage();
         }
 
         const sellOperation = async (tradePare, correlation, caller) => {
