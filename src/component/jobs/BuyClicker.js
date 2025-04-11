@@ -9,6 +9,7 @@ import {
 } from "../../utils/RevolutUtils";
 import {calcStopLost, calcStopLostTakeProf, calcTakeProfit, calculateTP_SL} from "../../../src/indicator/ATR";
 import {TrailingBuyBot} from "../../indicator/TrailingBuyBot";
+import {TrailingSellBot} from "../../indicator/TrailingSellBot";
 
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState", "tickerService")(
@@ -128,16 +129,20 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState", "ticker
                 }
 
                 let rsi = indicatorReadState.lastRSIValue;
-                if(rsi < 40){
+                if(rsi > 70){
                     rsi = 50;
                 }
 
-                indicatorReadState.trailingSellBot = new TrailingBuyBot({ trailingActivateRSI: rsi, trailingPercent: 10 });
+                indicatorReadState.trailingSellBot = new TrailingSellBot({ trailingActivateRSI: rsi, trailingPercent: 10 });
 
                 indicatorReadState.buyPointReached = false;
                 indicatorReadState.isTrailingActive = false;
                 indicatorReadState.trailingPoint = 0;
                 indicatorReadState.deltaValue = 0;
+
+                sellState.countTrySell  = 0;
+                buyState.countTryBuy  = 0;
+
                 await saveMsg(tradePare, correlation, "BUY");
             }
             return result;

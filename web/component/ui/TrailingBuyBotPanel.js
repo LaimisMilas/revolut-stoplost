@@ -50,7 +50,8 @@ const TrailingBuyBotPanel =
                                 <div className="checkbox-row">
                                     <label
                                         htmlFor={"limitBuy_id"}>Point</label>
-                                    <span>{indicatorReadState.trailingBuyBot.trailingPoint}</span>
+                                    <span>sell:{indicatorReadState.trailingSellBot.trailingPoint}</span>
+                                    <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.trailingPoint}</span>
                                 </div>
                                 <div className="checkbox-row">
                                     <label>Trail signal</label>
