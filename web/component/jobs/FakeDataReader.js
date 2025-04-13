@@ -10,10 +10,11 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
 
         function getStopLostTicker(){
             let data = stop_lost;
+            let result = [];
             if(data.length > 0){
-                data = data.map(item => data.push(...item.data));
+                data.map(item => result.push(...item.data));
             }
-            return data;
+            return result;
         }
 
        const [tickerValue, setTickerValue] = useState(tickersDownTrend);

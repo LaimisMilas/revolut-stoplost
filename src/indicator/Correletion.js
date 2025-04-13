@@ -32,7 +32,6 @@ export const doParabolicCorrelation = (rsiValues) => {
 export const doSinusoidCorrelation = (rsiValues) => {
     const n = rsiValues.length;
     if (n < 3) {
-        console.error("RSI reikšmių per mažai, reikia bent 3.");
         return 0;
     }
     const sinusoidValues = generateSineWaveData(rsiValues.length-1, 10)
@@ -43,7 +42,6 @@ export const doSinusoidCorrelation = (rsiValues) => {
 export const doBullishLineCorrelation = (rsiValues) => {
     const n = rsiValues.length;
     if (n < 3) {
-        console.error("RSI reikšmių per mažai, reikia bent 3.");
         return 0;
     }
     const bullishLineValues = generateBullishLine(rsiValues.length-1);
@@ -54,7 +52,6 @@ export const doBullishLineCorrelation = (rsiValues) => {
 export const doBearishLineCorrelation = (rsiValues) => {
     const n = rsiValues.length;
     if (n < 3) {
-        console.error("RSI reikšmių per mažai, reikia bent 3.");
         return 0;
     }
     const bearishLineValues = generateBearishLine(rsiValues.length-1);
@@ -65,7 +62,6 @@ export const doBearishLineCorrelation = (rsiValues) => {
 export const doLeftLineCorrelation = (rsiValues) => {
     const n = rsiValues.length;
     if (n < 3) {
-        console.error("RSI reikšmių per mažai, reikia bent 3.");
         return 0;
     }
     const leftLineValues = generateLeftLine(rsiValues.length-1);

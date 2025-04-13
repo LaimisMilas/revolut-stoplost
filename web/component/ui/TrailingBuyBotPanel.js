@@ -78,7 +78,7 @@ const TrailingBuyBotPanel =
                                 </div>
                                 <div className="checkbox-row">
                                     <label>Trend ch:34</label>
-                                    <span>{indicatorReadState.calculateTrend(900,34)}</span>
+                                    <span>{indicatorReadState.calculateTrend(900, 34)}</span>
                                 </div>
 
                                 <div className="checkbox-row">
@@ -90,6 +90,19 @@ const TrailingBuyBotPanel =
                                     <label>Aroon trend</label>
                                     <span>{indicatorReadState.aroonTrend}</span>
                                 </div>
+                                <div className="checkbox-row">
+                                    <label>Sinus. 30ch:</label>
+                                    <span>30:{indicatorReadState.getSinusoidCorrelationData(1800, 60)}</span>
+                                    <span>&nbsp; 45:{indicatorReadState.getSinusoidCorrelationData(2700, 9)}</span>
+                                    <span>&nbsp; 60:{indicatorReadState.getSinusoidCorrelationData(3600, 120)}</span>
+                                </div>
+                                <div className="checkbox-row">
+                                    <label>Parab. 30ch:</label>
+                                    <span>30:{indicatorReadState.getParabolicCorrelation(1800, 60)}</span>
+                                    <span>&nbsp; 45:{indicatorReadState.getParabolicCorrelation(2700, 9)}</span>
+                                    <span>&nbsp; 60:{indicatorReadState.getParabolicCorrelation(3600, 120)}</span>
+                                </div>
+
                                 <div className="checkbox-row">
                                     <label>TickerIndex</label>
                                     <span>{indicatorReadState.tickerIndex}</span>

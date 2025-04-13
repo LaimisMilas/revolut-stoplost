@@ -119,12 +119,38 @@ export class IndicatorReadState {
     }
 
     calcSinusoidCorrelation() {
-      // const rsi = downsampleArray(900, 7);
        this.sinusoidCorrelation = doSinusoidCorrelation(this.last100RSIValue);
+    }
+
+    getSinusoidCorrelationData(size = 300, chunkSize = 1) {
+        const data = this.getPriceByInterval(size, chunkSize);
+        if(data){
+            return doSinusoidCorrelation(data);
+        }
+        return null;
+    }
+
+    getPriceByInterval(size = 300, chunkSize = 1){
+        if(this.tickerValue.length > 0){
+            let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
+            const from = data.length - size;
+            const to = data.length - 1;
+            data = downsampleArray(data.slice(from, to), chunkSize);
+            return data;
+        }
+        return null;
     }
 
     calcParabolicCorrelation() {
         this.parabolicCorrelation = doParabolicCorrelation(this.last100RSIValue);
+    }
+
+    getParabolicCorrelation(size = 300, chunkSize = 1) {
+        const data = this.getPriceByInterval(size, chunkSize);
+        if(data){
+            return doParabolicCorrelation(data);
+        }
+        return null;
     }
 
     calcLeftLineCorrelation() {
@@ -199,8 +225,8 @@ export class IndicatorReadState {
     stopLostDataChunk = [];
 
     storeTicker(dataChunk){
-        const chunk = this.last100PriceValue.slice(
-            this.last100PriceValue.length - dataChunk, this.last100PriceValue.length);
+        const chunk = this.tickerValue.slice(
+            this.tickerValue.length - dataChunk, this.tickerValue.length);
         this.stopLostDataChunk.push({
             data: chunk,
             lastPrice: this.lastPriceValue,
