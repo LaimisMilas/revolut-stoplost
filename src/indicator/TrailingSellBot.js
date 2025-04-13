@@ -30,7 +30,7 @@ export class TrailingSellBot {
                 this.trailingPoint = currentRSI;
             } else if (currentRSI < threshold) {
                 this.sellSignal = true;
-                this.reset();
+               // this.reset();
             }
 
         } else {

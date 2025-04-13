@@ -1,11 +1,24 @@
 import {inject, observer} from "mobx-react";
 import {useEffect, useState} from "react";
 import {tickersDownTrend} from "./ticker_dow_trend";
+import {stop_lost} from "./stop_lost_tickers";
 
 const FakeDataReader = inject("indicatorReadState", "tickerService")(
     observer(({indicatorReadState, tickerService}) => {
 
-        const [tickerValue, setTickerValue] = useState(tickersDownTrend);
+
+
+        function getStopLostTicker(){
+            let data = stop_lost;
+            if(data.length > 0){
+                data = data.map(item => data.push(...item.data));
+            }
+            return data;
+        }
+
+       const [tickerValue, setTickerValue] = useState(tickersDownTrend);
+       const [stopLostTickers, setStopLostTickers] = useState(getStopLostTicker());
+
 
         function addEventListener(){
             window.addEventListener("message", async (event) => {

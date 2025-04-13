@@ -2,7 +2,7 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {calcStopLost, calcStopLostTakeProf, calcTakeProfit, calculateTP_SL} from "../../../src/indicator/ATR";
 
-const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerService")(
+const TestBuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerService")(
     observer(({buyState, sellState, indicatorReadState, tickerService}) => {
 
         useEffect(() => {
@@ -130,5 +130,5 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState","tickerS
 
     }));
 
-export default BuyClicker;
+export default TestBuyClicker;
 

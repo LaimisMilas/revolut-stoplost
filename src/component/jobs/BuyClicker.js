@@ -64,7 +64,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState", "ticker
                 indicatorReadState.dynamicTrendChunkSize = 4
             }
             else {
-                indicatorReadState.dynamicTrendChunkSize = 5
+                indicatorReadState.dynamicTrendChunkSize = indicatorReadState.dynamicTrendChunkSizeDefault;
             }
             buyState.countTryBuy ++;
             buyState.rootStore.saveStorage();
@@ -142,6 +142,8 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState", "ticker
 
                 sellState.countTrySell  = 0;
                 buyState.countTryBuy  = 0;
+
+                indicatorReadState.dynamicTrendChunkSizeDefault = 5;
 
                 await saveMsg(tradePare, correlation, "BUY");
             }

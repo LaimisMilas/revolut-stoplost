@@ -32,13 +32,13 @@ const TrailingBuyBotPanel =
                                     <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.isTrailingActive ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                <label
+                                    <label
                                         htmlFor={"limitBuy_id"}>ActivateRSI</label>
                                     <span>sell:{Number(indicatorReadState.trailingSellBot.trailingActivateRSI).toFixed(2)}</span>
                                     <span>&nbsp;buy:{Number(indicatorReadState.trailingBuyBot.trailingActivateRSI).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                <label
+                                    <label
                                         htmlFor={"limitBuy_id"}>Percent</label>
                                     <span>{Number(indicatorReadState.trailingBuyBot.trailingPercent)}</span>
                                 </div>
@@ -59,7 +59,7 @@ const TrailingBuyBotPanel =
                                     <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.buySignal ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                <label
+                                    <label
                                         htmlFor={"limitBuy_id"}>Last RSI</label>
                                     <span>{Number(indicatorReadState.lastRSIValue).toFixed(2)}</span>
                                 </div>
@@ -76,6 +76,11 @@ const TrailingBuyBotPanel =
                                     <span>{indicatorReadState.trendDynamic}</span>
                                     <span>&nbsp; ch:{indicatorReadState.dynamicTrendChunkSize}</span>
                                 </div>
+                                <div className="checkbox-row">
+                                    <label>Trend ch:34</label>
+                                    <span>{indicatorReadState.calculateTrend(900,34)}</span>
+                                </div>
+
                                 <div className="checkbox-row">
                                     <label>Try counter</label>
                                     <span>sell:{sellState.countTrySell}</span>

@@ -10,7 +10,7 @@ import {
 } from "../../../src/utils/RevolutUtils";
 import {TrailingBuyBot} from "../../../src/indicator/TrailingBuyBot";
 
-const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
+const TestSellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
 
         useEffect(() => {
@@ -44,7 +44,12 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 return;
             }
             if(isStopLostReached(tradePare)){
-                await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
+               // let result = indicatorReadState.calculateTrend(900,9);
+               // let result1 = indicatorReadState.calculateTrend(900,10);
+               // if(result === "down" && result1 === "down"){
+                    await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
+                    indicatorReadState.storeTicker(900);
+             //   }
             } else {
                 if(isTakeProfReached(tradePare) && indicatorReadState.trendDynamic === "down"){
                     const correlation = Number(indicatorReadState.parabolicCorrelation);
@@ -162,5 +167,5 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
 
     }));
 
-export default SellClicker;
+export default TestSellClicker;
 

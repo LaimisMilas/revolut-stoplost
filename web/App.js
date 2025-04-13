@@ -3,8 +3,8 @@ import {Provider} from "mobx-react";
 import {RootStore} from "../src/state/RootStore";
 import SellPanel from "../src/component/ui/SellPanel";
 import BuyPanel from "../src/component/ui/BuyPanel";
-import SellClicker from "./component/jobs/SellClicker";
-import BuyClicker from "./component/jobs/BuyClicker";
+import TestSellClicker from "./component/jobs/TestSellClicker";
+import TestBuyClicker from "./component/jobs/TestBuyClicker";
 import OrderList from "./component/ui/OrderList";
 import FakeDataReader from "./component/jobs/FakeDataReader";
 import TrailingBuyBotPanel from "./component/ui/TrailingBuyBotPanel";
@@ -28,8 +28,8 @@ const App = () => {
             <div className="webApp">
                 <SellPanel/>
                 <BuyPanel/>
-                <SellClicker/>
-                <BuyClicker/>
+                <TestSellClicker/>
+                <TestBuyClicker/>
                 <FakeDataReader/>
                 <OrderList/>
                 <TrailingBuyBotPanel/>

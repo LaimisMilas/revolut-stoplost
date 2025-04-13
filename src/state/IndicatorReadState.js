@@ -53,6 +53,8 @@ export class IndicatorReadState {
             this.calculateTrendByEMA();
             this.calculateDynamicTrend();
             this.calcBullishLineCorrelation();
+            this.calcSinusoidCorrelation();
+            this.calculateDivergence();
         }
     }
 
@@ -82,15 +84,9 @@ export class IndicatorReadState {
     }
 
     calculateRSITicker = (size, chunkSize) => {
-        let data = this.getLastTickers(size + 14, chunkSize);
-        if(data.length >= 14){
-            this.last100RSIValue = calculateRSI(data);
-            if(this.last100RSIValue.length > 0){
-                this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
-                this.calculateAroon();
-                this.updateTrailingBuyBot();
-                this.doTrailingAction();
-            }
+        let prices = this.getLastTickers(size + 14, chunkSize);
+        if(prices.length >= 14){
+            this.updateRSI(prices);
         }
     }
 
@@ -103,7 +99,6 @@ export class IndicatorReadState {
         this.calcBullishLineCorrelation();
         this.calcBearishLineCorrelation();
         this.updateTrailingBuyBot();
-        this.doTrailingAction();
         this.calculateTrendByEMA();
         this.calculateAroon();
     }
@@ -113,6 +108,8 @@ export class IndicatorReadState {
             this.last100RSIValue = calculateRSI(prices);
             if(this.last100RSIValue.length > 0){
                 this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
+                this.calculateAroon();
+                this.updateTrailingBuyBot();
             }
         }
     }
@@ -122,6 +119,7 @@ export class IndicatorReadState {
     }
 
     calcSinusoidCorrelation() {
+      // const rsi = downsampleArray(900, 7);
        this.sinusoidCorrelation = doSinusoidCorrelation(this.last100RSIValue);
     }
 
@@ -151,39 +149,6 @@ export class IndicatorReadState {
         }
     }
 
-    trailingActivatePoint = 40;
-    isTrailingActive = false;
-    trailingPoint = 0.00;
-    deltaRate = 10;
-    buyPointReached = false;
-    deltaValue = 0;
-
-    doTrailingAction(){
-        if(Number(this.lastRSIValue) < Number(this.trailingActivatePoint)){
-            if(!this.isTrailingActive){
-                this.trailingPoint = this.trailingActivatePoint;
-                this.deltaValue = (Number(this.trailingActivatePoint) * Number(this.deltaRate))/100;
-                this.buyPointReached = false;
-                this.isTrailingActive = true;
-            }
-            if(Number(this.lastRSIValue) < Number(this.trailingPoint)){
-                if(Number(this.lastRSIValue) < Number(this.trailingPoint - this.deltaValue)){
-                    this.trailingPoint = Number(this.lastRSIValue);
-                }
-            } else {
-                if(Number(this.lastRSIValue) > Number(this.trailingPoint)){
-                    this.buyPointReached = true;
-                }
-            }
-        } else {
-            if(this.isTrailingActive){
-                this.isTrailingActive = false;
-                this.trailingPoint = 0;
-                this.deltaValue = 0;
-            }
-        }
-    }
-
     trendByPrice = "";
     trendByPrice1min = "";
 
@@ -208,6 +173,7 @@ export class IndicatorReadState {
 
     dynamicTrendDataLength = 900;
     dynamicTrendChunkSize = 5;
+    dynamicTrendChunkSizeDefault = 5;
 
     calculateDynamicTrend() {
         if(this.dynamicTrendDataLength / this.dynamicTrendChunkSize > 26
@@ -219,12 +185,42 @@ export class IndicatorReadState {
         }
     }
 
+    calculateTrend(size, chunkSize) {
+        if(size / chunkSize > 26
+            && this.last100PriceValue.length > size){
+            let prices = this.last100PriceValue;
+            prices = prices.slice(prices.length - size, prices.length);
+            prices = downsampleArray(prices, chunkSize);
+            return getTrendByEMA(prices);
+        }
+        return 0;
+    }
+
+    stopLostDataChunk = [];
+
+    storeTicker(dataChunk){
+        const chunk = this.last100PriceValue.slice(
+            this.last100PriceValue.length - dataChunk, this.last100PriceValue.length);
+        this.stopLostDataChunk.push({
+            data: chunk,
+            lastPrice: this.lastPriceValue,
+            date: new Date(),
+        }) ;
+    }
+
+    getStopLostTicker(){
+        let data = [];
+        if(this.stopLostDataChunk.length > 0){
+            data = this.stopLostDataChunk.map(item => data.push(...item.data));
+        }
+       return data;
+    }
+
     aroonTrend = "";
 
     calculateAroon(){
         const dataLength = 900;
         if(this.last100PriceValue.length > dataLength){
-
             let prices = this.last100PriceValue;
             prices = prices.slice(prices.length - dataLength, prices.length);
             const result = calculateAroon(prices, 15);

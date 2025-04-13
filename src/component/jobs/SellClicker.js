@@ -44,7 +44,12 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 return;
             }
             if(isStopLostReached(tradePare)){
-                await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
+                //let result = indicatorReadState.calculateTrend(900,indicatorReadState.dynamicTrendChunkSizeDefault);
+                //if(result === "down"){
+                    await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
+                    indicatorReadState.storeTicker(900);
+                    indicatorReadState.dynamicTrendChunkSizeDefault = 6; //kad pirktu su didesniu trendu, nes tiketima false signalai
+               // }
             } else {
                 if(isTakeProfReached(tradePare) && indicatorReadState.trendDynamic === "down"){
                     const correlation = Number(indicatorReadState.parabolicCorrelation);
@@ -79,7 +84,7 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 indicatorReadState.dynamicTrendChunkSize = 4
             }
             else {
-                indicatorReadState.dynamicTrendChunkSize = 5
+                indicatorReadState.dynamicTrendChunkSize = indicatorReadState.dynamicTrendChunkSizeDefault;
             }
 
             if(isTakeProfReached(tradePare)){
