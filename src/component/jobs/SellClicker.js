@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {
     clickSell,
     convertToNumber, getClickSell,
-    getNowDate, hasOrderMessage,
+    getNowDate, getOrderType, hasOrderMessage,
     selectSellSum,
     selectSellSwitch,
     writeQuantity
@@ -142,7 +142,11 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 result += await clickSell(tradePare.key);
                 //is sold
                 if(await hasOrderMessage()){
-                    result += 100;
+                    let orderType = await getOrderType();
+                    if(orderType === "Pardavimo"){
+                        console.log("orderType:" + orderType);
+                        result += 100;
+                    }
                 }
             }
             if(result === 400){

@@ -84,6 +84,15 @@ export const hasOrderMessage = async () => {
     return null;
 }
 
+export const getOrderType = async () => {
+    let el = Utils.getElByXPath("//div/div/div/div/span[contains(text(), 'Moments ago')]/../../../../../div[3]");
+    if (el) {
+        await sleep(300);
+        return el.textContent;
+    }
+    return null;
+}
+
 export const getBuyPrice = async (tradeName) => {
     let el = Utils.getElByXPath("//button/span[contains(text(), 'Buy " + tradeName + "')][1]");
     if(el){
