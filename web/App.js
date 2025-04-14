@@ -9,6 +9,7 @@ import OrderList from "./component/ui/OrderList";
 import FakeDataReader from "./component/jobs/FakeDataReader";
 import TrailingBuyBotPanel from "./component/ui/TrailingBuyBotPanel";
 import {LocalStorageManager} from "../src/storage/LocalStorageManager";
+import IndicatorsPanel from "./component/ui/IndicatorsPanel";
 
 //LocalStorageManager.flash("rc_store_state", 0);
 const rootState = new RootStore("rc_");
@@ -33,6 +34,7 @@ const App = () => {
                 <FakeDataReader/>
                 <OrderList/>
                 <TrailingBuyBotPanel/>
+                <IndicatorsPanel/>
             </div>
         </Provider>
     );

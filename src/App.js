@@ -8,6 +8,7 @@ import SellPanel from "./component/ui/SellPanel";
 import BuyPanel from "./component/ui/BuyPanel";
 import OrderList from "../web/component/ui/OrderList";
 import TrailingBuyBotPanel from "../web/component/ui/TrailingBuyBotPanel";
+import IndicatorsPanel from "../web/component/ui/IndicatorsPanel";
 
 const rootState = new RootStore();
 
@@ -31,6 +32,7 @@ const App = () => {
                 <DataReader/>
                 <OrderList/>
                 <TrailingBuyBotPanel/>
+                <IndicatorsPanel/>
             </div>
         </Provider>
     );

@@ -63,50 +63,6 @@ const TrailingBuyBotPanel =
                                         htmlFor={"limitBuy_id"}>Last RSI</label>
                                     <span>{Number(indicatorReadState.lastRSIValue).toFixed(2)}</span>
                                 </div>
-                                <div className="checkbox-row">
-                                    <label>Trend 1sec.</label>
-                                    <span>{indicatorReadState.trendByPrice}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Trend 1min.</label>
-                                    <span>{indicatorReadState.trendByPrice1min}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Trend dynamic</label>
-                                    <span>{indicatorReadState.trendDynamic}</span>
-                                    <span>&nbsp; ch:{indicatorReadState.dynamicTrendChunkSize}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Trend ch:34</label>
-                                    <span>{indicatorReadState.calculateTrend(900, 34)}</span>
-                                </div>
-
-                                <div className="checkbox-row">
-                                    <label>Try counter</label>
-                                    <span>sell:{sellState.countTrySell}</span>
-                                    <span>&nbsp; buy:{buyState.countTryBuy}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Aroon trend</label>
-                                    <span>{indicatorReadState.aroonTrend}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Sinus. 30ch:</label>
-                                    <span>30:{indicatorReadState.getSinusoidCorrelationData(1800, 60)}</span>
-                                    <span>&nbsp; 45:{indicatorReadState.getSinusoidCorrelationData(2700, 9)}</span>
-                                    <span>&nbsp; 60:{indicatorReadState.getSinusoidCorrelationData(3600, 120)}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Parab. 30ch:</label>
-                                    <span>30:{indicatorReadState.getParabolicCorrelation(1800, 60)}</span>
-                                    <span>&nbsp; 45:{indicatorReadState.getParabolicCorrelation(2700, 9)}</span>
-                                    <span>&nbsp; 60:{indicatorReadState.getParabolicCorrelation(3600, 120)}</span>
-                                </div>
-
-                                <div className="checkbox-row">
-                                    <label>TickerIndex</label>
-                                    <span>{indicatorReadState.tickerIndex}</span>
-                                </div>
                             </div>
                         </div>
                     </div>

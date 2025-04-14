@@ -43,6 +43,9 @@ const TestSellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
+
+            sellState.trySellPrices.push(indicatorReadState.lastPriceValue);
+
             if(isStopLostReached(tradePare)){
                // let result = indicatorReadState.calculateTrend(900,9);
                // let result1 = indicatorReadState.calculateTrend(900,10);
@@ -96,22 +99,22 @@ const TestSellClicker = inject("sellState", "buyState", "indicatorReadState")(
                   //  buyState.getCurrentTradePare().rsi = 30;
                     result += 100;
                 }
+                buyState.systemCfg.cfg.linkedInLike.root.run = true;
                 let rsi = indicatorReadState.lastRSIValue;
                 if(rsi < 40){
                     rsi = 50;
                 }
                 indicatorReadState.trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: rsi, trailingPercent: 10 });
-
-                buyState.systemCfg.cfg.linkedInLike.root.run = true;
-                sellState.getCurrentTradePare().takeProf = 1.2;
-
                 indicatorReadState.buyPointReached = false;
                 indicatorReadState.isTrailingActive = false;
                 indicatorReadState.trailingPoint = 0;
                 indicatorReadState.deltaValue = 0;
                 indicatorReadState.trailingBuyBot.reset();
 
+                sellState.getCurrentTradePare().takeProf = 1.2;
                 sellState.countTrySell  = 0;
+                sellState.trySellPrices = [];
+                buyState.trySellPrices = [];
 
                 result += 100;
                 await saveMsg(tradePare, correlation, "SELL");

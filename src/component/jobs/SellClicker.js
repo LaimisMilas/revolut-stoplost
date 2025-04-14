@@ -2,13 +2,13 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {
     clickSell,
-    convertToNumber,
-    getNowDate,
+    convertToNumber, getClickSell,
+    getNowDate, hasOrderMessage,
     selectSellSum,
     selectSellSwitch,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {TrailingBuyBot} from "../../indicator/TrailingBuyBot";
+import {postSellProcess} from "./sell/PostSellProcess";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -43,6 +43,9 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
+
+            sellState.trySellPrices.push(indicatorReadState.lastPriceValue);
+
             if(isStopLostReached(tradePare)){
                 //let result = indicatorReadState.calculateTrend(900,indicatorReadState.dynamicTrendChunkSizeDefault);
                 //if(result === "down"){
@@ -101,7 +104,14 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
         }
 
         const sellOperation = async (tradePare, correlation, caller) => {
-            let result = await selectSellSwitch();
+            let result= 0;
+            let el = await selectSellSwitch();
+            //is switched to sell
+            if(el.hasAttribute('aria-selected') && el.getAttribute('aria-selected') === 'false'){
+                return;
+            } else {
+                result = 100;
+            }
             if(result === 100){
                 let quantityValue = tradePare.quantity;
                 if(quantityValue.includes('%')){
@@ -122,74 +132,23 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     let quantity = convertToNumber(quantityValue);
                     result += await writeQuantity(quantity);
                 }
+                //is quantity selected
+                el = await getClickSell(tradePare.key);
+                if(el.hasAttribute('disabled')){
+                    return;
+                }
             }
             if(result === 200){
                 result += await clickSell(tradePare.key);
-                //result += 100;
+                //is sold
+                if(await hasOrderMessage()){
+                    result += 100;
+                }
             }
-            if(result === 300){
-                sellState.systemCfg.cfg.linkedInLike.root.run = false;
-                result += 100;
-                if(caller === "stopLost"){
-                    const newTargetPrice = Number(indicatorReadState.lastPriceValue) + ((Number(indicatorReadState.lastPriceValue) * 1)/100);
-                    buyState.getCurrentTradePare().targetPrice = Number(newTargetPrice).toFixed(2);
-                    // const newRSIValue = Number(indicatorReadState.lastRSIValue) + ((Number(indicatorReadState.lastRSIValue) * 2)/100);
-                    // buyState.getCurrentTradePare().rsi = Number(newRSIValue).toFixed(0);
-                    // buyState.getCurrentTradePare().rsi = 30;
-                    result += 100;
-                } else if(caller === "takeProf"){
-                    buyState.getCurrentTradePare().targetPrice = Number(indicatorReadState.lastPriceValue);
-                    //  buyState.getCurrentTradePare().rsi = 30;
-                    result += 100;
-                }
-                let rsi = indicatorReadState.lastRSIValue;
-                if(rsi < 40){
-                    rsi = 50;
-                }
-                indicatorReadState.trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: rsi, trailingPercent: 10 });
-
-                buyState.systemCfg.cfg.linkedInLike.root.run = true;
-                sellState.getCurrentTradePare().takeProf = 1.2;
-                sellState.getCurrentTradePare().aspectCorrelation = -0.5;
-
-                indicatorReadState.buyPointReached = false;
-                indicatorReadState.isTrailingActive = false;
-                indicatorReadState.trailingPoint = 0;
-                indicatorReadState.deltaValue = 0;
-
-                sellState.countTrySell  = 0;
-                buyState.countTryBuy  = 0;
-
-                result += 100;
-                await saveMsg(tradePare, correlation, "SELL");
+            if(result === 400){
+                await postSellProcess(buyState, sellState, indicatorReadState, tradePare, correlation, caller);
             }
             return result;
-        }
-
-        const saveMsg = async (tradePare, correlation, type) => {
-            const msg = {};
-            msg.type = type;
-            msg.name = tradePare.name;
-            msg.price = Number(tradePare.price).toFixed(2);
-            msg.stopLost = sellState.getCurrentTradePare().stopLost
-            msg.takeProf = sellState.getCurrentTradePare().takeProf;
-            msg.quantity = tradePare.quantity;
-            msg.lastPriceValue = Number(indicatorReadState.lastPriceValue).toFixed(2);
-            msg.lastRSIValue = Number(indicatorReadState.lastRSIValue).toFixed(2);
-            msg.aspectCorrelation = sellState.aspectCorrelation;
-            msg.correlation = correlation;
-            msg.leftLineCorrelation = indicatorReadState.leftLineCorrelation;
-            msg.bullishLineCorrelation = indicatorReadState.bullishLineCorrelation;
-            msg.bearishLineCorrelation = indicatorReadState.bearishLineCorrelation;
-            msg.sinusoidCorrelation = indicatorReadState.sinusoidCorrelation;
-            msg.divergence = indicatorReadState.divergence;
-            msg.trendByPrice = indicatorReadState.trendByPrice;
-            msg.trendByPrice1min = indicatorReadState.trendByPrice1min;
-            msg.aroonTrend = indicatorReadState.aroonTrend;
-            msg.trailing = indicatorReadState.trailingSellBot.shouldSell();
-            //msg.rsiData = JSON.stringify(last100RSIValue.slice(0, indicatorReadState.last100RSIValue.length - 1));
-            msg.time = Date.now();
-            sellState.saveMsg(msg);
         }
 
         const isTakeProfReached = (tradePare) => {

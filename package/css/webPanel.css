@@ -24,6 +24,23 @@ body{
     top: 0px;
 }
 
+#test_root_12 #indicators-panel{
+    right: 420px;
+    top: 420px;
+}
+
+#test_root_12 #indicators-panel table{
+    border: #71b7fb 1px solid;
+}
+
+#test_root_12 #indicators-panel td{
+    border: #71b7fb 1px solid;
+}
+
+#test_root_12 #indicators-panel th{
+    border: #71b7fb 1px solid;
+}
+
 #test_root_12 .checkbox-row input.halfInput{
     width: 50px;
     margin-right: 10px;

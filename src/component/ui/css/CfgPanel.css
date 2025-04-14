@@ -222,3 +222,20 @@
     border: 1px solid #ccc;
     border-radius: 6px;
 }
+
+#indicators-panel{
+    right: 420px;
+    top: 420px;
+}
+
+#indicators-panel table{
+    border: #71b7fb 1px solid;
+}
+
+#indicators-panel td{
+    border: #71b7fb 1px solid;
+}
+
+#indicators-panel th{
+    border: #71b7fb 1px solid;
+}

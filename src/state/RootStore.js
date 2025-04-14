@@ -84,7 +84,9 @@ export class RootStore {
             { key: "count_try_buy", ref: { parent: () => this.buyState, field: "countTryBuy" }, merge: "replace", defaultValue: 0},
             { key: "dynamic_trend_data_length", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendDataLength" }, merge: "replace", defaultValue: 0},
             { key: "dynamic_trend_chunk_size", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendChunkSize" }, merge: "replace", defaultValue: 0},
-            { key: "stop_lost_data_chunk", ref: () => this.indicatorReadState.stopLostDataChunk, merge: "concat", defaultValue: []}
+            { key: "stop_lost_data_chunk", ref: () => this.indicatorReadState.stopLostDataChunk, merge: "concat", defaultValue: []},
+            { key: "try_sell_prices", ref: () => this.sellState.trySellPrices, merge: "concat", defaultValue: []},
+            { key: "try_buy_prices", ref: () => this.buyState.tryBuyPrices, merge: "concat", defaultValue: []}
         ];
     }
 

@@ -9,9 +9,9 @@ export const selectSellSwitch = async () => {
     if(el){
         el.click();
         await sleep(300);
-        return 100;
+        return el;
     }
-    return 0;
+    return null;
 }
 
 export const selectBuySwitch = async () => {
@@ -60,6 +60,28 @@ export const clickSell = async (tradeName) => {
         return 100;
     }
     return 0;
+}
+
+export const getClickSell = async (tradeName) => {
+    let el = Utils.getElByXPath("//button/span[contains(text(), 'Sell " + tradeName + "')][1]");
+    if(el){
+        await sleep(300);
+        return el;
+    }
+    return null;
+}
+
+
+//data-rui-part
+
+export const hasOrderMessage = async () => {
+    await sleep(5000);
+    let el = Utils.getElByXPath("//div/div/div/div/span[contains(text(), 'Moments ago')]");
+    if (el) {
+        await sleep(300);
+        return el;
+    }
+    return null;
 }
 
 export const getBuyPrice = async (tradeName) => {

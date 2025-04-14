@@ -30,6 +30,7 @@ const TestBuyClicker = inject("buyState", "sellState", "indicatorReadState","tic
             if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
+            buyState.tryBuyPrices.push(indicatorReadState.lastPriceValue);
             // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
             const correlation = indicatorReadState.parabolicCorrelation;
             // indicatorReadState.buyPointReached;
@@ -91,6 +92,9 @@ const TestBuyClicker = inject("buyState", "sellState", "indicatorReadState","tic
                 } else {
                     sellState.getCurrentTradePare().takeProf = 1.6;
                 }
+
+                sellState.trySellPrices = [];
+                buyState.trySellPrices = [];
 
                 indicatorReadState.buyPointReached = false;
                 indicatorReadState.isTrailingActive = false;
