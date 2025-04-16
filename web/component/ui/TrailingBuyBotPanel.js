@@ -18,7 +18,7 @@ const TrailingBuyBotPanel =
                         <div className="tab-container">
                         <span className="activeTime">
                            <span
-                               className="panelTitle">Trailing buy bot</span>, active time: {buyPanelState.active.timeDiff} min.
+                               className="panelTitle">Trailing</span>, active time: {buyPanelState.active.timeDiff} min.
                         </span>
                             <button className="exit-button"
                                     onClick={() => handleCollapseButtonClick()}>
@@ -27,29 +27,22 @@ const TrailingBuyBotPanel =
                             <div hidden={checkBoxContainerState}>
                                 <div className="checkbox-row">
                                     <label
-                                        htmlFor={"limitBuy_id"}>isActive</label>
+                                        htmlFor={"limitBuy_id"}>Active</label>
                                     <span>sell:{indicatorReadState.trailingSellBot.isTrailingActive ? "true" : "false"}</span>
                                     <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.isTrailingActive ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
-                                        htmlFor={"limitBuy_id"}>ActivateRSI</label>
+                                    <label>Activate point</label>
                                     <span>sell:{Number(indicatorReadState.trailingSellBot.trailingActivateRSI).toFixed(2)}</span>
                                     <span>&nbsp;buy:{Number(indicatorReadState.trailingBuyBot.trailingActivateRSI).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
-                                        htmlFor={"limitBuy_id"}>Percent</label>
-                                    <span>{Number(indicatorReadState.trailingBuyBot.trailingPercent)}</span>
+                                    <label>Delta</label>
+                                    <span>{Number(indicatorReadState.trailingBuyBot.trailingPercent)}%</span>
+                                    <span>&nbsp;{Number(indicatorReadState.trailingBuyBot.trailingDistance).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
-                                        htmlFor={"limitBuy_id"}>Distance</label>
-                                    <span>{Number(indicatorReadState.trailingBuyBot.trailingDistance).toFixed(2)}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label
-                                        htmlFor={"limitBuy_id"}>Point</label>
+                                <label>Action point</label>
                                     <span>sell:{indicatorReadState.trailingSellBot.trailingPoint}</span>
                                     <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.trailingPoint}</span>
                                 </div>
@@ -59,8 +52,7 @@ const TrailingBuyBotPanel =
                                     <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.buySignal ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label
-                                        htmlFor={"limitBuy_id"}>Last RSI</label>
+                                    <label>Last RSI</label>
                                     <span>{Number(indicatorReadState.lastRSIValue).toFixed(2)}</span>
                                 </div>
                             </div>

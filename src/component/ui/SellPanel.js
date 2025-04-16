@@ -37,7 +37,6 @@ const SellPanel =
                 setTakeProfPrice(calcTakeProfPrice());
                 setStopLostPrice(calcStopLostPrice());
                 setCurrentProf(calcCurrentProf());
-                indicatorReadState.calcParabolicCorrelation();
             }, [sellState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const calcTakeProfPrice = () => {

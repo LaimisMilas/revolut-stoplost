@@ -14,6 +14,7 @@ export class TrailingSellBot {
         this.trailingPoint = 0;
         this.trailingDistance = 0;
         this.sellSignal = false;
+        this.trailingActivateRSI = 10;
     }
 
     updateRSI(currentRSI) {

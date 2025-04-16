@@ -3,11 +3,20 @@ import {TrailingBuyBot} from "../../../indicator/TrailingBuyBot";
 export const postSellProcess = async (buyState, sellState, indicatorReadState, tradePare, correlation, caller) => {
     let result = 0
     sellState.systemCfg.cfg.linkedInLike.root.run = false;
+    buyState.systemCfg.cfg.linkedInLike.root.run = true;
+    sellState.rootStore.saveStorage();
+
     if (caller === "stopLost") {
         const newTargetPrice = Number(indicatorReadState.lastPriceValue) + ((Number(indicatorReadState.lastPriceValue) * 1) / 100);
         buyState.getCurrentTradePare().targetPrice = Number(newTargetPrice).toFixed(2);
+        indicatorReadState.dynamicTrendChunkSize = Number(indicatorReadState.dynamicTrendChunkSize + 1);
+
     } else if (caller === "takeProf") {
         buyState.getCurrentTradePare().targetPrice = Number(indicatorReadState.lastPriceValue);
+        indicatorReadState.dynamicTrendChunkSize = Number(indicatorReadState.dynamicTrendChunkSize - 1);
+        if(indicatorReadState.dynamicTrendChunkSize < 3){
+            indicatorReadState.dynamicTrendChunkSize = 3;
+        }
     }
     let rsi = indicatorReadState.lastRSIValue < 40 ? 50 : indicatorReadState.lastRSIValue;
     indicatorReadState.trailingBuyBot = new TrailingBuyBot({trailingActivateRSI: rsi, trailingPercent: 10});
@@ -15,13 +24,12 @@ export const postSellProcess = async (buyState, sellState, indicatorReadState, t
     indicatorReadState.isTrailingActive = false;
     indicatorReadState.trailingPoint = 0;
     indicatorReadState.deltaValue = 0;
-    sellState.getCurrentTradePare().takeProf = 1.2;
-    sellState.getCurrentTradePare().aspectCorrelation = -0.5;
+    //sellState.getCurrentTradePare().takeProf = 1.2;
+    //sellState.getCurrentTradePare().aspectCorrelation = -0.5;
     sellState.countTrySell = 0;
     sellState.trySellPrices = [];
     buyState.countTryBuy = 0;
     buyState.tryBuyPrices = [];
-    buyState.systemCfg.cfg.linkedInLike.root.run = true;
     await saveMsg(tradePare, correlation, "SELL", sellState, indicatorReadState);
     return result;
 }

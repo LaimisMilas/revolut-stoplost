@@ -45,7 +45,6 @@ const ChartPanel =
 
             useEffect(() => {
                 setChartData(getCartData(indicatorReadState.last100RSIValue));
-                indicatorReadState.calcParabolicCorrelation();
                 indicatorReadState.calculateDivergence();
                 indicatorReadState.calcSinusoidCorrelation();
                 indicatorReadState.calcBearishLineCorrelation();

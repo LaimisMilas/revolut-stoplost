@@ -98,7 +98,6 @@ const OrderList = inject("buyState", "sellState", "buyPanelState")(
                                         <td className="border px-4 py-2">Trend 1min</td>
                                         <td className="border px-4 py-2">Aroon</td>
                                         <td className="border px-4 py-2">Trail</td>
-
                                     </tr>
                                     </thead>
                                     <tbody>

@@ -31,7 +31,7 @@ const DataReader = inject("indicatorReadState","tickerService")(
                     indicatorReadState.calculateRSITicker(600 + 14, 30);
                     indicatorReadState.updateLast100Price();
                     indicatorReadState.last100RSICounter ++;
-
+                    indicatorReadState.calcParabolicCorrelation();
                     secTickerBuffer = [];
                 }
                 secTickerBuffer.push(result.data);

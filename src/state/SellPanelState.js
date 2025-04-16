@@ -83,7 +83,7 @@ export class SellPanelState {
     async updateTimeDiff() {
         this.active.timeDiff = DateFormat.calculateTimeDifferenceInMinutes(Date.now(), this.active.from);
         if (this.active.timeDiff > 60) {
-            location.reload();
+            //location.reload();
         }
         if (this.active.timeDiff > 20 && this.active.timeDiff < 45) {
             await selectSellSwitch();

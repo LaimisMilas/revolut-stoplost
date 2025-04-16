@@ -3,6 +3,9 @@ import {TrailingSellBot} from "../../../indicator/TrailingSellBot";
 export const postBuyProcess = async (buyState, sellState, indicatorReadState, tradePare, correlation) => {
     let result = 0;
     buyState.systemCfg.cfg.linkedInLike.root.run = false;
+    sellState.systemCfg.cfg.linkedInLike.root.run = true;
+    sellState.rootStore.saveStorage();
+
     sellState.getCurrentTradePare().price = Number(indicatorReadState.lastPriceValue).toFixed(2);
     let rsi = indicatorReadState.lastRSIValue > 70 ? 50 : indicatorReadState.lastRSIValue;
     indicatorReadState.trailingSellBot = new TrailingSellBot({trailingActivateRSI: rsi, trailingPercent: 10});
@@ -15,7 +18,6 @@ export const postBuyProcess = async (buyState, sellState, indicatorReadState, tr
     buyState.trySellPrices = [];
     sellState.countTrySell = 0;
     sellState.trySellPrices = [];
-    sellState.systemCfg.cfg.linkedInLike.root.run = true;
     await saveMsg(tradePare, correlation, "BUY", indicatorReadState, buyState);
     return result;
 }

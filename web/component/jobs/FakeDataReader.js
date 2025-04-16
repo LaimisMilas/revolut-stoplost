@@ -26,6 +26,8 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
                 if (event.source !== window) return;
                 if (event.data.type === "EXTENSION_DATA") {
                     await saveHistoryData(event.data.data);
+                   // await saveTickerData(event.data.data);
+
                 }
             });
         }
@@ -39,8 +41,8 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
         useEffect(() => {
             addEventListener();
             const executeWithInterval = async () => {
-                await doAction(indicatorReadState.tickerIndex);
-                updateIndex();
+               await doAction(indicatorReadState.tickerIndex);
+               updateIndex();
                 if(indicatorReadState.tickerIndex < 11250){
                     myInterval = setTimeout(executeWithInterval, 175);
                 }
@@ -59,6 +61,18 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
             }
         }
 
+        const saveTickerData = (data) => {
+            if(data.url === "tickers"){
+                updateIndex();
+                indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, data,data, 11250);
+                //vienas ticker yra 1sec. tai 30 = 1/2 minutes.
+                indicatorReadState.calculateRSITicker(600 + 14, 30);
+                indicatorReadState.updateLast100Price();
+                indicatorReadState.last100RSICounter++;
+                indicatorReadState.calcParabolicCorrelation();
+            }
+        }
+
         const doAction = async (tickerIndex) => {
             const newValue = tickerValue[tickerIndex];
                 indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, newValue, 11250);
@@ -66,6 +80,7 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
                 indicatorReadState.calculateRSITicker(600 + 14, 30);
                 indicatorReadState.updateLast100Price();
                 indicatorReadState.last100RSICounter++;
+                indicatorReadState.calcParabolicCorrelation();
         }
 
     }));

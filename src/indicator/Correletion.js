@@ -12,60 +12,56 @@ export const pearsonCorrelation = (x, y) => {
     return denominator === 0 ? 0 : numerator / denominator;
 }
 
-export const doParabolicCorrelation = (rsiValues) => {
-    const n = rsiValues.length;
+export const doParabolicCorrelation = (values) => {
+    const n = values.length;
     if (n < 3) {
-        console.error("RSI reikšmių per mažai, reikia bent 3.");
         return 0;
     }
-    // Generuojame X reikšmes: simetriškai aplink nulį
     const xValues = Array.from({ length: n }, (_, i) => i - Math.floor(n / 2));
-    // Parabolės funkcija: y = a*x^2 + c
-    const a = 0.5; // Reguliuojamas kreivumo koeficientas
-    const c = 1;   // Vertikalus poslinkis
+    const a = 0.5;
+    const c = 1;
     const parabolicValues = xValues.map(x => a * x ** 2 + c);
-    // Skaičiuojame koreliaciją
-    const correlation = pearsonCorrelation(rsiValues, parabolicValues);
+    const correlation = pearsonCorrelation(values, parabolicValues);
     return Number(correlation).toFixed(2);
 };
 
-export const doSinusoidCorrelation = (rsiValues) => {
-    const n = rsiValues.length;
+export const doSinusoidCorrelation = (values) => {
+    const n = values.length;
     if (n < 3) {
         return 0;
     }
-    const sinusoidValues = generateSineWaveData(rsiValues.length-1, 10)
-    const correlation = pearsonCorrelation(rsiValues, sinusoidValues);
+    const sinusoidValues = generateSineWaveData(values.length-1, 10)
+    const correlation = pearsonCorrelation(values, sinusoidValues);
     return Number(correlation).toFixed(2);
 };
 
-export const doBullishLineCorrelation = (rsiValues) => {
-    const n = rsiValues.length;
+export const doBullishLineCorrelation = (values) => {
+    const n = values.length;
     if (n < 3) {
         return 0;
     }
-    const bullishLineValues = generateBullishLine(rsiValues.length-1);
-    const correlation = pearsonCorrelation(rsiValues, bullishLineValues);
+    const bullishLineValues = generateBullishLine(values.length-1);
+    const correlation = pearsonCorrelation(values, bullishLineValues);
     return Number(correlation).toFixed(2);
 };
 
-export const doBearishLineCorrelation = (rsiValues) => {
-    const n = rsiValues.length;
+export const doBearishLineCorrelation = (values) => {
+    const n = values.length;
     if (n < 3) {
         return 0;
     }
-    const bearishLineValues = generateBearishLine(rsiValues.length-1);
-    const correlation = pearsonCorrelation(rsiValues, bearishLineValues);
+    const bearishLineValues = generateBearishLine(values.length-1);
+    const correlation = pearsonCorrelation(values, bearishLineValues);
     return Number(correlation).toFixed(2);
 };
 
-export const doLeftLineCorrelation = (rsiValues) => {
-    const n = rsiValues.length;
+export const doLeftLineCorrelation = (values) => {
+    const n = values.length;
     if (n < 3) {
         return 0;
     }
-    const leftLineValues = generateLeftLine(rsiValues.length-1);
-    const correlation = pearsonCorrelation(rsiValues, leftLineValues);
+    const lineValues = generateLeftLine(values.length-1);
+    const correlation = pearsonCorrelation(values, lineValues);
     return Number(correlation).toFixed(2);
 };
 

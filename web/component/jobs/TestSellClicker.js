@@ -33,11 +33,6 @@ const TestSellClicker = inject("sellState", "buyState", "indicatorReadState")(
             }
         }
 
-        function discountTP(discount) {
-            const newTP = sellState.getCurrentTradePare().takeProf - discount;
-            sellState.getCurrentTradePare().takeProf = newTP;
-        }
-
         const doSell = async () => {
             let tradePare = sellState.getCurrentTradePare();
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
@@ -51,7 +46,7 @@ const TestSellClicker = inject("sellState", "buyState", "indicatorReadState")(
                // let result1 = indicatorReadState.calculateTrend(900,10);
                // if(result === "down" && result1 === "down"){
                     await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
-                    indicatorReadState.storeTicker(900);
+                    //indicatorReadState.storeTicker(900);
              //   }
             } else {
                 if(isTakeProfReached(tradePare) && indicatorReadState.trendDynamic === "down"){
@@ -61,23 +56,7 @@ const TestSellClicker = inject("sellState", "buyState", "indicatorReadState")(
                     }
                 }
             }
-            if(sellState.countTrySell > 600){
-                discountTP(0.01);
-                indicatorReadState.dynamicTrendChunkSize = 2;
-            } else if (sellState.countTrySell > 500){
-                discountTP(0.001);
-                indicatorReadState.dynamicTrendChunkSize = 3;
-            }
-            else if (sellState.countTrySell > 300){
-                discountTP(0.0001);
-                indicatorReadState.dynamicTrendChunkSize = 4
-            }
-            else if (sellState.countTrySell > 200){
-                discountTP(0.0001);
-                indicatorReadState.dynamicTrendChunkSize = 5
-            } else {
-                indicatorReadState.dynamicTrendChunkSize = 6
-            }
+
             sellState.countTrySell ++;
             sellState.rootStore.saveStorage();
         }
@@ -110,9 +89,8 @@ const TestSellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 indicatorReadState.trailingPoint = 0;
                 indicatorReadState.deltaValue = 0;
                 indicatorReadState.trailingBuyBot.reset();
-
-                sellState.getCurrentTradePare().takeProf = 1.2;
                 sellState.countTrySell  = 0;
+                buyState.countTryBuy  = 0;
                 sellState.trySellPrices = [];
                 buyState.trySellPrices = [];
 

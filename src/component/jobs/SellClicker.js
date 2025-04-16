@@ -1,6 +1,7 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {
+    clickOrderHistory,
     clickSell,
     convertToNumber, getClickSell,
     getNowDate, getOrderType, hasOrderMessage,
@@ -9,6 +10,7 @@ import {
     writeQuantity
 } from "../../utils/RevolutUtils";
 import {postSellProcess} from "./sell/PostSellProcess";
+import {isStopLostReached, isTakeProfReached, preSellProcess} from "./sell/PreSellProcess";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -33,11 +35,6 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             }
         }
 
-        function discountTP(discount) {
-            const newTP = sellState.getCurrentTradePare().takeProf - discount;
-            sellState.getCurrentTradePare().takeProf = newTP;
-        }
-
         const doSell = async () => {
             let tradePare = sellState.getCurrentTradePare();
             if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
@@ -46,61 +43,19 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
 
             sellState.trySellPrices.push(indicatorReadState.lastPriceValue);
 
-            if(isStopLostReached(tradePare)){
-                //let result = indicatorReadState.calculateTrend(900,indicatorReadState.dynamicTrendChunkSizeDefault);
-                //if(result === "down"){
-                    await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
-                    indicatorReadState.storeTicker(900);
-                    indicatorReadState.dynamicTrendChunkSizeDefault = 6; //kad pirktu su didesniu trendu, nes tiketima false signalai
-               // }
+            if(isStopLostReached(tradePare, indicatorReadState)){
+                await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
+                // indicatorReadState.storeTicker(900);
+                indicatorReadState.dynamicTrendChunkSizeDefault = 6;
             } else {
-                if(isTakeProfReached(tradePare) && indicatorReadState.trendDynamic === "down"){
+                if(isTakeProfReached(tradePare, indicatorReadState) && indicatorReadState.trendDynamic === "down"){
                     const correlation = Number(indicatorReadState.parabolicCorrelation);
                     if(correlation < Number(tradePare.aspectCorrelation)){
                         await sellOperation(tradePare, correlation, "takeProf");
                     }
                 }
             }
-            if(sellState.countTrySell > 600){
-                discountTP(0.0001);
-            }
-            else if (sellState.countTrySell > 500){
-                discountTP(0.0001);
-            }
-            else if (sellState.countTrySell > 300){
-                discountTP(0.0001);
-            }
-            else if (sellState.countTrySell > 200){
-                discountTP(0.0001);
-            }
-
-            if(sellState.countTrySell > 1200){
-                indicatorReadState.dynamicTrendChunkSize = 1
-            }
-            else if (sellState.countTrySell > 900){
-                indicatorReadState.dynamicTrendChunkSize = 2
-            }
-            else if (sellState.countTrySell > 600){
-                indicatorReadState.dynamicTrendChunkSize = 3
-            }
-            else if (sellState.countTrySell > 300){
-                indicatorReadState.dynamicTrendChunkSize = 4
-            }
-            else {
-                indicatorReadState.dynamicTrendChunkSize = indicatorReadState.dynamicTrendChunkSizeDefault;
-            }
-
-            if(isTakeProfReached(tradePare)){
-                indicatorReadState.dynamicTrendChunkSize = 1
-            }
-
-            if(takeProfDiff(tradePare) > 1){
-                indicatorReadState.dynamicTrendChunkSize = 1
-                sellState.getCurrentTradePare().aspectCorrelation = -0.2;
-            }
-
-            sellState.countTrySell ++;
-            sellState.rootStore.saveStorage();
+            await preSellProcess(buyState, sellState, indicatorReadState, tradePare);
         }
 
         const sellOperation = async (tradePare, correlation, caller) => {
@@ -141,48 +96,28 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(result === 200){
                 result += await clickSell(tradePare.key);
                 //is sold
-                if(await hasOrderMessage()){
-                    let orderType = await getOrderType();
-                    if(orderType === "Pardavimo"){
-                        console.log("orderType:" + orderType);
-                        result += 100;
-                    }
+                result += await sellApproval();
+                if(await sellApproval() < 200){
+                    return result; // no approved
                 }
             }
-            if(result === 400){
+            if(result === 500){
                 await postSellProcess(buyState, sellState, indicatorReadState, tradePare, correlation, caller);
             }
             return result;
         }
 
-        const isTakeProfReached = (tradePare) => {
-            let lastPrice = indicatorReadState.lastPriceValue;
-            if(lastPrice <= 0){
-                return false;
+        const sellApproval = async () => {
+            let result = 0;
+            result += await clickOrderHistory();
+            if(result > 0 && await hasOrderMessage()){
+                let orderType = await getOrderType();
+                if(orderType.includes("Pardavimo")){
+                    console.log("orderType:" + orderType);
+                    result += 100;
+                }
             }
-            let buyPrice = convertToNumber(tradePare.price);
-            let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
-            return currentProfit > convertToNumber(tradePare.takeProf);
-        }
-
-        const takeProfDiff = (tradePare) => {
-            let lastPrice = indicatorReadState.lastPriceValue;
-            if(lastPrice <= 0){
-                return 0;
-            }
-            let buyPrice = convertToNumber(tradePare.price);
-            let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
-            return  currentProfit - convertToNumber(tradePare.takeProf);
-        }
-
-        const isStopLostReached = (tradePare) => {
-            let lastPrice = indicatorReadState.lastPriceValue;
-            if(lastPrice <= 0){
-                return false;
-            }
-            let buyPrice = convertToNumber(tradePare.price);
-            let currentProfit = ((lastPrice * 100)/buyPrice) - 100;
-            return currentProfit < convertToNumber(tradePare.stopLost);
+            return result;
         }
 
     }));

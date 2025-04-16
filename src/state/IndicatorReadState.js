@@ -73,12 +73,19 @@ export class IndicatorReadState {
     // tai chunkSize = 109, 26 x 109 = 2834(mini data set)
     getLastTickers(size = 300, chunkSize = 1){
         if(this.tickerValue.length > 0){
+            let data = this.getPriceByInterval(size, chunkSize);
+            this.lastPriceValue = data[data.length -1];
+            return data;
+        }
+        return null;
+    }
+
+    getPriceByInterval(size = 300, chunkSize = 1){
+        if(this.tickerValue.length > 0){
             let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
             const from = data.length - size;
             const to = data.length - 1;
-            data = downsampleArray(data.slice(from, to), chunkSize);
-            this.lastPriceValue = data[data.length -1];
-            return data;
+            return downsampleArray(data.slice(from, to), chunkSize);
         }
         return null;
     }
@@ -130,19 +137,17 @@ export class IndicatorReadState {
         return null;
     }
 
-    getPriceByInterval(size = 300, chunkSize = 1){
-        if(this.tickerValue.length > 0){
-            let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
-            const from = data.length - size;
-            const to = data.length - 1;
-            data = downsampleArray(data.slice(from, to), chunkSize);
-            return data;
-        }
-        return null;
-    }
-
     calcParabolicCorrelation() {
         this.parabolicCorrelation = doParabolicCorrelation(this.last100RSIValue);
+    }
+
+    getRSIParabolicCorrelation(size = 300, chunkSize = 1) {
+        const data = this.getPriceByInterval(size, chunkSize);
+        if(data){
+            const rsi = calculateRSI(data);
+            return doParabolicCorrelation(rsi);
+        }
+        return null;
     }
 
     getParabolicCorrelation(size = 300, chunkSize = 1) {
@@ -157,12 +162,29 @@ export class IndicatorReadState {
         this.leftLineCorrelation = doLeftLineCorrelation(this.last100RSIValue);
     }
 
+    getLineCorrelation(size = 300, chunkSize = 1) {
+        const data = this.getPriceByInterval(size, chunkSize);
+        if(data){
+            return doLeftLineCorrelation(data);
+        }
+        return null;
+    }
+
+
     calcBullishLineCorrelation() {
         this.bullishLineCorrelation = doBullishLineCorrelation(this.last100RSIValue);
     }
 
     calcBearishLineCorrelation() {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
+    }
+
+    getBearishLineCorrelation(size = 300, chunkSize = 1) {
+        const data = this.getPriceByInterval(size, chunkSize);
+        if(data){
+            return doBearishLineCorrelation(data);
+        }
+        return null;
     }
 
     trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 });
@@ -198,8 +220,8 @@ export class IndicatorReadState {
     }
 
     dynamicTrendDataLength = 900;
-    dynamicTrendChunkSize = 5;
-    dynamicTrendChunkSizeDefault = 5;
+    dynamicTrendChunkSize = 4;
+    dynamicTrendChunkSizeDefault = 4;
 
     calculateDynamicTrend() {
         if(this.dynamicTrendDataLength / this.dynamicTrendChunkSize > 26

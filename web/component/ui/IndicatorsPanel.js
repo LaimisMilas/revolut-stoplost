@@ -35,11 +35,7 @@ const IndicatorsPanel =
                                     <span>&nbsp; buy:{buyState.countTryBuy}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label>Aroon trend</label>
-                                    <span>{indicatorReadState.aroonTrend}</span>
-                                </div>
-                                <div className="checkbox-row">
-                                    <label>Try Sell</label>
+                                    <label>Try</label>
                                     <span>sell:{sellState.trySellPrices.length > 2 ? indicatorReadState.getParabolicCorrelation(sellState.trySellPrices, Math.round((sellState.trySellPrices.length / 3))) : "0"}</span>
                                     <span>&nbsp; buy:{buyState.tryBuyPrices.length > 2 ? indicatorReadState.getParabolicCorrelation(buyState.tryBuyPrices, Math.round((buyState.tryBuyPrices.length / 3))) : "0"}</span>
                                 </div>
@@ -48,6 +44,7 @@ const IndicatorsPanel =
                                         <thead>
                                         <tr>
                                             <th>ch:30</th>
+                                            <th>5</th>
                                             <th>30</th>
                                             <th>45</th>
                                             <th>60</th>
@@ -56,21 +53,33 @@ const IndicatorsPanel =
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td>Parab.</td>
+                                            <td>Prb.</td>
+                                            <td>{indicatorReadState.getParabolicCorrelation(150, 5)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(1800, 60)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(2700, 9)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(3600, 120)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(11249, 375)}</td>
                                         </tr>
                                         <tr>
-                                            <td>Sinus</td>
-                                            <td>{indicatorReadState.getSinusoidCorrelationData(1800, 60)}</td>
-                                            <td>{indicatorReadState.getSinusoidCorrelationData(2700, 9)}</td>
-                                            <td>{indicatorReadState.getSinusoidCorrelationData(3600, 120)}</td>
-                                            <td>{indicatorReadState.getSinusoidCorrelationData(11249, 375)}</td>
+                                            <td>Prb. RSI</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(614, 30)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(1800, 60)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(2700, 9)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(3600, 120)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(11249, 375)}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Bearish</td>
+                                            <td>{indicatorReadState.getBearishLineCorrelation(150, 5)}</td>
+                                            <td>{indicatorReadState.getBearishLineCorrelation(1800, 60)}</td>
+                                            <td>{indicatorReadState.getBearishLineCorrelation(2700, 9)}</td>
+                                            <td>{indicatorReadState.getBearishLineCorrelation(3600, 120)}</td>
+                                            <td>{indicatorReadState.getBearishLineCorrelation(11249, 375)}</td>
                                         </tr>
                                         <tr>
                                             <td>Trend</td>
+                                            <td>{indicatorReadState.calculateTrend(150, 5)}</td>
                                             <td>{indicatorReadState.calculateTrend(1800, 60)}</td>
                                             <td>{indicatorReadState.calculateTrend(2700, 9)}</td>
                                             <td>{indicatorReadState.calculateTrend(3600, 120)}</td>

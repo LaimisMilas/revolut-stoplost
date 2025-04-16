@@ -27,7 +27,6 @@ const BuyPanel =
             useEffect(() => {
                 setStopAllAction(buyPanelState.getIsActionsStop());
                 setTradePare(buyState.getTradePareDataByKey(parsePareFromURL()))
-                indicatorReadState.calcParabolicCorrelation();
             }, [buyState.systemCfg.cfg.linkedInLike.root.run, indicatorReadState.last100RSICounter]);
 
             const handleOnChangeEvent = (event, key) => {

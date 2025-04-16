@@ -41,22 +41,6 @@ const TestBuyClicker = inject("buyState", "sellState", "indicatorReadState","tic
                 && indicatorReadState.trendDynamic === "up") {
                 await buyOperation(tradePare, correlation);
             }
-
-            if(buyState.countTryBuy > 800){
-                indicatorReadState.dynamicTrendChunkSize = 1
-            }
-            else if (sellState.countTryBuy > 600){
-                indicatorReadState.dynamicTrendChunkSize = 2
-            }
-            else if (buyState.countTryBuy > 400){
-                indicatorReadState.dynamicTrendChunkSize = 3
-            }
-            else if (buyState.countTryBuy > 300){
-                indicatorReadState.dynamicTrendChunkSize = 4
-            }
-            else {
-                indicatorReadState.dynamicTrendChunkSize = 5
-            }
             buyState.countTryBuy ++;
             buyState.rootStore.saveStorage();
         }
@@ -79,20 +63,6 @@ const TestBuyClicker = inject("buyState", "sellState", "indicatorReadState","tic
                     sellState.getCurrentTradePare().takeProf = values.takeProfit;
                 }
 
-                if(indicatorReadState.lastRSIValue > 45){
-                    sellState.getCurrentTradePare().takeProf = 0.2;
-                } else if(indicatorReadState.lastRSIValue > 40){
-                    sellState.getCurrentTradePare().takeProf = 0.5;
-                } else if(indicatorReadState.lastRSIValue > 35){
-                    sellState.getCurrentTradePare().takeProf = 0.8;
-                } else if(indicatorReadState.lastRSIValue > 30){
-                    sellState.getCurrentTradePare().takeProf = 1.2;
-                } else if(indicatorReadState.lastRSIValue > 25){
-                    sellState.getCurrentTradePare().takeProf = 1.4;
-                } else {
-                    sellState.getCurrentTradePare().takeProf = 1.6;
-                }
-
                 sellState.trySellPrices = [];
                 buyState.trySellPrices = [];
 
@@ -102,7 +72,8 @@ const TestBuyClicker = inject("buyState", "sellState", "indicatorReadState","tic
                 indicatorReadState.deltaValue = 0;
                 indicatorReadState.trailingBuyBot.reset();
 
-                buyState.countTryBuy = 0;
+                sellState.countTrySell  = 0;
+                buyState.countTryBuy  = 0;
                 await saveMsg(tradePare, correlation, "BUY");
             }
             return result;

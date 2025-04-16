@@ -8,7 +8,7 @@ import {
     writeQuantity
 } from "../../utils/RevolutUtils";
 import {postBuyProcess} from "./buy/PostBuyProcess";
-
+import {preBuyProcess} from "./buy/PreBuyProcess";
 
 const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
     observer(({buyState, sellState, indicatorReadState}) => {
@@ -40,39 +40,23 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
+
             buyState.tryBuyPrices.push(indicatorReadState.lastPriceValue);
-            // const isRSIDown = await isRSIDown(tradePare, indicatorReadState.lastRSIValue);
+
             const correlation = indicatorReadState.parabolicCorrelation;
-            // indicatorReadState.buyPointReached;
-            // const aroon = indicatorReadState.aroonTrend.split(":");
-            // await buyOperation(tradePare, correlation);
             if (indicatorReadState.trailingBuyBot.shouldBuy()
                 && correlation > Number(tradePare.aspectCorrelation)
                 && indicatorReadState.trendDynamic === "up") {
                    if(trendBuffer > 3){ //15 sec. issilaike
                        await buyOperation(tradePare, correlation);
                        trendBuffer = 0;
+                   } else {
+                       trendBuffer++;
                    }
-                trendBuffer++;
+            } else {
+                trendBuffer = 0;
             }
-
-            if(buyState.countTryBuy > 1200){
-                indicatorReadState.dynamicTrendChunkSize = 1
-            }
-            else if (sellState.countTryBuy > 900){
-                indicatorReadState.dynamicTrendChunkSize = 2
-            }
-            else if (buyState.countTryBuy > 600){
-                indicatorReadState.dynamicTrendChunkSize = 3
-            }
-            else if (buyState.countTryBuy > 300){
-                indicatorReadState.dynamicTrendChunkSize = 4
-            }
-            else {
-                indicatorReadState.dynamicTrendChunkSize = indicatorReadState.dynamicTrendChunkSizeDefault;
-            }
-            buyState.countTryBuy ++;
-            buyState.rootStore.saveStorage();
+            await preBuyProcess(buyState, indicatorReadState);
         }
 
         const buyOperation = async (tradePare, correlation) => {
