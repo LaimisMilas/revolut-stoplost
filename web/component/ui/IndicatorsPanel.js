@@ -35,16 +35,12 @@ const IndicatorsPanel =
                                     <span>&nbsp; buy:{buyState.countTryBuy}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label>Try</label>
-                                    <span>sell:{sellState.trySellPrices.length > 2 ? indicatorReadState.getParabolicCorrelation(sellState.trySellPrices, Math.round((sellState.trySellPrices.length / 3))) : "0"}</span>
-                                    <span>&nbsp; buy:{buyState.tryBuyPrices.length > 2 ? indicatorReadState.getParabolicCorrelation(buyState.tryBuyPrices, Math.round((buyState.tryBuyPrices.length / 3))) : "0"}</span>
-                                </div>
-                                <div className="checkbox-row">
                                     <table>
                                         <thead>
                                         <tr>
                                             <th>ch:30</th>
                                             <th>5</th>
+                                            <th>15</th>
                                             <th>30</th>
                                             <th>45</th>
                                             <th>60</th>
@@ -53,37 +49,40 @@ const IndicatorsPanel =
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td>Prb.</td>
-                                            <td>{indicatorReadState.getParabolicCorrelation(150, 5)}</td>
+                                            <td>Prb. RSI</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(300, 10)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(900, 30)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(1842, 90)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(2700, 90)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(3600, 120)}</td>
+                                            <td>{indicatorReadState.getRSIParabolicCorrelation(11249, 375)}</td>
+                                        </tr>
+                                        <tr>
+                                        <td>Prb. Prc</td>
+                                            <td>{indicatorReadState.getParabolicCorrelation(300, 10)}</td>
+                                            <td>{indicatorReadState.getParabolicCorrelation(900, 30)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(1800, 60)}</td>
-                                            <td>{indicatorReadState.getParabolicCorrelation(2700, 9)}</td>
+                                            <td>{indicatorReadState.getParabolicCorrelation(2700, 90)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(3600, 120)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(11249, 375)}</td>
                                         </tr>
                                         <tr>
-                                            <td>Prb. RSI</td>
-                                            <td>{indicatorReadState.getRSIParabolicCorrelation(614, 30)}</td>
-                                            <td>{indicatorReadState.getRSIParabolicCorrelation(1800, 60)}</td>
-                                            <td>{indicatorReadState.getRSIParabolicCorrelation(2700, 9)}</td>
-                                            <td>{indicatorReadState.getRSIParabolicCorrelation(3600, 120)}</td>
-                                            <td>{indicatorReadState.getRSIParabolicCorrelation(11249, 375)}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>Bearish</td>
-                                            <td>{indicatorReadState.getBearishLineCorrelation(150, 5)}</td>
-                                            <td>{indicatorReadState.getBearishLineCorrelation(1800, 60)}</td>
-                                            <td>{indicatorReadState.getBearishLineCorrelation(2700, 9)}</td>
-                                            <td>{indicatorReadState.getBearishLineCorrelation(3600, 120)}</td>
-                                            <td>{indicatorReadState.getBearishLineCorrelation(11249, 375)}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Trend</td>
-                                            <td>{indicatorReadState.calculateTrend(150, 5)}</td>
+                                        <td>Trend</td>
+                                            <td>{indicatorReadState.calculateTrend(300, 5)}</td>
+                                            <td>{indicatorReadState.calculateTrend(900, 30)}</td>
                                             <td>{indicatorReadState.calculateTrend(1800, 60)}</td>
-                                            <td>{indicatorReadState.calculateTrend(2700, 9)}</td>
+                                            <td>{indicatorReadState.calculateTrend(2700, 90)}</td>
                                             <td>{indicatorReadState.calculateTrend(3600, 120)}</td>
                                             <td>{indicatorReadState.calculateTrend(11249, 375)}</td>
+                                        </tr>
+                                        <tr>
+                                        <td>Last RSI</td>
+                                            <td>{indicatorReadState.rsiTable[0]}</td>
+                                            <td>{indicatorReadState.rsiTable[1]}</td>
+                                            <td>{indicatorReadState.rsiTable[2]}</td>
+                                            <td>{indicatorReadState.rsiTable[3]}</td>
+                                            <td>{indicatorReadState.rsiTable[4]}</td>
+                                            <td>{indicatorReadState.rsiTable[5]}</td>
                                         </tr>
                                         </tbody>
                                     </table>

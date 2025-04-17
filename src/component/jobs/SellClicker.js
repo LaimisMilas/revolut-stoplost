@@ -41,12 +41,10 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 return;
             }
 
-            sellState.trySellPrices.push(indicatorReadState.lastPriceValue);
+           // sellState.trySellPrices.push(indicatorReadState.lastPriceValue);
 
             if(isStopLostReached(tradePare, indicatorReadState)){
                 await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
-                // indicatorReadState.storeTicker(900);
-                indicatorReadState.dynamicTrendChunkSizeDefault = 6;
             } else {
                 if(isTakeProfReached(tradePare, indicatorReadState) && indicatorReadState.trendDynamic === "down"){
                     const correlation = Number(indicatorReadState.parabolicCorrelation);

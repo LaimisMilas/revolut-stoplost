@@ -13,7 +13,6 @@ export const postBuyProcess = async (buyState, sellState, indicatorReadState, tr
     indicatorReadState.isTrailingActive = false;
     indicatorReadState.trailingPoint = 0;
     indicatorReadState.deltaValue = 0;
-    indicatorReadState.dynamicTrendChunkSizeDefault = 5;
     buyState.countTryBuy = 0;
     buyState.trySellPrices = [];
     sellState.countTrySell = 0;

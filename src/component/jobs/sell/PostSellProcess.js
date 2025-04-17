@@ -9,14 +9,9 @@ export const postSellProcess = async (buyState, sellState, indicatorReadState, t
     if (caller === "stopLost") {
         const newTargetPrice = Number(indicatorReadState.lastPriceValue) + ((Number(indicatorReadState.lastPriceValue) * 1) / 100);
         buyState.getCurrentTradePare().targetPrice = Number(newTargetPrice).toFixed(2);
-        indicatorReadState.dynamicTrendChunkSize = Number(indicatorReadState.dynamicTrendChunkSize + 1);
 
     } else if (caller === "takeProf") {
         buyState.getCurrentTradePare().targetPrice = Number(indicatorReadState.lastPriceValue);
-        indicatorReadState.dynamicTrendChunkSize = Number(indicatorReadState.dynamicTrendChunkSize - 1);
-        if(indicatorReadState.dynamicTrendChunkSize < 3){
-            indicatorReadState.dynamicTrendChunkSize = 3;
-        }
     }
     let rsi = indicatorReadState.lastRSIValue < 40 ? 50 : indicatorReadState.lastRSIValue;
     indicatorReadState.trailingBuyBot = new TrailingBuyBot({trailingActivateRSI: rsi, trailingPercent: 10});

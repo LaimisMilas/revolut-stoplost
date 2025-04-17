@@ -13,6 +13,7 @@ import {TrailingBuyBot} from "../indicator/TrailingBuyBot";
 import {getTrendByEMA} from "../indicator/MACD";
 import {calculateAroon} from "../indicator/Aroon";
 import {TrailingSellBot} from "../indicator/TrailingSellBot";
+import React from "react";
 
 export class IndicatorReadState {
 
@@ -94,6 +95,7 @@ export class IndicatorReadState {
         let prices = this.getLastTickers(size + 14, chunkSize);
         if(prices.length >= 14){
             this.updateRSI(prices);
+            this.calcRSITableValues()
         }
     }
 
@@ -115,8 +117,9 @@ export class IndicatorReadState {
             this.last100RSIValue = calculateRSI(prices);
             if(this.last100RSIValue.length > 0){
                 this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
-                this.calculateAroon();
+                //this.calculateAroon();
                 this.updateTrailingBuyBot();
+                this.calcRSITableValues();
             }
         }
     }
@@ -146,6 +149,15 @@ export class IndicatorReadState {
         if(data){
             const rsi = calculateRSI(data);
             return doParabolicCorrelation(rsi);
+        }
+        return null;
+    }
+
+    getRSI14(size = 300, chunkSize = 1) {
+        const data = this.getPriceByInterval(size, chunkSize);
+        if(data){
+            const rsi = calculateRSI(data);
+            return  Number(rsi[rsi.length -1]).toFixed(2);
         }
         return null;
     }
@@ -302,4 +314,15 @@ export class IndicatorReadState {
             });
     }
 
+
+    rsiTable = [];
+
+    calcRSITableValues() {
+        this.rsiTable[0] = this.getRSI14(300, 21);
+        this.rsiTable[1] = this.getRSI14(900, 64);
+        this.rsiTable[2] = this.getRSI14(1800, 128);
+        this.rsiTable[3] = this.getRSI14(2700, 192);
+        this.rsiTable[4] = this.getRSI14(3600, 250);
+        this.rsiTable[5] = this.getRSI14(11249, 803);
+    }
 }

@@ -40,6 +40,8 @@ const DataReader = inject("indicatorReadState","tickerService")(
             if(result.url === "history"){
                 tickerService.pushNewHistory(result.data);
             }
+
+            indicatorReadState.tickerIndex++;
         }
     }));
 

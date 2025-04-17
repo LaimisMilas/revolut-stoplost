@@ -36,27 +36,39 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
         let trendBuffer = 0;
 
         const doBuy = async () => {
-            let tradePare = buyState.getCurrentTradePare();
             if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
-
-            buyState.tryBuyPrices.push(indicatorReadState.lastPriceValue);
-
+            let tradePare = buyState.getCurrentTradePare();
+            let buyStatus = 0;
+            const shouldBy = indicatorReadState.trailingBuyBot.shouldBuy();
             const correlation = indicatorReadState.parabolicCorrelation;
-            if (indicatorReadState.trailingBuyBot.shouldBuy()
-                && correlation > Number(tradePare.aspectCorrelation)
-                && indicatorReadState.trendDynamic === "up") {
-                   if(trendBuffer > 3){ //15 sec. issilaike
-                       await buyOperation(tradePare, correlation);
-                       trendBuffer = 0;
-                   } else {
-                       trendBuffer++;
-                   }
-            } else {
-                trendBuffer = 0;
+            const trendUp = indicatorReadState.trendDynamic === "up";
+
+            if(shouldBy){
+                buyStatus += 100;
             }
-            await preBuyProcess(buyState, indicatorReadState);
+
+            if(correlation){
+                buyStatus += 100;
+            }
+
+            if(trendUp){
+                buyStatus += 100;
+            }
+
+            if(buyStatus >= 300 && trendBuffer > 3){
+                buyStatus += 100;
+                trendBuffer = 0;
+            } else {
+                trendBuffer++;
+            }
+
+            if(buyStatus >= 400){
+                await buyOperation(tradePare, correlation);
+            } else {
+                await preBuyProcess(buyState, indicatorReadState);
+            }
         }
 
         const buyOperation = async (tradePare, correlation) => {
