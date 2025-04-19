@@ -13,7 +13,9 @@ import {TrailingBuyBot} from "../indicator/TrailingBuyBot";
 import {getTrendByEMA} from "../indicator/MACD";
 import {calculateAroon} from "../indicator/Aroon";
 import {TrailingSellBot} from "../indicator/TrailingSellBot";
-import {analyzeCandles} from "../indicator/analyzeCandles";
+import {analyzeCandles} from "../indicator/AnalyzeCandles";
+import {aggregateToCandles} from "../utils/AggregateToCandles";
+import {calculateATRByCandles} from "../indicator/ATR";
 
 export class IndicatorReadState {
 
@@ -71,9 +73,7 @@ export class IndicatorReadState {
     getPriceByInterval(size = 300, chunkSize = 1){
         if(this.tickerValue.length > 0){
             let data = this.tickerValue.map(item => parseFloat(item.indexPrice));
-            const from = data.length - size;
-            const to = data.length - 1;
-            return downsampleArray(data.slice(from, to), chunkSize);
+            return downsampleArray(data.slice(-size), chunkSize);
         }
         return null;
     }
@@ -94,7 +94,6 @@ export class IndicatorReadState {
                 this.calculateDynamicTrend();
                 this.calcRSITableValues();
                 this.calcParabolicCorrelation();
-                this.updateMinCandles();
             }
         }
     }
@@ -105,14 +104,6 @@ export class IndicatorReadState {
 
     calcSinusoidCorrelation() {
        this.sinusoidCorrelation = doSinusoidCorrelation(this.last100RSIValue);
-    }
-
-    getSinusoidCorrelationData(size = 300, chunkSize = 1) {
-        const data = this.getPriceByInterval(size, chunkSize);
-        if(data){
-            return doSinusoidCorrelation(data);
-        }
-        return null;
     }
 
     calcParabolicCorrelation() {
@@ -149,28 +140,12 @@ export class IndicatorReadState {
         this.leftLineCorrelation = doLeftLineCorrelation(this.last100RSIValue);
     }
 
-    getLineCorrelation(size = 300, chunkSize = 1) {
-        const data = this.getPriceByInterval(size, chunkSize);
-        if(data){
-            return doLeftLineCorrelation(data);
-        }
-        return null;
-    }
-
     calcBullishLineCorrelation() {
         this.bullishLineCorrelation = doBullishLineCorrelation(this.last100RSIValue);
     }
 
     calcBearishLineCorrelation() {
         this.bearishLineCorrelation = doBearishLineCorrelation(this.last100RSIValue);
-    }
-
-    getBearishLineCorrelation(size = 300, chunkSize = 1) {
-        const data = this.getPriceByInterval(size, chunkSize);
-        if(data){
-            return doBearishLineCorrelation(data);
-        }
-        return null;
     }
 
     trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 });
@@ -199,26 +174,6 @@ export class IndicatorReadState {
 
     trendByPrice = "";
     trendByPrice1min = "";
-
-    calculateTrendByEMA() {
-        const dataLength = 900; // 900 / 60 = 15min.
-        const chunkSizeShort = 1;// 1*5 = 5s
-        const chunkSizeLong = 5; // 1*10 = 10s
-        if(dataLength / chunkSizeLong > 26 && this.last100PriceValue.length > dataLength){ // 900/26 = 34 galima didinti chunkSize iki 34
-
-            let prices = this.last100PriceValue;
-            prices = prices.slice(prices.length - dataLength, prices.length);
-            prices = downsampleArray(prices, chunkSizeShort);
-            //kad suskaicioti EMA reikia min 26 kainu tai dataLength/chunkSize turi gautis daugiau uz 26
-            this.trendByPrice = getTrendByEMA(prices);
-
-            prices = this.last100PriceValue;
-            prices = prices.slice(prices.length - dataLength, prices.length);
-            prices = downsampleArray(prices, chunkSizeLong);
-            this.trendByPrice1min = getTrendByEMA(prices);
-        }
-    }
-
     dynamicTrendDataLength = 900;
     dynamicTrendChunkSize = 4;
     dynamicTrendChunkSizeDefault = 4;
@@ -242,26 +197,6 @@ export class IndicatorReadState {
             return getTrendByEMA(prices);
         }
         return 0;
-    }
-
-    stopLostDataChunk = [];
-
-    storeTicker(dataChunk){
-        const chunk = this.tickerValue.slice(
-            this.tickerValue.length - dataChunk, this.tickerValue.length);
-        this.stopLostDataChunk.push({
-            data: chunk,
-            lastPrice: this.lastPriceValue,
-            date: new Date(),
-        }) ;
-    }
-
-    getStopLostTicker(){
-        let data = [];
-        if(this.stopLostDataChunk.length > 0){
-            data = this.stopLostDataChunk.map(item => data.push(...item.data));
-        }
-       return data;
     }
 
     aroonTrend = "";
@@ -326,53 +261,9 @@ export class IndicatorReadState {
     };
 
     updateMinCandles(){
-        this.minCandles = this.aggregateToCandles(this.tickerValue);
-        this.atr = this.calculateATR(this.minCandles);
+        this.minCandles = aggregateToCandles(this.tickerValue);
+        this.atr = calculateATRByCandles(this.minCandles);
         this.candleAnalyze = analyzeCandles(this.minCandles);
-        this.sendCandles(this.minCandles[this.minCandles.length - 1]).then(r => console.log(r));
-    }
-
-    calculateATR(candles, period = 14) {
-        const trList = [];
-        for (let i = 1; i < candles.length; i++) {
-            const prevClose = candles[i - 1].close;
-            const current = candles[i];
-
-            const highLow = current.high - current.low;
-            const highClose = Math.abs(current.high - prevClose);
-            const lowClose = Math.abs(current.low - prevClose);
-
-            const trueRange = Math.max(highLow, highClose, lowClose);
-            trList.push(trueRange);
-        }
-        // Paprastas vidurkis (SMA), jei nenori EMA
-        const atr = trList.slice(-period).reduce((a, b) => a + b, 0) / period;
-        return atr;
-    }
-
-    aggregateToCandles(data, intervalSeconds = 60) {
-        const candles = [];
-        let candle = null;
-        data.forEach(point => {
-            const timestamp = new Date(point.time).getTime();
-            const bucket = Math.floor(timestamp / (intervalSeconds * 1000)) * intervalSeconds * 1000;
-            if (!candle || candle.timestamp !== bucket) {
-                if (candle) candles.push(candle);
-                candle = {
-                    timestamp: bucket,
-                    open: point.indexPrice,
-                    high: point.indexPrice,
-                    low: point.indexPrice,
-                    close: point.indexPrice
-                };
-            } else {
-                candle.high = Math.max(candle.high, point.indexPrice);
-                candle.low = Math.min(candle.low, point.indexPrice);
-                candle.close = point.indexPrice;
-            }
-        });
-        if (candle) candles.push(candle);
-        return candles;
     }
 
     candle = {
@@ -383,19 +274,5 @@ export class IndicatorReadState {
         "close": 50321.23
     }
 
-     sendCandles = async (candle) =>{
-        fetch("http://localhost:3000/api/candle", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(candle),
-        }).then(response => response.json())
-            .then(data => {
-                console.log('Atsakymas:', data);
-            })
-            .catch((error) => {
-                console.error('Klaida:', error);
-            });
-    }
+
 }

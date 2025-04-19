@@ -29,6 +29,24 @@ export function calculateATR(highs, lows, closes, period = 14) {
     return result;
 }
 
+export function calculateATRByCandles(candles, period = 14) {
+    const trList = [];
+    for (let i = 1; i < candles.length; i++) {
+        const prevClose = candles[i - 1].close;
+        const current = candles[i];
+
+        const highLow = current.high - current.low;
+        const highClose = Math.abs(current.high - prevClose);
+        const lowClose = Math.abs(current.low - prevClose);
+
+        const trueRange = Math.max(highLow, highClose, lowClose);
+        trList.push(trueRange);
+    }
+    // Paprastas vidurkis (SMA), jei nenori EMA
+    const atr = trList.slice(-period).reduce((a, b) => a + b, 0) / period;
+    return atr;
+}
+
 function convertData(rawData){
     const highs = rawData.map(item => item.h[1]);
     const lows = rawData.map(item => item.l[1]);

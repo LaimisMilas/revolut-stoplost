@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (!responded) {
                 console.warn("❌ Timeout: puslapis neatsako – perkraunam");
                 window.removeEventListener("message", handler);
-                location.reload(); // arba siųsti signalą atgal į background
+               // location.reload(); // arba siųsti signalą atgal į background
             }
         }, 3000);
 

@@ -6,6 +6,7 @@ import {BuyPanelState} from "./BuyPanelState";
 import {IndicatorReadState} from "./IndicatorReadState";
 import {TrailingService} from "../service/TrailingService";
 import {TickerService} from "../service/TickerService";
+import {CandleService} from "../service/CandleService";
 
 export class RootStore {
     sellState = null;
@@ -24,6 +25,7 @@ export class RootStore {
         this.indicatorReadState = new IndicatorReadState();
         this.trailingService = new TrailingService();
         this.tickerService = new TickerService();
+        this.candleService = new CandleService();
         this.setupLocalStorageMap(); // <- svarbu
         this.setupStoreRelationships("RootStore.constructor()");
     }
@@ -36,6 +38,7 @@ export class RootStore {
         this.indicatorReadState.setup(this);
         this.trailingService.setup(this);
         this.tickerService.setup(this);
+        this.candleService.setup(this);
 
         const storeState = LocalStorageManager.getStorage(this.prefix + "store_state");
         if (storeState && storeState === 1) {
@@ -49,6 +52,7 @@ export class RootStore {
 
     intervalSaveStorageTimeOut = 30000;
     intervalSaveStorage = null;
+
     setIntervalSaveStorage() {
         this.intervalSaveStorage = setInterval(
             () => this.saveStorage(),
@@ -76,15 +80,13 @@ export class RootStore {
             { key: "sell_msgs", ref: () => this.sellState.msgs, merge: "concat" , defaultValue: []},
             { key: "buy_msgs", ref: () => this.buyState.msgs, merge: "concat" , defaultValue: []},
             { key: "tickerValue", ref: () => this.indicatorReadState.tickerValue, merge: "concat" },
-            { key: "historyData", ref: () => this.tickerService.historyData, merge: "concat", defaultValue: []},
-            { key: "prices_data", ref: () => this.tickerService.prices, merge: "concat", defaultValue: [] },
+            { key: "ticker_service_tickers", ref: () => this.tickerService.tickers, merge: "concat", defaultValue: []},
             { key: "last_price_value", ref: { parent: () => this.tickerService, field: "lastPriceValue" }, merge: "replace", defaultValue: 0 },
          //   { key: "ticker_index", ref: { parent: () => this.indicatorReadState, field: "tickerIndex" }, merge: "replace" },
             { key: "count_try_sell", ref: { parent: () => this.sellState, field: "countTrySell" }, merge: "replace", defaultValue: 0 },
             { key: "count_try_buy", ref: { parent: () => this.buyState, field: "countTryBuy" }, merge: "replace", defaultValue: 0},
             { key: "dynamic_trend_data_length", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendDataLength" }, merge: "replace", defaultValue: 0},
             { key: "dynamic_trend_chunk_size", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendChunkSize" }, merge: "replace", defaultValue: 0},
-            { key: "stop_lost_data_chunk", ref: () => this.indicatorReadState.stopLostDataChunk, merge: "concat", defaultValue: []},
             { key: "try_sell_prices", ref: () => this.sellState.trySellPrices, merge: "concat", defaultValue: []},
             { key: "try_buy_prices", ref: () => this.buyState.tryBuyPrices, merge: "concat", defaultValue: []},
             { key: "min_candles", ref: () => this.indicatorReadState.minCandles, merge: "concat", defaultValue: []}

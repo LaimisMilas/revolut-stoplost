@@ -8,6 +8,8 @@ import SellPanel from "./component/ui/SellPanel";
 import BuyPanel from "./component/ui/BuyPanel";
 import OrderList from "../web/component/ui/OrderList";
 import CandleAnalyzerPanel from "../web/component/ui/CandleAnalyzePanel";
+import CandleController from "./component/controller/CandleController";
+import IndicatorController from "./component/controller/IndicatorController";
 
 const rootState = new RootStore();
 
@@ -22,6 +24,7 @@ const App = () => {
             indicatorReadState={rootState.indicatorReadState}
             trailingService={rootState.trailingService}
             tickerService={rootState.tickerService}
+            candleService={rootState.candleService}
         >
             <div className="App">
                 <SellPanel/>
@@ -31,6 +34,8 @@ const App = () => {
                 <DataReader/>
                 <OrderList/>
                 <CandleAnalyzerPanel/>
+                <CandleController/>
+                <IndicatorController/>
             </div>
         </Provider>
     );

@@ -1,4 +1,4 @@
-// analyzeCandles.js
+// AnalyzeCandles.js
 
 function calculateEMA(prices, period) {
     const k = 2 / (period + 1);
