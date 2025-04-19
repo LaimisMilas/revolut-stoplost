@@ -34,7 +34,7 @@ export class TickerService {
             this.tickers.shift();
         }
         if (this.tickers.length > this.maxTickerLength) {
-            this.tickers = this.tickers.slice(this.tickers.length - this.maxTickerLength, this.tickers.length);
+            this.tickers = this.tickers.slice(-this.maxTickerLength);
         }
         this.parsePrices();
     }

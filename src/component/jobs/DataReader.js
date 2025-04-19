@@ -1,14 +1,30 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 
+
 const DataReader = inject("indicatorReadState","tickerService")(
     observer(({indicatorReadState,tickerService}) => {
 
+        function dataStructureValid(event) {
+            return event.source === window
+                && event.data.hasOwnProperty("data")
+                && event.data.hasOwnProperty("type")
+                && event.data.data.hasOwnProperty("url")
+                && event.data.data.hasOwnProperty("data")
+                && event.data.type === "EXTENSION_DATA";
+        }
+
         function addEventListener(){
             window.addEventListener("message", async (event) => {
-                if (event.source !== window) return;
-                if (event.data.type === "EXTENSION_DATA") {
-                    await doAction(event.data.data);
+                const shouldStoreTicket = dataStructureValid(event);
+                if (shouldStoreTicket) {
+                    try {
+                        await doAction(event.data.data);
+                        // ✅ Siunčiam atsakymą atgal
+                        window.postMessage({ type: "EXTENSION_RESPONSE", success: true }, "*");
+                    } catch (e) {
+                        window.postMessage({ type: "EXTENSION_RESPONSE", success: false, error: e.message }, "*");
+                    }
                 }
             });
         }
@@ -29,15 +45,14 @@ const DataReader = inject("indicatorReadState","tickerService")(
 
                     indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, updatedTicker, 11250);
                     indicatorReadState.calculateRSITicker(600 + 14, 30);
-                    indicatorReadState.updateLast100Price();
                     indicatorReadState.last100RSICounter ++;
-                    indicatorReadState.calcParabolicCorrelation();
                     secTickerBuffer = [];
                 }
                 secTickerBuffer.push(result.data);
             }
 
             if(result.url === "history"){
+                // history tai paskutiniu 15 min, zvake
                 tickerService.pushNewHistory(result.data);
             }
 

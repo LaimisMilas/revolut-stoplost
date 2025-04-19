@@ -6,8 +6,6 @@ import {stop_lost} from "./stop_lost_tickers";
 const FakeDataReader = inject("indicatorReadState", "tickerService")(
     observer(({indicatorReadState, tickerService}) => {
 
-
-
         function getStopLostTicker(){
             let data = stop_lost;
             let result = [];
@@ -19,7 +17,6 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
 
        const [tickerValue, setTickerValue] = useState(tickersDownTrend);
        const [stopLostTickers, setStopLostTickers] = useState(getStopLostTicker());
-
 
         function addEventListener(){
             window.addEventListener("message", async (event) => {
@@ -67,9 +64,7 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
                 indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, data,data, 11250);
                 //vienas ticker yra 1sec. tai 30 = 1/2 minutes.
                 indicatorReadState.calculateRSITicker(600 + 14, 30);
-                indicatorReadState.updateLast100Price();
                 indicatorReadState.last100RSICounter++;
-                indicatorReadState.calcParabolicCorrelation();
             }
         }
 
@@ -78,9 +73,7 @@ const FakeDataReader = inject("indicatorReadState", "tickerService")(
                 indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, newValue, 11250);
                 //vienas ticker yra 1sec. tai 30 = 1/2 minutes.
                 indicatorReadState.calculateRSITicker(600 + 14, 30);
-                indicatorReadState.updateLast100Price();
                 indicatorReadState.last100RSICounter++;
-                indicatorReadState.calcParabolicCorrelation();
         }
 
     }));

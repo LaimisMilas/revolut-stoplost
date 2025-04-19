@@ -13,7 +13,7 @@ import {TrailingBuyBot} from "../indicator/TrailingBuyBot";
 import {getTrendByEMA} from "../indicator/MACD";
 import {calculateAroon} from "../indicator/Aroon";
 import {TrailingSellBot} from "../indicator/TrailingSellBot";
-import React from "react";
+import {analyzeCandles} from "../indicator/analyzeCandles";
 
 export class IndicatorReadState {
 
@@ -48,17 +48,6 @@ export class IndicatorReadState {
         this.rootStore = rootStore;
     }
 
-    updateLast100Price(){
-        if(this.tickerValue){
-            this.last100PriceValue = this.tickerValue.map(item => parseFloat(item.indexPrice));
-            this.calculateTrendByEMA();
-            this.calculateDynamicTrend();
-            this.calcBullishLineCorrelation();
-            this.calcSinusoidCorrelation();
-            this.calculateDivergence();
-        }
-    }
-
     pushWithLimit(arr, value, maxLength) {
         arr.push(value); // Pridedame į galą
         if (arr.length > maxLength) {
@@ -70,8 +59,6 @@ export class IndicatorReadState {
         return arr;
     }
 
-    //327 = 15min. 109 = 5min. norint matyti MACD reikia bent 26 po 109
-    // tai chunkSize = 109, 26 x 109 = 2834(mini data set)
     getLastTickers(size = 300, chunkSize = 1){
         if(this.tickerValue.length > 0){
             let data = this.getPriceByInterval(size, chunkSize);
@@ -95,21 +82,7 @@ export class IndicatorReadState {
         let prices = this.getLastTickers(size + 14, chunkSize);
         if(prices.length >= 14){
             this.updateRSI(prices);
-            this.calcRSITableValues()
         }
-    }
-
-    updateIndicator(prices){
-        this.updateRSI(prices);
-        this.calculateDivergence();
-        this.calcSinusoidCorrelation();
-        this.calcParabolicCorrelation();
-        this.calcLeftLineCorrelation();
-        this.calcBullishLineCorrelation();
-        this.calcBearishLineCorrelation();
-        this.updateTrailingBuyBot();
-        this.calculateTrendByEMA();
-        this.calculateAroon();
     }
 
     updateRSI(prices){
@@ -117,9 +90,11 @@ export class IndicatorReadState {
             this.last100RSIValue = calculateRSI(prices);
             if(this.last100RSIValue.length > 0){
                 this.lastRSIValue = Number(this.last100RSIValue[this.last100RSIValue.length -1]).toFixed(2);
-                //this.calculateAroon();
                 this.updateTrailingBuyBot();
+                this.calculateDynamicTrend();
                 this.calcRSITableValues();
+                this.calcParabolicCorrelation();
+                this.updateMinCandles();
             }
         }
     }
@@ -182,7 +157,6 @@ export class IndicatorReadState {
         return null;
     }
 
-
     calcBullishLineCorrelation() {
         this.bullishLineCorrelation = doBullishLineCorrelation(this.last100RSIValue);
     }
@@ -203,11 +177,25 @@ export class IndicatorReadState {
     trailingSellBot = new TrailingSellBot({ trailingActivateRSI: 10, trailingPercent: 10 });
 
     updateTrailingBuyBot(){
-        if(this.lastRSIValue){
-            this.trailingBuyBot.updateRSI(Number(this.lastRSIValue));
-            this.trailingSellBot.updateRSI(Number(this.lastRSIValue));
+        if(this.rsiTable){
+            this.trailingBuyBot.updateRSI(Number(this.rsiTable[0]));
+            this.trailingBuyBots[0].updateRSI(Number(this.rsiTable[0]));
+            this.trailingBuyBots[1].updateRSI(Number(this.rsiTable[1]));
+            this.trailingBuyBots[2].updateRSI(Number(this.rsiTable[2]));
+            this.trailingBuyBots[3].updateRSI(Number(this.rsiTable[3]));
+            this.trailingBuyBots[4].updateRSI(Number(this.rsiTable[4]));
+            this.trailingBuyBots[5].updateRSI(Number(this.rsiTable[5]));
         }
     }
+
+    trailingBuyBots = [
+        new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
+        new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
+        new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
+        new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
+        new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
+        new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
+    ];
 
     trendByPrice = "";
     trendByPrice1min = "";
@@ -314,7 +302,6 @@ export class IndicatorReadState {
             });
     }
 
-
     rsiTable = [];
 
     calcRSITableValues() {
@@ -324,5 +311,91 @@ export class IndicatorReadState {
         this.rsiTable[3] = this.getRSI14(2700, 192);
         this.rsiTable[4] = this.getRSI14(3600, 250);
         this.rsiTable[5] = this.getRSI14(11249, 803);
+    }
+
+    minCandles = [];
+    atr;
+    STOP_LOSS_ATR_MULTIPLIER = 1.5;
+    candleAnalyze = {
+        ema20: 0,
+        ema50: 0,
+        rsi14: 0,
+        atr14: 0,
+        trend: "",
+        pattern: ""
+    };
+
+    updateMinCandles(){
+        this.minCandles = this.aggregateToCandles(this.tickerValue);
+        this.atr = this.calculateATR(this.minCandles);
+        this.candleAnalyze = analyzeCandles(this.minCandles);
+        this.sendCandles(this.minCandles[this.minCandles.length - 1]).then(r => console.log(r));
+    }
+
+    calculateATR(candles, period = 14) {
+        const trList = [];
+        for (let i = 1; i < candles.length; i++) {
+            const prevClose = candles[i - 1].close;
+            const current = candles[i];
+
+            const highLow = current.high - current.low;
+            const highClose = Math.abs(current.high - prevClose);
+            const lowClose = Math.abs(current.low - prevClose);
+
+            const trueRange = Math.max(highLow, highClose, lowClose);
+            trList.push(trueRange);
+        }
+        // Paprastas vidurkis (SMA), jei nenori EMA
+        const atr = trList.slice(-period).reduce((a, b) => a + b, 0) / period;
+        return atr;
+    }
+
+    aggregateToCandles(data, intervalSeconds = 60) {
+        const candles = [];
+        let candle = null;
+        data.forEach(point => {
+            const timestamp = new Date(point.time).getTime();
+            const bucket = Math.floor(timestamp / (intervalSeconds * 1000)) * intervalSeconds * 1000;
+            if (!candle || candle.timestamp !== bucket) {
+                if (candle) candles.push(candle);
+                candle = {
+                    timestamp: bucket,
+                    open: point.indexPrice,
+                    high: point.indexPrice,
+                    low: point.indexPrice,
+                    close: point.indexPrice
+                };
+            } else {
+                candle.high = Math.max(candle.high, point.indexPrice);
+                candle.low = Math.min(candle.low, point.indexPrice);
+                candle.close = point.indexPrice;
+            }
+        });
+        if (candle) candles.push(candle);
+        return candles;
+    }
+
+    candle = {
+        "timestamp": 1713356400000,
+        "open": 50321.23,
+        "high": 50321.23,
+        "low": 50321.23,
+        "close": 50321.23
+    }
+
+     sendCandles = async (candle) =>{
+        fetch("http://localhost:3000/api/candle", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(candle),
+        }).then(response => response.json())
+            .then(data => {
+                console.log('Atsakymas:', data);
+            })
+            .catch((error) => {
+                console.error('Klaida:', error);
+            });
     }
 }

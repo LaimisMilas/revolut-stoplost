@@ -42,7 +42,7 @@ const TrailingBuyBotPanel =
                                     <span>&nbsp;{Number(indicatorReadState.trailingBuyBot.trailingDistance).toFixed(2)}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                <label>Action point</label>
+                                    <label>Action point</label>
                                     <span>sell:{indicatorReadState.trailingSellBot.trailingPoint}</span>
                                     <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.trailingPoint}</span>
                                 </div>
@@ -52,8 +52,8 @@ const TrailingBuyBotPanel =
                                     <span>&nbsp;buy:{indicatorReadState.trailingBuyBot.buySignal ? "true" : "false"}</span>
                                 </div>
                                 <div className="checkbox-row">
-                                    <label>Last RSI</label>
-                                    <span>{Number(indicatorReadState.lastRSIValue).toFixed(2)}</span>
+                                    <label>Last RSI14 </label>
+                                    <span>{indicatorReadState.rsiTable[0]}</span>
                                 </div>
                             </div>
                         </div>

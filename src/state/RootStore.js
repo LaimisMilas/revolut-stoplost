@@ -86,7 +86,8 @@ export class RootStore {
             { key: "dynamic_trend_chunk_size", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendChunkSize" }, merge: "replace", defaultValue: 0},
             { key: "stop_lost_data_chunk", ref: () => this.indicatorReadState.stopLostDataChunk, merge: "concat", defaultValue: []},
             { key: "try_sell_prices", ref: () => this.sellState.trySellPrices, merge: "concat", defaultValue: []},
-            { key: "try_buy_prices", ref: () => this.buyState.tryBuyPrices, merge: "concat", defaultValue: []}
+            { key: "try_buy_prices", ref: () => this.buyState.tryBuyPrices, merge: "concat", defaultValue: []},
+            { key: "min_candles", ref: () => this.indicatorReadState.minCandles, merge: "concat", defaultValue: []}
         ];
     }
 

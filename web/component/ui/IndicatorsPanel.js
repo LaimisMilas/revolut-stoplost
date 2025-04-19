@@ -38,7 +38,7 @@ const IndicatorsPanel =
                                     <table>
                                         <thead>
                                         <tr>
-                                            <th>ch:30</th>
+                                            <th>Minutes</th>
                                             <th>5</th>
                                             <th>15</th>
                                             <th>30</th>
@@ -58,7 +58,7 @@ const IndicatorsPanel =
                                             <td>{indicatorReadState.getRSIParabolicCorrelation(11249, 375)}</td>
                                         </tr>
                                         <tr>
-                                        <td>Prb. Prc</td>
+                                            <td>Prb. Prc</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(300, 10)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(900, 30)}</td>
                                             <td>{indicatorReadState.getParabolicCorrelation(1800, 60)}</td>
@@ -67,8 +67,8 @@ const IndicatorsPanel =
                                             <td>{indicatorReadState.getParabolicCorrelation(11249, 375)}</td>
                                         </tr>
                                         <tr>
-                                        <td>Trend</td>
-                                            <td>{indicatorReadState.calculateTrend(300, 5)}</td>
+                                            <td>Trend</td>
+                                            <td>{indicatorReadState.calculateTrend(300, 10)}</td>
                                             <td>{indicatorReadState.calculateTrend(900, 30)}</td>
                                             <td>{indicatorReadState.calculateTrend(1800, 60)}</td>
                                             <td>{indicatorReadState.calculateTrend(2700, 90)}</td>
@@ -76,13 +76,22 @@ const IndicatorsPanel =
                                             <td>{indicatorReadState.calculateTrend(11249, 375)}</td>
                                         </tr>
                                         <tr>
-                                        <td>Last RSI</td>
+                                            <td>Last RSI</td>
                                             <td>{indicatorReadState.rsiTable[0]}</td>
                                             <td>{indicatorReadState.rsiTable[1]}</td>
                                             <td>{indicatorReadState.rsiTable[2]}</td>
                                             <td>{indicatorReadState.rsiTable[3]}</td>
                                             <td>{indicatorReadState.rsiTable[4]}</td>
                                             <td>{indicatorReadState.rsiTable[5]}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Trailing RSI</td>
+                                            <td>{indicatorReadState.trailingBuyBots[0].buySignal ? "true" : "false"}</td>
+                                            <td>{indicatorReadState.trailingBuyBots[1].buySignal ? "true" : "false"}</td>
+                                            <td>{indicatorReadState.trailingBuyBots[2].buySignal ? "true" : "false"}</td>
+                                            <td>{indicatorReadState.trailingBuyBots[3].buySignal ? "true" : "false"}</td>
+                                            <td>{indicatorReadState.trailingBuyBots[4].buySignal ? "true" : "false"}</td>
+                                            <td>{indicatorReadState.trailingBuyBots[5].buySignal ? "true" : "false"}</td>
                                         </tr>
                                         </tbody>
                                     </table>

@@ -7,8 +7,7 @@ import DataReader from "./component/jobs/DataReader";
 import SellPanel from "./component/ui/SellPanel";
 import BuyPanel from "./component/ui/BuyPanel";
 import OrderList from "../web/component/ui/OrderList";
-import TrailingBuyBotPanel from "../web/component/ui/TrailingBuyBotPanel";
-import IndicatorsPanel from "../web/component/ui/IndicatorsPanel";
+import CandleAnalyzerPanel from "../web/component/ui/CandleAnalyzePanel";
 
 const rootState = new RootStore();
 
@@ -31,8 +30,7 @@ const App = () => {
                 <BuyClicker/>
                 <DataReader/>
                 <OrderList/>
-                <TrailingBuyBotPanel/>
-                <IndicatorsPanel/>
+                <CandleAnalyzerPanel/>
             </div>
         </Provider>
     );
