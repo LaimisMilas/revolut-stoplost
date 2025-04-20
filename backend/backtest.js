@@ -7,8 +7,8 @@ const analyzeCandles = require('../src/indicator/AnalyzeCandlesNode');
 
 async function runBacktest() {
     try {
-        //const candles = await getCandlesFromDB(2000); // pakeisk limit pagal poreikį
-        const candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
+        const candles = await getCandlesFromDB(2000); // pakeisk limit pagal poreikį
+        //const candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
         let balance = 3000; // SOL
         let position = null;
         let results = [];
@@ -90,7 +90,7 @@ async function runBacktest() {
             candle.time = new Date(candle.timestamp).toLocaleTimeString("eu-LT");
             candlesa.push(candle);
         })
-        console.table(candlesa.slice(-1));
+        console.table(candlesa);
 
 //console.table(results.slice(-10)); // paskutiniai 10 įrašų
 

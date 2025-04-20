@@ -44,7 +44,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                                 chrome.tabs.sendMessage(source.tabId, {url: "tickers", data: result }, (response) => {
                                     if (chrome.runtime.lastError) {
                                         console.error("Klaida:", chrome.runtime.lastError.message);
-                                        //chrome.tabs.reload(source.tabId);
+                                        chrome.tabs.reload(source.tabId);
                                         return;
                                     }
                                     if (response?.success) {
@@ -52,7 +52,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                                     } else {
                                         console.warn("⚠️ Klaida puslapyje:", response?.error);
                                         // ⏳ Perkraunam tą patį tab
-                                      //  chrome.tabs.reload(source.tabId);
+                                        chrome.tabs.reload(source.tabId);
                                     }
                                 });
                                 if(cryptoTabId){

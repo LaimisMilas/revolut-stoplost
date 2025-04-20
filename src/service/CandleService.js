@@ -5,6 +5,14 @@ export class CandleService {
     rootStore = null;
     historyCandle = [];
     maxHistoryLength = 11250;
+    candle = {
+        "timestamp": 1713356400000,
+        "open": 50321.23,
+        "high": 50321.23,
+        "low": 50321.23,
+        "close": 50321.23
+    }
+    currentCandle;
 
     constructor() {
         makeAutoObservable(this);
@@ -12,6 +20,10 @@ export class CandleService {
 
     setup(rootStore) {
         this.rootStore = rootStore;
+    }
+
+    getHistoryCandle() {
+        return this.historyCandle;
     }
 
     pushNewHistoryCandle(pushNewValue) {
@@ -28,15 +40,20 @@ export class CandleService {
         this.historyCandle = candles;
     }
 
-    async sendLastCandles(){
-       if(this.historyCandle.length > 0){
-           const sendCandle = this.historyCandle[this.historyCandle.length - 1];
+    updateCurrentCandle(){
+        if(this.historyCandle.length > 0){
+            this.currentCandle = this.historyCandle[this.historyCandle.length - 1];
+        }
+    }
+
+    async storeCurrentCandle(){
+       if(this.currentCandle){
            fetch("http://localhost:3000/api/candle", {
                method: "POST",
                headers: {
                    "Content-Type": "application/json",
                },
-               body: JSON.stringify(sendCandle),
+               body: JSON.stringify(this.currentCandle),
            }).then(response => response.json())
                .then(data => {
                    console.log('Atsakymas:', data);
@@ -45,7 +62,5 @@ export class CandleService {
                    console.error('Klaida:', error);
                });
        }
-
     }
-
 }

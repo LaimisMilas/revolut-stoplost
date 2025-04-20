@@ -22,6 +22,7 @@ const App = () => {
             sellPanelState={rootState.sellPanelState}
             buyPanelState={rootState.buyPanelState}
             indicatorReadState={rootState.indicatorReadState}
+            indicatorState={rootState.indicatorState}
             trailingService={rootState.trailingService}
             tickerService={rootState.tickerService}
             candleService={rootState.candleService}

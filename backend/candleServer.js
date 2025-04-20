@@ -44,17 +44,40 @@ if (fs.existsSync(FILE_PATH)) {
     }
 }
 
+function dataStructureValid(candle) {
+    return candle.hasOwnProperty("open")
+        && candle.hasOwnProperty("high")
+        && candle.hasOwnProperty("low")
+        && candle.hasOwnProperty("close")
+        && candle.hasOwnProperty("timestamp");
+}
+
+function dataValueValid(candle) {
+    return candle.open
+        && candle.high
+        && candle.low
+        && candle.close
+        && candle.timestamp;
+}
+
 app.post("/api/candle", (req, res) => {
     const candle = req.body;
+
+    if(!dataStructureValid(candle) && !dataValueValid(candle)){
+        res.sendStatus(406);
+        return;
+    }
 
     // ⚠️ Tikrinam, kad nebūtų dublikatų pagal timestamp
     const last = candles[candles.length - 1];
     if (!last || last.timestamp !== candle.timestamp) {
+
         candles.push(candle);
         candle.date = new Date(candle.timestamp).toLocaleDateString("eu-LT");
         candle.time = new Date(candle.timestamp).toLocaleTimeString("eu-LT");
-        console.log("➕ Nauja žvakė:", candle);
+        //console.log("➕ Nauja žvakė:", candle);
         try {
+
             fs.writeFileSync(FILE_PATH, JSON.stringify(candles, null, 2));
 
             insertCandle(candle); // 💾 Įrašom į SQLite

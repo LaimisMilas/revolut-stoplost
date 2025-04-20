@@ -121,7 +121,7 @@ export class IndicatorReadState {
 
     getRSI14(size = 300, chunkSize = 1) {
         const data = this.getPriceByInterval(size, chunkSize);
-        if(data){
+        if(size <= data.length){
             const rsi = calculateRSI(data);
             return  Number(rsi[rsi.length -1]).toFixed(2);
         }
@@ -265,14 +265,5 @@ export class IndicatorReadState {
         this.atr = calculateATRByCandles(this.minCandles);
         this.candleAnalyze = analyzeCandles(this.minCandles);
     }
-
-    candle = {
-        "timestamp": 1713356400000,
-        "open": 50321.23,
-        "high": 50321.23,
-        "low": 50321.23,
-        "close": 50321.23
-    }
-
 
 }

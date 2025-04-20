@@ -14,8 +14,9 @@ const CandleController = inject("candleService","tickerService")(
 
         const doAction = async () => {
             const candles = aggregateToCandles(tickerService.tickers, 60);
-            candleService.pushNewHistoryCandle(candles);
-            await candleService.sendLastCandles();
+            candleService.pushNewHistoryCandle(candles[candles.length -1]);
+            candleService.updateCurrentCandle();
+            await candleService.storeCurrentCandle();
         }
     }));
 
