@@ -26,3 +26,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.ping) {
+        sendResponse({ alive: true });
+    }
+});

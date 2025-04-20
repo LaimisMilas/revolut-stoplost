@@ -1,5 +1,6 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
+import {TickerService} from "../../service/TickerService";
 
 
 const DataReader = inject("indicatorReadState","tickerService")(
@@ -40,7 +41,12 @@ const DataReader = inject("indicatorReadState","tickerService")(
                 if (secTickerBuffer.length > 0 && secTickerBuffer[0].seconds !== result.data.seconds) {
                     let avgSecPrice = secTickerBuffer.reduce((sum, item) => sum + parseFloat(item.indexPrice), 0) / secTickerBuffer.length;
                     let updatedTicker = {...result.data, indexPrice: avgSecPrice.toFixed(6)};
+
                     tickerService.pushNewTicker(updatedTicker);
+
+                    indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, updatedTicker, 11250);
+                    indicatorReadState.calculateRSITicker(600 + 14, 30);
+                    indicatorReadState.last100RSICounter ++;
                     secTickerBuffer = [];
                 }
                 secTickerBuffer.push(result.data);
@@ -52,6 +58,7 @@ const DataReader = inject("indicatorReadState","tickerService")(
             }
 
             indicatorReadState.tickerIndex++;
+            tickerService.tickerIndex++;
         }
     }));
 

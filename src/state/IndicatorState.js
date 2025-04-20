@@ -14,7 +14,6 @@ import {getTrendByEMA} from "../indicator/MACD";
 import {calculateAroon} from "../indicator/Aroon";
 import {TrailingSellBot} from "../indicator/TrailingSellBot";
 import {analyzeCandles} from "../indicator/AnalyzeCandles";
-import {aggregateToCandles} from "../utils/AggregateToCandles";
 import {calculateATRByCandles} from "../indicator/ATR";
 
 export class IndicatorState {
@@ -37,10 +36,10 @@ export class IndicatorState {
     atr;
     STOP_LOSS_ATR_MULTIPLIER = 1.5;
     candleAnalyze = {
-        ema20: 0,
-        ema50: 0,
-        rsi14: 0,
-        atr14: 0,
+        ema20: 0.00,
+        ema50: 0.00,
+        rsi14: 0.00,
+        atr14: 0.00,
         trend: "",
         pattern: ""
     };
@@ -160,10 +159,16 @@ export class IndicatorState {
     }
 
     updateATR(candles){
-        this.atr = calculateATRByCandles(candles);
+        const period = 14;
+        if(candles.length > period) {
+            this.atr = calculateATRByCandles(candles, period);
+        }
     }
 
     updateCandleAnalyzer(candles){
-        this.candleAnalyze = analyzeCandles(candles);
+        const minCandle = 50;
+        if(candles.length > minCandle){
+            this.candleAnalyze = analyzeCandles(candles);
+        }
     }
 }

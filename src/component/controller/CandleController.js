@@ -17,6 +17,7 @@ const CandleController = inject("candleService","tickerService")(
             candleService.pushNewHistoryCandle(candles[candles.length -1]);
             candleService.updateCurrentCandle();
             await candleService.storeCurrentCandle();
+            candleService.rootStore.saveStorage();
         }
     }));
 

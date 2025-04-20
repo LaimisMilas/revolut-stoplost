@@ -75,14 +75,14 @@ export class RootStore {
             { key: "buy_systemCfg", ref: () => this.buyState.systemCfg, merge: "assign" },
             { key: "sell_rowConfig", ref: () => this.sellPanelState.rowConfig, merge: "assign" },
             { key: "buy_rowConfig", ref: () => this.buyPanelState.rowConfig, merge: "assign" },
-            { key: "last100RSIValue", ref: () => this.indicatorReadState.last100RSIValue, merge: "concat" },
-            { key: "last100PriceValue", ref: () => this.indicatorReadState.last100PriceValue, merge: "concat" },
-            { key: "last1kRSIValue", ref: () => this.indicatorReadState.last1kRSIValue, merge: "concat" },
+       //     { key: "last100RSIValue", ref: () => this.indicatorReadState.last100RSIValue, merge: "concat" },
+       //     { key: "last100PriceValue", ref: () => this.indicatorReadState.last100PriceValue, merge: "concat" },
+       //     { key: "last1kRSIValue", ref: () => this.indicatorReadState.last1kRSIValue, merge: "concat" },
             { key: "buy_aspectCorrelation", ref: { parent: () => this.buyState, field: "aspectCorrelation" }, merge: "replace", defaultValue: 0 },
             { key: "sell_aspectCorrelation", ref: { parent: () => this.sellState, field: "aspectCorrelation" }, merge: "replace", defaultValue: 0 },
             { key: "sell_msgs", ref: () => this.sellState.msgs, merge: "concat" , defaultValue: []},
             { key: "buy_msgs", ref: () => this.buyState.msgs, merge: "concat" , defaultValue: []},
-            { key: "tickerValue", ref: () => this.indicatorReadState.tickerValue, merge: "concat" , defaultValue: []},
+     //       { key: "tickerValue", ref: () => this.indicatorReadState.tickerValue, merge: "concat" , defaultValue: []},
             { key: "ticker_service_tickers", ref: () => this.tickerService.tickers, merge: "concat", defaultValue: []},
          //   { key: "ticker_index", ref: { parent: () => this.indicatorReadState, field: "tickerIndex" }, merge: "replace" },
             { key: "count_try_sell", ref: { parent: () => this.sellState, field: "countTrySell" }, merge: "replace", defaultValue: 0 },
@@ -91,8 +91,8 @@ export class RootStore {
             { key: "dynamic_trend_chunk_size", ref: { parent: () => this.indicatorReadState, field: "dynamicTrendChunkSize" }, merge: "replace", defaultValue: 0},
             { key: "try_sell_prices", ref: () => this.sellState.trySellPrices, merge: "concat", defaultValue: []},
             { key: "try_buy_prices", ref: () => this.buyState.tryBuyPrices, merge: "concat", defaultValue: []},
-            { key: "min_candles", ref: () => this.indicatorReadState.minCandles, merge: "concat", defaultValue: []},
-            { key: "candle_service_history_candle", ref: () => this.indicatorReadState.candleService, merge: "concat", defaultValue: []}
+       //     { key: "min_candles", ref: () => this.indicatorReadState.minCandles, merge: "concat", defaultValue: []},
+            { key: "candle_service_candles", ref: () => this.candleService.historyCandle, merge: "concat", defaultValue: []}
         ];
     }
 

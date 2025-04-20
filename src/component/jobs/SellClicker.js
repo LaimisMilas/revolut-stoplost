@@ -92,14 +92,15 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
                 }
             }
             if(result === 200){
-                result += await clickSell(tradePare.key);
+                //result += await clickSell(tradePare.key);
                 //is sold
                 result += await sellApproval();
                 if(await sellApproval() < 200){
-                    return result; // no approved
+                   // return result; // no approved
                 }
             }
-            if(result === 500){
+
+            if(result > 100){
                 await postSellProcess(buyState, sellState, indicatorReadState, tradePare, correlation, caller);
             }
             return result;

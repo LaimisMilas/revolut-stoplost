@@ -44,7 +44,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                                 chrome.tabs.sendMessage(source.tabId, {url: "tickers", data: result }, (response) => {
                                     if (chrome.runtime.lastError) {
                                         console.error("Klaida:", chrome.runtime.lastError.message);
-                                        chrome.tabs.reload(source.tabId);
                                         return;
                                     }
                                     if (response?.success) {
@@ -74,6 +73,23 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         }
                     }
                 );
+            }
+        });
+    }
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.url.includes("revolut.com")) {
+        // Tikrinam ar content.js jau veikia (galim per message)
+        chrome.tabs.sendMessage(tabId, { ping: true }, (response) => {
+            if (chrome.runtime.lastError || !response) {
+                console.warn("❌ content.js neveikia – injectinam rankiniu būdu");
+                chrome.scripting.executeScript({
+                    target: { tabId: tabId },
+                    files: ["content.js"]
+                });
+            } else {
+                console.log("✅ content.js gyvas");
             }
         });
     }

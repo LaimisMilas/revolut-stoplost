@@ -19,7 +19,8 @@
     "debugger",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
   "host_permissions": [
     "https://*.revolut.com/*"
@@ -34,9 +35,9 @@
       "js": ["revolut.click.js"]
     },
     {
-      "matches": ["https://*.revolut.com/*"],
+      "matches": ["https://exchange.revolut.com/trade/*"],
       "js": ["content.js"],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     }
   ],
   "background": {
