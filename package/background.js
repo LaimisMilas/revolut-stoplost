@@ -79,14 +79,14 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === "complete" && tab.url.includes("revolut.com")) {
+    if (changeInfo.status === "complete" && tab.url.includes("https://exchange.revolut.com/trade/SOL-USD")) {
         // Tikrinam ar content.js jau veikia (galim per message)
         chrome.tabs.sendMessage(tabId, { ping: true }, (response) => {
             if (chrome.runtime.lastError || !response) {
                 console.warn("❌ content.js neveikia – injectinam rankiniu būdu");
                 chrome.scripting.executeScript({
                     target: { tabId: tabId },
-                    files: ["content.js"]
+                    files: ["content.js", "revolut.click.js"]
                 });
             } else {
                 console.log("✅ content.js gyvas");
