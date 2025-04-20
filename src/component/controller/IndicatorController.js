@@ -11,7 +11,7 @@ const IndicatorController = inject("candleService","tickerService", "indicatorRe
                 await doAction2();
             }
             runActions().then();
-        }, [tickerService.tickers.length]);
+        }, [tickerService.tickerIndex]);
 
         const doAction = async () => {
             indicatorReadState.tickerValue = tickerService.getTickers();

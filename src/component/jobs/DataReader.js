@@ -43,6 +43,7 @@ const DataReader = inject("indicatorReadState","tickerService")(
                     let updatedTicker = {...result.data, indexPrice: avgSecPrice.toFixed(6)};
 
                     tickerService.pushNewTicker(updatedTicker);
+                    tickerService.tickerIndex++;
 
                     indicatorReadState.tickerValue = indicatorReadState.pushWithLimit(indicatorReadState.tickerValue, updatedTicker, 11250);
                     indicatorReadState.calculateRSITicker(600 + 14, 30);
@@ -58,7 +59,6 @@ const DataReader = inject("indicatorReadState","tickerService")(
             }
 
             indicatorReadState.tickerIndex++;
-            tickerService.tickerIndex++;
         }
     }));
 

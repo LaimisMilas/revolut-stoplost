@@ -1,12 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const { getCandlesFromDB, getCandlesInRange} = require("./database");
+const { getCandlesFromDB, deleteCandle} = require("./database");
 const analyzeCandles = require('../src/indicator/AnalyzeCandlesNode');
 // Įkeliam žvakes
 //const candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
 
 async function runBacktest() {
     try {
+        //await deleteCandle();
         const candles = await getCandlesFromDB(2000); // pakeisk limit pagal poreikį
         //const candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
         let balance = 3000; // SOL
@@ -17,15 +18,23 @@ async function runBacktest() {
             const history = candles.slice(i - 50, i);
             const current = candles[i];
 
+            if(!current.open || !current.high || !current.low || !current.close) {
+                continue;
+            }
+
             const analysis = analyzeCandles(history);
 
             const price = current.close;
 
+            if(analysis.pattern){
+                console.log(analysis.pattern);
+            }
+
             if (!position) {
                 const shouldBuy =
-                    analysis.trend === "up" &&
-                    analysis.rsi14 < 70 &&
-                    analysis.pattern === "bullish_engulfing";
+                  //  analysis.trend === "up"
+                    analysis.rsi14 < 70
+                   // analysis.pattern === "bullish_engulfing";
 
                 if (shouldBuy) {
                     const atr = analysis.atr14 || 0.5; // fallback
@@ -54,7 +63,7 @@ async function runBacktest() {
                 const shouldSell =
                     (reachedTakeProfit && trendIsDown) ||
                     rsiIsHigh ||
-                    bearishPattern ||
+                 //   bearishPattern ||
                     price <= position.stop;
 
                 if (shouldSell) {
@@ -82,7 +91,7 @@ async function runBacktest() {
         console.log(`🔁 Įkelta ${candles.length} žvakių iš DB`);
         console.log("Sandorių:", results.filter(r => r.action !== "BUY").length);
         console.log("Galutinis balansas (SOL):", balance.toFixed(4));
-        console.table(results);
+       // console.table(results);
 
         let candlesa = [];
         candles.forEach((candle) => {

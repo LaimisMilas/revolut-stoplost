@@ -4,21 +4,30 @@ const db = new sqlite3.Database("candles.db");
 
 db.serialize(() => {
     db.run(`
-    CREATE TABLE IF NOT EXISTS candles (
-      timestamp INTEGER PRIMARY KEY,
-      open REAL,
-      high REAL,
-      low REAL,
-      close REAL
-    )
-  `);
+        CREATE TABLE IF NOT EXISTS candles
+        (
+            timestamp
+            INTEGER
+            PRIMARY
+            KEY,
+            open
+            REAL,
+            high
+            REAL,
+            low
+            REAL,
+            close
+            REAL
+        )
+    `);
 });
 
 function insertCandle(candle) {
     const stmt = db.prepare(`
-    INSERT OR IGNORE INTO candles (timestamp, open, high, low, close)
+        INSERT
+        OR IGNORE INTO candles (timestamp, open, high, low, close)
     VALUES (?, ?, ?, ?, ?)
-  `);
+    `);
 
     stmt.run(
         candle.timestamp,
@@ -33,7 +42,9 @@ function insertCandle(candle) {
 
 function getLastNCandles(n, callback) {
     db.all(
-        `SELECT * FROM candles ORDER BY timestamp DESC LIMIT ?`,
+        `SELECT *
+         FROM candles
+         ORDER BY timestamp DESC LIMIT ?`,
         [n],
         (err, rows) => {
             if (err) {
@@ -48,7 +59,10 @@ function getLastNCandles(n, callback) {
 
 function getCandlesInRange(fromTimestamp, toTimestamp, callback) {
     db.all(
-        `SELECT * FROM candles WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp ASC`,
+        `SELECT *
+         FROM candles
+         WHERE timestamp BETWEEN ? AND ?
+         ORDER BY timestamp ASC`,
         [fromTimestamp, toTimestamp],
         (err, rows) => {
             if (err) {
@@ -63,7 +77,9 @@ function getCandlesInRange(fromTimestamp, toTimestamp, callback) {
 
 function getCandlesFromDB(limit = 1000) {
     return new Promise((resolve, reject) => {
-        const query = `SELECT * FROM candles ORDER BY timestamp ASC LIMIT ?`;
+        const query = `SELECT *
+                       FROM candles
+                       ORDER BY timestamp ASC LIMIT ?`;
         db.all(query, [limit], (err, rows) => {
             if (err) {
                 return reject(err);
@@ -73,4 +89,22 @@ function getCandlesFromDB(limit = 1000) {
     });
 }
 
-module.exports = { insertCandle, getLastNCandles, getCandlesInRange, getCandlesFromDB};
+function deleteCandle() {
+    db.run(`
+        DELETE
+        FROM candles
+        WHERE timestamp IS NULL
+    OR open IS NULL
+    OR high IS NULL
+    OR low IS NULL
+    OR close IS NULL;
+    `, function (err) {
+        if (err) {
+            return console.error("❌ Klaida trynimo metu:", err.message);
+        }
+        console.log(`✅ Ištrinta eilučių: ${this.changes}`);
+        db.close();
+    });
+}
+
+module.exports = {insertCandle, getLastNCandles, getCandlesInRange, getCandlesFromDB, deleteCandle};

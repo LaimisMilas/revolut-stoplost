@@ -10,7 +10,7 @@ const CandleController = inject("candleService","tickerService")(
                 await doAction();
             }
             runActions().then();
-        }, [tickerService.tickers.length]);
+        }, [tickerService.tickerIndex]);
 
         const doAction = async () => {
             const candles = aggregateToCandles(tickerService.tickers, 60);

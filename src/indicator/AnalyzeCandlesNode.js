@@ -63,7 +63,7 @@ function detectPattern(candles) {
 
     if (isBullishEngulfing) return "bullish_engulfing";
     if (isBearishEngulfing) return "bearish_engulfing";
-    return "none";
+    return null;
 }
 
 module.exports = function analyzeCandles(candles) {

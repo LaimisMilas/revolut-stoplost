@@ -32,6 +32,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                     "Network.getResponseBody",
                     {requestId: params.requestId},
                     (response) => {
+                        //'https://exchange.revolut.com/api/crypto-exchange/token/refresh'
                         if (params.response.url.includes("api/crypto-exchange/tickers")) {
                             // 🔥 Siunčiame duomenis į content.js script
                             if (response.body) {
@@ -41,6 +42,17 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                                 const result = data.find(item => item.pair === searchPair);
                                 result.time = getNowDate(date);
                                 result.seconds = date.getSeconds();
+                                chrome.tabs.sendMessage(tabId, { ping: true }, (response) => {
+                                    if (chrome.runtime.lastError || !response) {
+                                        console.warn("❌ content.js neveikia – injectinam rankiniu būdu");
+                                        chrome.scripting.executeScript({
+                                            target: { tabId: tabId },
+                                            files: ["content.js"]
+                                        });
+                                    } else {
+                                        console.log("✅ content.js gyvas");
+                                    }
+                                });
                                 chrome.tabs.sendMessage(source.tabId, {url: "tickers", data: result }, (response) => {
                                     if (chrome.runtime.lastError) {
                                         console.error("Klaida:", chrome.runtime.lastError.message);
@@ -73,6 +85,15 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                         }
                     }
                 );
+            }
+        });
+
+        chrome.debugger.onEvent.addListener((source, method, params) => {
+            if (method === 'Network.webSocketFrameReceived') {
+                //'https://exchange.revolut.com/api/crypto-exchange/currencies/SOL-USD/chart/history?source=keepr-exchange&type=candlestick&interval=15m&countBack=2&to=1745173772000'
+                //'https://exchange.revolut.com/api/crypto-exchange/token/refresh'
+//'https://exchange.revolut.com/api/crypto-exchange/tickers'
+                //'https://exchange.revolut.com/api/crypto-exchange/token/info'
             }
         });
     }
