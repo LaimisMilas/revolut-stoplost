@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { insertCandle, getLastNCandles, getCandlesInRange} = require("./database");
+const {insertCandle, getLastNCandles, getCandlesInRange} = require("./database");
 const fs = require("fs");
 const {WebSocketServer} = require("ws");
 const path = require("path");
@@ -8,10 +8,10 @@ const path = require("path");
 const app = express();
 app.use(cors());
 app.use(express.json());
-
 // WebSocket serveris
-const wss = new WebSocketServer({ port: 3003 });
+const wss = new WebSocketServer({port: 3003});
 const clients = new Set();
+let candles = [];
 
 getLastNCandles(60, (latestCandles) => {
     candles.push(...latestCandles);
@@ -27,22 +27,6 @@ wss.on("connection", (ws) => {
         console.log("🔴 Klientas atsijungė");
     });
 });
-
-const FILE_PATH = "candles.json";
-
-let candles = [];
-
-// 🟢 Įkeliam jau esamas žvakes (jei yra)
-if (fs.existsSync(FILE_PATH)) {
-    try {
-        const data = fs.readFileSync(FILE_PATH, "utf8");
-        candles = JSON.parse(data);
-        console.log(`🔁 Įkelta ${candles.length} žvakių iš failo`);
-    } catch (err) {
-        console.error("❌ Klaida skaitant candles.json:", err);
-        candles = [];
-    }
-}
 
 function dataStructureValid(candle) {
     return candle.hasOwnProperty("open")
@@ -62,47 +46,27 @@ function dataValueValid(candle) {
 
 app.post("/api/candle", (req, res) => {
     const candle = req.body;
-
-    if(!dataStructureValid(candle) && !dataValueValid(candle)){
+    if (!dataStructureValid(candle) && !dataValueValid(candle)) {
         res.sendStatus(406);
         return;
     }
-
-    // ⚠️ Tikrinam, kad nebūtų dublikatų pagal timestamp
-    const last = candles[candles.length - 1];
-    if (!last || last.timestamp !== candle.timestamp) {
-
-        candles.push(candle);
+    try {
+        //candles.push(candle);
         candle.date = new Date(candle.timestamp).toLocaleDateString("eu-LT");
         candle.time = new Date(candle.timestamp).toLocaleTimeString("eu-LT");
         //console.log("➕ Nauja žvakė:", candle);
-        try {
-
-            fs.writeFileSync(FILE_PATH, JSON.stringify(candles, null, 2));
-
-            insertCandle(candle); // 💾 Įrašom į SQLite
-
+       // fs.writeFileSync(FILE_PATH, JSON.stringify(candles, null, 2));
+        insertCandle(candle); // 💾 Įrašom į SQLite
         // Siunčiam naują žvakę visiems prisijungusiems klientams
-            for (const client of clients) {
-                if (client.readyState === 1) {
-                    //console.log("➕ Nauja žvakė išsiusta");
-                    client.send(JSON.stringify(candle));
-                }
+        for (const client of clients) {
+            if (client.readyState === 1) {
+                //console.log("➕ Nauja žvakė išsiusta");
+                client.send(JSON.stringify(candle));
             }
-
-        } catch (err) {
-            console.error("❌ Klaida saugant JSON failą:", err);
         }
-    } else {
-        if (candle){
-            candle.date = new Date(candle.timestamp).toLocaleDateString("eu-LT");
-            candle.time = new Date(candle.timestamp).toLocaleTimeString("eu-LT");
-           // console.log("Žvakė su tokiu timestamp jau egzistuoja:", candle);
-        } else {
-            console.log("⚠️ Žvakė yra null");
-        }
+    } catch (err) {
+        console.error("❌ Klaida saugant JSON failą:", err);
     }
-
     res.sendStatus(200);
 });
 
@@ -116,7 +80,7 @@ app.get("/api/by/range/candles", (req, res) => {
     const from = parseInt(req.query.from); // pvz. 1713312000000
     const to = parseInt(req.query.to);     // pvz. 1713398400000
     if (!from || !to) {
-        return res.status(400).json({ error: "Trūksta 'from' arba 'to' timestampų" });
+        return res.status(400).json({error: "Trūksta 'from' arba 'to' timestampų"});
     }
     getCandlesInRange(from, to, (candles) => {
         res.json(candles);

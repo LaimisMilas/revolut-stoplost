@@ -8,8 +8,8 @@ const analyzeCandles = require('../src/indicator/AnalyzeCandlesNode');
 async function runBacktest() {
     try {
         //await deleteCandle();
-        const candles = await getCandlesFromDB(2000); // pakeisk limit pagal poreikį
-        //const candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
+        let candles = await getCandlesFromDB(20000); // pakeisk limit pagal poreikį
+       // candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
         let balance = 3000; // SOL
         let position = null;
         let results = [];
@@ -32,9 +32,9 @@ async function runBacktest() {
 
             if (!position) {
                 const shouldBuy =
-                  //  analysis.trend === "up"
-                    analysis.rsi14 < 70
-                   // analysis.pattern === "bullish_engulfing";
+                    analysis.trend === "up" &&
+                    analysis.rsi14 < 70 &&
+                    analysis.pattern === "bullish_engulfing";
 
                 if (shouldBuy) {
                     const atr = analysis.atr14 || 0.5; // fallback
@@ -63,7 +63,7 @@ async function runBacktest() {
                 const shouldSell =
                     (reachedTakeProfit && trendIsDown) ||
                     rsiIsHigh ||
-                 //   bearishPattern ||
+                    bearishPattern ||
                     price <= position.stop;
 
                 if (shouldSell) {
@@ -99,9 +99,9 @@ async function runBacktest() {
             candle.time = new Date(candle.timestamp).toLocaleTimeString("eu-LT");
             candlesa.push(candle);
         })
-        console.table(candlesa);
+        console.table(candlesa.slice(-1));
 
-//console.table(results.slice(-10)); // paskutiniai 10 įrašų
+console.table(results); // paskutiniai 10 įrašų
 
     } catch (error) {
         console.error("❌ Klaida skaitant iš DB:", error);

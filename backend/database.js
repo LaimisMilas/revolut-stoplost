@@ -17,7 +17,11 @@ db.serialize(() => {
             low
             REAL,
             close
-            REAL
+            REAL,
+            date
+            TEXT,
+            time
+            TEXT
         )
     `);
 });
@@ -25,8 +29,8 @@ db.serialize(() => {
 function insertCandle(candle) {
     const stmt = db.prepare(`
         INSERT
-        OR IGNORE INTO candles (timestamp, open, high, low, close)
-    VALUES (?, ?, ?, ?, ?)
+        OR IGNORE INTO candles (timestamp, open, high, low, close, date, time)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
     stmt.run(
@@ -34,7 +38,9 @@ function insertCandle(candle) {
         candle.open,
         candle.high,
         candle.low,
-        candle.close
+        candle.close,
+        candle.date,
+        candle.time
     );
 
     stmt.finalize();

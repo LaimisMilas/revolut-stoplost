@@ -46,6 +46,8 @@ function calculateATR(candles, period = 14) {
 }
 
 function detectPattern(candles) {
+    if (candles.length < 2) return null;
+
     const prev = candles[candles.length - 2];
     const curr = candles[candles.length - 1];
 
