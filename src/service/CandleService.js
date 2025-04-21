@@ -7,12 +7,13 @@ export class CandleService {
     maxHistoryLength = 11250;
     candle = {
         "timestamp": 1713356400000,
-        "open": 50321.23,
-        "high": 50321.23,
-        "low": 50321.23,
-        "close": 50321.23
+        "open": 0.0,
+        "high": 0.0,
+        "low": 0.0,
+        "close": 0.0
     }
     currentCandle;
+    candleCounter = 0;
 
     constructor() {
         makeAutoObservable(this);
@@ -26,6 +27,9 @@ export class CandleService {
         return this.historyCandle;
     }
 
+    getCurrentCandle() {
+            return this.currentCandle;
+    }
     pushNewHistoryCandle(pushNewValue) {
         this.historyCandle.push(pushNewValue);
         if (this.historyCandle.length > this.maxHistoryLength) {

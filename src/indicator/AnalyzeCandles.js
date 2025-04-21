@@ -60,12 +60,24 @@ function detectTrend(candles) {
 
 function detectEngulfing(candles) {
     const [prev, curr] = candles.slice(-2);
-    if (prev.close < prev.open && curr.close > curr.open && curr.close > prev.open && curr.open < prev.close) {
-        return "bullish_engulfing";
-    }
-    if (prev.close > prev.open && curr.close < curr.open && curr.open > prev.close && curr.close < prev.open) {
-        return "bearish_engulfing";
-    }
+
+   // const bodyPrev = Math.abs(prev.close - prev.open);
+   // const bodyCurr = Math.abs(curr.close - curr.open);
+
+    const isBullishEngulfing =
+        prev.close < prev.open &&
+        curr.close > curr.open &&
+        curr.close > prev.close &&     // svarbiau nei praryti visą žvakę
+        curr.open <= prev.open;        // leidžiam atsidaryti tame pačiame lygyje ar mažiau
+
+    const isBearishEngulfing =
+        prev.close > prev.open &&
+        curr.close < curr.open &&
+        curr.close < prev.close &&
+        curr.open >= prev.open;
+
+    if (isBullishEngulfing) return "bullish_engulfing";
+    if (isBearishEngulfing) return "bearish_engulfing";
     return "sideways";
 }
 

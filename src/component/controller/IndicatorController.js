@@ -7,11 +7,11 @@ const IndicatorController = inject("candleService","tickerService", "indicatorRe
 
         useEffect(() => {
             const runActions = async () => {
-                await doAction();
+                //await doAction();
                 await doAction2();
             }
             runActions().then();
-        }, [tickerService.tickerIndex]);
+        }, [indicatorState.indicatorCounter]);
 
         const doAction = async () => {
             indicatorReadState.tickerValue = tickerService.getTickers();

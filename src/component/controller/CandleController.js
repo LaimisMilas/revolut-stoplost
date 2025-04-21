@@ -1,23 +1,23 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
-import {aggregateToCandles} from "../../utils/AggregateToCandles";
+import {aggregateToCandles, aggregateToCandles2} from "../../utils/AggregateToCandles";
 
-const CandleController = inject("candleService","tickerService")(
-    observer(({candleService, tickerService}) => {
+const CandleController = inject("candleService","tickerService", "indicatorState")(
+    observer(({candleService, tickerService, indicatorState}) => {
 
         useEffect(() => {
             const runActions = async () => {
                 await doAction();
             }
             runActions().then();
-        }, [tickerService.tickerIndex]);
+        }, [candleService.candleCounter]);
 
         const doAction = async () => {
-            const candles = aggregateToCandles(tickerService.tickers, 60);
-            candleService.pushNewHistoryCandle(candles[candles.length -1]);
+            const candles = aggregateToCandles2(tickerService.tickers, 60);
+            candleService.setHistoryCandles(candles);
             candleService.updateCurrentCandle();
             //await candleService.storeCurrentCandle();
-            candleService.rootStore.saveStorage();
+            indicatorState.indicatorCounter++;
         }
     }));
 

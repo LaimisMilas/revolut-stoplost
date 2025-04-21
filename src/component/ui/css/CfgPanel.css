@@ -239,3 +239,8 @@
 #indicators-panel th{
     border: #71b7fb 1px solid;
 }
+
+#trade-comp-panel{
+    right: 25px;
+    top: 400px;
+}

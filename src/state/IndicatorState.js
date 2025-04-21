@@ -46,6 +46,7 @@ export class IndicatorState {
     trailingBuyBots = [];
     trailingBuyBot;
     trailingSellBot;
+    indicatorCounter = 0;
 
     constructor() {
         makeAutoObservable(this);

@@ -1,16 +1,11 @@
 import React from 'react';
 import {Provider} from "mobx-react";
 import {RootStore} from "./state/RootStore";
-import SellClicker from "./component/jobs/SellClicker";
-import BuyClicker from "./component/jobs/BuyClicker";
 import DataReader from "./component/jobs/DataReader";
-import SellPanel from "./component/ui/SellPanel";
-import BuyPanel from "./component/ui/BuyPanel";
-import OrderList from "../web/component/ui/OrderList";
-import CandleAnalyzerPanel from "../web/component/ui/CandleAnalyzePanel";
 import CandleController from "./component/controller/CandleController";
 import IndicatorController from "./component/controller/IndicatorController";
 import TickerController from "./component/controller/TickerController";
+import TradeClicker from "./component/ui/TradeClicker";
 
 const rootState = new RootStore();
 
@@ -29,16 +24,11 @@ const App = () => {
             candleService={rootState.candleService}
         >
             <div className="App">
-                <SellPanel/>
-                <BuyPanel/>
-                <SellClicker/>
-                <BuyClicker/>
                 <DataReader/>
-                <OrderList/>
-                <CandleAnalyzerPanel/>
                 <CandleController/>
                 <IndicatorController/>
                 <TickerController/>
+                <TradeClicker/>
             </div>
         </Provider>
     );

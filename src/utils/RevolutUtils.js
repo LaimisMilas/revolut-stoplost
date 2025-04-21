@@ -1,4 +1,5 @@
 import {Utils} from "html-evaluate-utils/Utils";
+import {postSellProcess} from "../component/jobs/sell/PostSellProcess";
 
 export const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -165,4 +166,92 @@ export const getTradeOrderValue = (tradeName) => {
         return [sum, sumPercent];
     }
     return [];
+}
+
+export const sellOperation = async (tradePare) => {
+    let result= 0;
+    let el = await selectSellSwitch();
+    //is switched to sell
+    if(el.hasAttribute('aria-selected') && el.getAttribute('aria-selected') === 'false'){
+        return 0;
+    } else {
+        result = 100;
+    }
+    if(result === 100){
+        let quantityValue = tradePare.quantity;
+        if(quantityValue.includes('%')){
+            quantityValue = quantityValue.toString()
+            if(quantityValue === '100%'){
+                result += await selectSellSum(100);
+            }
+            if(quantityValue === '75%'){
+                result += await selectSellSum(75);
+            }
+            if(quantityValue === '50%'){
+                result += await selectSellSum(50);
+            }
+            if(quantityValue === '25%'){
+                result += await selectSellSum(25);
+            }
+        } else {
+            let quantity = convertToNumber(quantityValue);
+            result += await writeQuantity(quantity);
+        }
+        //is quantity selected
+        el = await getClickSell(tradePare.key);
+        if(el.hasAttribute('disabled')){
+            return 0;
+        }
+    }
+    if(result === 200){
+        result += await clickSell(tradePare.key);
+        //is sold
+        result += await sellApproval();
+        if(await sellApproval() < 200){
+             return result; // no approved
+        }
+    }
+    return result;
+}
+
+export const buyOperation = async (tradePare) => {
+    let result = await selectBuySwitch();
+    if (result === 100) {
+        let quantityValue = tradePare.quantity;
+        if (quantityValue.includes('%')) {
+            quantityValue = quantityValue.toString()
+            if (quantityValue === '100%') {
+                result += await selectSellSum(100);
+            }
+            if (quantityValue === '75%') {
+                result += await selectSellSum(75);
+            }
+            if (quantityValue === '50%') {
+                result += await selectSellSum(50);
+            }
+            if (quantityValue === '25%') {
+                result += await selectSellSum(25);
+            }
+        } else {
+            let quantity = convertToNumber(quantityValue);
+            result += await writeQuantity(quantity);
+        }
+    }
+    if (result === 200) {
+        result += await clickBuy(tradePare.key);
+    }
+    return result;
+}
+
+export const sellApproval = async () => {
+    let result = 0;
+    result += await clickOrderHistory();
+    if(result > 0 && await hasOrderMessage()){
+        let orderType = await getOrderType();
+        if(orderType.includes("Pardavimo")){
+            console.log("orderType:" + orderType);
+            result += 100;
+        }
+    }
+    return result;
 }
