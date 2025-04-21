@@ -10,6 +10,7 @@ import OrderList from "../web/component/ui/OrderList";
 import CandleAnalyzerPanel from "../web/component/ui/CandleAnalyzePanel";
 import CandleController from "./component/controller/CandleController";
 import IndicatorController from "./component/controller/IndicatorController";
+import TickerController from "./component/controller/TickerController";
 
 const rootState = new RootStore();
 
@@ -37,6 +38,7 @@ const App = () => {
                 <CandleAnalyzerPanel/>
                 <CandleController/>
                 <IndicatorController/>
+                <TickerController/>
             </div>
         </Provider>
     );

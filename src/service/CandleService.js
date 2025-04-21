@@ -48,7 +48,7 @@ export class CandleService {
 
     async storeCurrentCandle(){
        if(this.currentCandle){
-           fetch("http://localhost:3000/api/candle", {
+           fetch("http://localhost:3000/api/candles", {
                method: "POST",
                headers: {
                    "Content-Type": "application/json",

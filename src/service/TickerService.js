@@ -29,4 +29,26 @@ export class TickerService {
         return this.tickers;
     }
 
+    getLastTickers() {
+        return this.tickers[this.tickers.length - 1];
+    }
+
+    async storeTicker(ticker){
+        if(ticker){
+            fetch("http://localhost:3000/api/tickers", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(ticker),
+            }).then(response => response.json())
+                .then(data => {
+                    console.log('Atsakymas:', data);
+                })
+                .catch((error) => {
+                    console.error('Klaida:', error);
+                });
+        }
+    }
+
 }

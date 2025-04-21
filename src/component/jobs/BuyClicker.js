@@ -33,8 +33,6 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
             }
         }
 
-        let trendBuffer = 0;
-
         const doBuy = async () => {
             if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
@@ -57,14 +55,7 @@ const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
                 buyStatus += 100;
             }
 
-            if(buyStatus >= 300 && trendBuffer > 3){
-                buyStatus += 100;
-                trendBuffer = 0;
-            } else {
-                trendBuffer++;
-            }
-
-            if(buyStatus >= 400){
+            if(buyStatus >= 300){
                 await buyOperation(tradePare, correlation);
             } else {
                 await preBuyProcess(buyState, indicatorReadState);
