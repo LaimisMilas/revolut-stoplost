@@ -1,6 +1,6 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
-import {aggregateToCandles, aggregateToCandles2} from "../../utils/AggregateToCandles";
+import {aggregateToCandles2} from "../../utils/AggregateToCandles";
 
 const CandleController = inject("candleService","tickerService", "indicatorState")(
     observer(({candleService, tickerService, indicatorState}) => {
