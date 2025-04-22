@@ -23,6 +23,12 @@ export class SellState {
     msgs = [];
     countTrySell = 0;
     trySellPrices = [];
+    position = {
+        entry: 0,
+        stop:0,
+        target: 0,
+        timestamp: 0
+    };
 
     constructor() {
         makeAutoObservable(this);
@@ -33,6 +39,14 @@ export class SellState {
         this.sellPanelState = sellPanelState;
         this.setSystemCfg(lc_system_cfg);
         this.setTradePares(trade_pares);
+    }
+
+    getPosition(){
+        return this.position;
+    }
+
+    setPosition(position){
+        this.position = position;
     }
 
     getCurrentTradePare(){

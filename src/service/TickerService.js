@@ -5,7 +5,7 @@ export class TickerService {
     rootStore = null;
     tickers = [];
     maxTickerLength = 11250;
-    tickerIndex = 0;
+    tickerCounter = 0;
 
     constructor() {
         makeAutoObservable(this);

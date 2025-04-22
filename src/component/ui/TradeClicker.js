@@ -24,12 +24,6 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
             trend: "",
             pattern: ""
         });
-        const [position, setPosition] = useState({
-            entry: 0,
-            stop:0,
-            target: 0,
-            timestamp: 0
-        });
         const [candle, setCandle] = useState(candleService.candle);
 
         useEffect(() => {
@@ -44,6 +38,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
             setCandle(candleService.getCurrentCandle());
             setAnalysis(indicatorState.candleAnalyze);
             const price = candle.close;
+            const position = sellState.getPosition();
 
             if (position.entry === 0) {
                 const shouldBuy =
@@ -55,7 +50,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                     const opResult = 1 //await buyOperation(tradePare);
                     if(opResult > 0){
                         const atr = analysis.atr14 || 0.5;
-                        setPosition({
+                        sellState.setPosition({
                             entry: price,
                             stop: price - atr * 1.5,
                             target: price + atr * 2.5,
@@ -76,7 +71,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                 if (shouldSell) {
                     const opResult = 1 //await sellOperation(tradePare);
                     if(opResult > 0) {
-                        setPosition({
+                        sellState.setPosition({
                             entry: 0,
                             stop:0,
                             target: 0,

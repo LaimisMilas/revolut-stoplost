@@ -16,7 +16,6 @@ const CandleController = inject("candleService","tickerService", "indicatorState
             const candles = aggregateToCandles2(tickerService.tickers, 60);
             candleService.setHistoryCandles(candles);
             candleService.updateCurrentCandle();
-            //await candleService.storeCurrentCandle();
             indicatorState.indicatorCounter++;
         }
     }));

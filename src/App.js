@@ -1,11 +1,11 @@
 import React from 'react';
 import {Provider} from "mobx-react";
 import {RootStore} from "./state/RootStore";
-import DataReader from "./component/jobs/DataReader";
 import CandleController from "./component/controller/CandleController";
 import IndicatorController from "./component/controller/IndicatorController";
 import TickerController from "./component/controller/TickerController";
 import TradeClicker from "./component/ui/TradeClicker";
+import TickerResaver from "./component/jobs/TickerResaver";
 
 const rootState = new RootStore();
 
@@ -24,10 +24,10 @@ const App = () => {
             candleService={rootState.candleService}
         >
             <div className="App">
-                <DataReader/>
+                <TickerResaver/>
+                <TickerController/>
                 <CandleController/>
                 <IndicatorController/>
-                <TickerController/>
                 <TradeClicker/>
             </div>
         </Provider>

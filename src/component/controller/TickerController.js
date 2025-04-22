@@ -9,7 +9,7 @@ const TickerController = inject("tickerService", "candleService")(
                 await doAction();
             }
             runActions().then();
-        }, [tickerService.tickerIndex]);
+        }, [tickerService.tickerCounter]);
 
         const doAction = async () => {
             const ticker = tickerService.getLastTickers();

@@ -2,25 +2,17 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {calculateRSI} from "../../indicator/RSI14";
 
-const IndicatorController = inject("candleService","tickerService", "indicatorReadState", "indicatorState")(
-    observer(({candleService, tickerService, indicatorReadState, indicatorState}) => {
+const IndicatorController = inject("candleService","tickerService", "indicatorState")(
+    observer(({candleService, tickerService, indicatorState}) => {
 
         useEffect(() => {
             const runActions = async () => {
-                //await doAction();
-                await doAction2();
+                await doAction();
             }
             runActions().then();
         }, [indicatorState.indicatorCounter]);
 
         const doAction = async () => {
-            indicatorReadState.tickerValue = tickerService.getTickers();
-            indicatorReadState.calculateRSITicker(600 + 14, 30);
-            indicatorReadState.last100RSICounter++;
-            indicatorReadState.updateMinCandles();
-        }
-
-        const doAction2 = async () => {
             const tickers = tickerService.getTickers();
             const prices = convertToPrice(tickers);
             const rsi = calculateRSI(prices);
