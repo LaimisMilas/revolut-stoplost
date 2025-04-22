@@ -31,7 +31,7 @@ const IndicatorController = inject("candleService","tickerService", "indicatorSt
             }
             if(candles){
                 indicatorState.updateATR(candles);
-                indicatorState.updateCandleAnalyzer(candles);
+                indicatorState.updateCandleAnalyzer(candles.slice(-51));
             }
             if(prices && rsi){
                 indicatorState.calculateDivergence(prices, rsi);

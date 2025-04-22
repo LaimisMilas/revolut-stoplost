@@ -29,6 +29,7 @@ export class SellState {
         target: 0,
         timestamp: 0
     };
+    orders = [];
 
     constructor() {
         makeAutoObservable(this);
@@ -47,6 +48,13 @@ export class SellState {
 
     setPosition(position){
         this.position = position;
+    }
+
+    pushOrder(order){
+        this.orders.push(order);
+        if(this.orders.length > 50){
+            this.orders = this.orders.slice(-50);
+        }
     }
 
     getCurrentTradePare(){

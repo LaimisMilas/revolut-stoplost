@@ -18,6 +18,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
         const [tradePare, setTradePare] = useState(sellState.getTradePareDataByKey(parsePareFromURL()));
         const [analysis, setAnalysis] = useState(indicatorState.candleAnalyze);
         const [candle, setCandle] = useState(candleService.candle);
+        const [localPosition, setLocalPosition] = useState(sellState.getPosition());
 
         useEffect(() => {
 
@@ -31,9 +32,9 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
             setCandle(candleService.getCurrentCandle());
             setAnalysis(indicatorState.candleAnalyze);
             const price = candle.close;
-            const position = sellState.getPosition();
+            setLocalPosition(sellState.getPosition());
 
-            if (position.entry === 0) {
+            if (localPosition.entry === 0) {
                 const shouldBuy =
                     analysis.trend === "up" &&
                     analysis.rsi14 < 70 &&
@@ -49,21 +50,40 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                             target: price + atr * 2.5,
                             timestamp: candle.timestamp
                         });
+                        sellState.pushOrder({
+                            action: "BUY",
+                            date: new Date(candle.timestamp).toLocaleDateString("eu-LT"),
+                            time: new Date(candle.timestamp).toLocaleTimeString("eu-LT"),
+                            price:  Number(price).toFixed(2),
+                            rsi14: analysis.rsi14.toFixed(2),
+                            trend: analysis.trend,
+                            pattern: analysis.pattern,
+                        });
                     }
                 }
             } else {
-                const reachedTakeProfit = price >= position.target;
+                const reachedTakeProfit = price >= localPosition.target;
                 const trendIsDown = analysis.trend === "down";
                 const rsiIsHigh = analysis.rsi14 > 30;
                 const bearishPattern = analysis.pattern === "bearish_engulfing";
 
                 const shouldSell =
                     (reachedTakeProfit && trendIsDown && rsiIsHigh && bearishPattern) ||
-                    price <= position.stop;
+                    price <= localPosition.stop;
 
                 if (shouldSell) {
                     const opResult = 1 //await sellOperation(tradePare);
                     if(opResult > 0) {
+                        sellState.pushOrder({
+                            action: price <= localPosition.stop ? "STOP_LOSS" : "SELL",
+                            date: new Date(candle.timestamp).toLocaleDateString("eu-LT"),
+                            time: new Date(candle.timestamp).toLocaleTimeString("eu-LT"),
+                            price: localPosition.entry,
+                            profit: localPosition.target,
+                            rsi14: analysis.rsi14,
+                            trend: analysis.trend,
+                            pattern: analysis.pattern
+                        });
                         sellState.setPosition({
                             entry: 0,
                             stop:0,
@@ -108,20 +128,24 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                             <span>{analysis.pattern}</span>
                         </div>
                         <div className="checkbox-row">
-                            <label>entry</label>
-                            <span>{position.entry}</span>
+                            <label>Entry</label>
+                            <span>{localPosition.entry}</span>
                         </div>
                         <div className="checkbox-row">
-                            <label>stop</label>
-                            <span>{position.stop}</span>
+                            <label>Stop-lost</label>
+                            <span>{localPosition.stop}</span>
                         </div>
                         <div className="checkbox-row">
-                            <label>target</label>
-                            <span>{position.target}</span>
+                            <label>Target</label>
+                            <span>{localPosition.target}</span>
                         </div>
                         <div className="checkbox-row">
-                            <label>timestamp</label>
-                            <span>{position.timestamp}</span>
+                            <label>Timestamp</label>
+                            <span>{localPosition.timestamp}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>Orders</label>
+                            <span>{sellState.orders.length}</span>
                         </div>
                     </div>
                 </div>
