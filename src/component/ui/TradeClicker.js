@@ -16,14 +16,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
         }
 
         const [tradePare, setTradePare] = useState(sellState.getTradePareDataByKey(parsePareFromURL()));
-        const [analysis, setAnalysis] = useState({
-            ema20: 0,
-            ema50: 0,
-            rsi14: 0,
-            atr14: 0,
-            trend: "",
-            pattern: ""
-        });
+        const [analysis, setAnalysis] = useState(indicatorState.candleAnalyze);
         const [candle, setCandle] = useState(candleService.candle);
 
         useEffect(() => {
