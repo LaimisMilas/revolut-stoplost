@@ -115,7 +115,13 @@ export function analyzeCandles(candles) {
     const ema20 = calculateEMA(candles.slice(-20), 20);
     const ema50 = calculateEMA(candles.slice(-50), 50);
 
-    const trend = ema10 > ema20 ? "up" : "down";
+    const isPriceRising =
+        candles[candles.length - 1].close > candles[candles.length - 4].close;
+
+    const trend = ema10 > ema20 ? "up" :
+        ema10 < ema20 ? "down" :
+            isPriceRising ? "up" : "sideways";
+
     const pattern = detectPattern(candles);
     const aroonTrend = detectAroonTrend(candles);
 

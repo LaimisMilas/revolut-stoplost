@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import './css/CfgPanel.css';
 import Draggable from "react-draggable";
 
-const TradeClicker = inject("sellState", "candleService", "indicatorState")(
+const SidewaysReversalStrategy = inject("sellState", "candleService", "indicatorState")(
     observer(({sellState, candleService, indicatorState}) => {
 
         const parsePareFromURL = () => {
@@ -197,5 +197,5 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
         );
     }));
 
-export default TradeClicker;
+export default SidewaysReversalStrategy;
 
