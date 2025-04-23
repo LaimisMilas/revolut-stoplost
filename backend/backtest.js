@@ -4,14 +4,11 @@ const { getCandlesFromDB, deleteCandle} = require("./database");
 const analyzeCandles = require('../src/indicator/AnalyzeCandlesNode');
 const aggregateToCandles2 = require("../src/utils/AggregateToCandlesNode");
 const {getTickers} = require("./models/tickerModel");
-// Įkeliam žvakes
-//const candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
 
 async function runBacktest() {
     try {
         const tickers = await getTickers(11250);
         let candles = await aggregateToCandles2(tickers, 60);
-       // candles = JSON.parse(fs.readFileSync(path.join(__dirname, 'candles.json'), 'utf8'));
         let balance = 3000; // SOL
         let position = null;
         let results = [];

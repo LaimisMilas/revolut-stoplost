@@ -93,7 +93,7 @@ export class RootStore {
             { key: "try_buy_prices", ref: () => this.buyState.tryBuyPrices, merge: "concat", defaultValue: []},
        //     { key: "min_candles", ref: () => this.indicatorReadState.minCandles, merge: "concat", defaultValue: []},
             { key: "candle_service_candles", ref: () => this.candleService.historyCandle, merge: "concat", defaultValue: []},
-            { key: "sellState_position", ref: { parent: () => this.sellState, field: "position" }, merge: "replace", defaultValue: {} },
+            { key: "sellState_position", ref: { parent: () => this.sellState, field: "position" }, merge: "assign", defaultValue: this.sellState.position},
             { key: "sellState_orders_book", ref: () => this.sellState.orders, merge: "concat", defaultValue: []},
         ];
     }
