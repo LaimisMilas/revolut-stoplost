@@ -7,14 +7,32 @@
     z-index: 100000000;
     padding: 15px;
     border-radius: 0.8rem !important;
-    background-color: black;
-    font-weight: var(--artdeco-reset-typography-font-weight-normal);
-    font-size: 1.4rem;
-    line-height: 1.42857;
+    background-color: #1a1a1a;
+    font-weight: 400;
+    font-size: 18px;
 }
 
 #buy-panel{
     right: 310px;
+}
+
+#chart-panel{
+    right: 650px;
+    width: 600px;
+}
+
+#chart-panel .checkbox-row label{
+    width: 200px;
+}
+
+#parabolic-chart-panel{
+    right: 660px;
+    top: -2px;
+    width: 600px;
+}
+
+#parabolic-chart-panel .checkbox-row label{
+    width: 200px;
 }
 
 .console-box button {
@@ -45,10 +63,16 @@
     width: 130px;
 }
 
+.checkbox-row input.halfInput{
+    width: 50px;
+    margin-right: 10px;
+}
+
 .apply-button{
     border: 1px solid #71b7fb;
     padding: 3px;
     width: 130px;
+
 }
 
 .apply-button-apply{
@@ -170,4 +194,53 @@
     /*width: 50px; */
     /* height: 25px; */
     margin-top: 0;
+}
+
+#trailing-buy-panel{
+    right: 310px;
+    top: 200px;
+}
+
+#trailing-buy-bot-panel{
+    right: 1px;
+    top: 350px;
+}
+
+#list-order-panel{
+    right: 455px;
+    top: 600px;
+}
+
+.deleteMSG{
+    float: right;
+    margin-right: 10px;
+}
+
+.table-scroll-container {
+    max-height: 600px; /* reguliuok pagal poreikį */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+#indicators-panel{
+    right: 420px;
+    top: 420px;
+}
+
+#indicators-panel table{
+    border: #71b7fb 1px solid;
+}
+
+#indicators-panel td{
+    border: #71b7fb 1px solid;
+}
+
+#indicators-panel th{
+    border: #71b7fb 1px solid;
+}
+
+#trade-comp-panel{
+    right: 25px;
+    top: 400px;
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Revolut stop/lost clicker",
+  "name": "buy/sell clicker",
   "action": {},
   "manifest_version": 3,
   "browser_specific_settings": {
@@ -7,19 +7,42 @@
       "id": "laimis.milasius@gmail.com"
     }
   },
-  "version": "0.0.0.1",
-  "description": "It's about click. It's about stop/lost. Use it.",
+  "version": "0.0.0.4",
+  "description": "It's about click. It's about buy/sell. Use it.",
   "icons": {
     "128": "images/icon_128.png",
     "16": "images/icon_16.png",
     "48": "images/icon_48.png"
   },
+  "permissions": [
+    "tabs",
+    "debugger",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.revolut.com/*"
+  ],
   "content_scripts": [
     {
+      "matches": ["https://exchange.revolut.com/auth/signed-out"],
+      "js": ["revolut_login.click.js"]
+    },
+    {
       "matches": ["https://exchange.revolut.com/trade/*"],
-      "js": ["revolut-click.js"]
+      "js": ["revolut.click.js"]
+    },
+    {
+      "matches": ["https://exchange.revolut.com/trade/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
     }
   ],
+  "background": {
+    "service_worker": "./background.js"
+  },
   "web_accessible_resources": [
     {
       "resources": ["images/active/icon_48-on.png"],

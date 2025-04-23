@@ -1,5 +1,4 @@
 import {makeAutoObservable} from 'mobx';
-import {lc_buy_cfg} from "../static/lc_buy_cfg";
 import {lc_system_cfg} from "../static/lc_system_cfg";
 import {trade_pares} from "../static/lc_buy_cfg";
 
@@ -7,8 +6,7 @@ export class BuyState {
 
     rootStore = null;
     authState = null;
-    cfgPanelState = null;
-    userCfg = null;
+    buyPanelState = null;
     systemCfg = null;
     stopAllAction = false;
     intervalGetCfg = null;
@@ -22,23 +20,39 @@ export class BuyState {
     updateSystemCfg = true;
     tradePares = null;
     currentTradePare  = null;
+    aspectCorrelation = 0.50;
+    msgs = [];
+    trailingPrice = 0;
+    deltaRate = 0;
+    limitBuy = 0;
+    countTryBuy = 0;
+    tryBuyPrices = [];
 
     constructor() {
         makeAutoObservable(this);
     }
 
-    setup(rootStore, authState, cfgPanelState) {
+    setup(rootStore, authState, buyPanelState) {
         this.rootStore = rootStore;
         this.authState = authState;
-        this.cfgPanelState = cfgPanelState;
-        this.setUserCfg(lc_buy_cfg);
+        this.buyPanelState = buyPanelState;
         this.setSystemCfg(lc_system_cfg);
         this.setTradePares(trade_pares);
     }
 
-    getTradePareDataByKey(key){
-        this.currentTradePare = this.tradePares[key]
+    getCurrentTradePare(){
         return this.currentTradePare;
+    }
+
+    setCurrentTradePare(tradePares){
+        this.currentTradePare  = tradePares;
+    }
+
+    getTradePareDataByKey(key){
+        if(this.tradePares[key]){
+            this.setCurrentTradePare(this.tradePares[key]);
+        }
+        return this.getCurrentTradePare();
     }
 
     saveTradePareData(tradeDate){
@@ -47,6 +61,7 @@ export class BuyState {
             data.targetPrice = tradeDate.targetPrice;
             data.takeProfRsi = tradeDate.takeProfRsi;
             data.quantity = tradeDate.quantity;
+            data.aspectCorrelation = tradeDate.aspectCorrelation;
             this.tradePares[tradeDate.key] = data;
         } else {
             this.tradePares[tradeDate.key] = tradeDate;
@@ -55,15 +70,15 @@ export class BuyState {
         return this.getTradePareDataByKey(tradeDate.key);
     }
 
-    setUserCfg(rootCfg){
-        this.userCfg = rootCfg;
-    }
-
     setSystemCfg(systemCfg){
         this.systemCfg = systemCfg;
     }
 
     setTradePares(tradePares){
         this.tradePares = tradePares;
+    }
+
+    saveMsg(msg){
+        this.msgs.push(msg);
     }
 }

@@ -27,11 +27,21 @@ export class LocalStorageManager {
         }
     }
 
-    static getStorage = (storageName) => {
+    static getStorageOld = (storageName) => {
         if (localStorage.hasOwnProperty(storageName)) {
             return JSON.parse(localStorage.getItem(storageName));
         } else {
             return {};
+        }
+    }
+
+    static getStorage(key) {
+        try {
+            const value = localStorage.getItem(key);
+            return value ? JSON.parse(value) : null;
+        } catch (e) {
+            console.warn("Failed to load from localStorage:", key, e);
+            return null;
         }
     }
 

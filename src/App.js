@@ -1,30 +1,34 @@
 import React from 'react';
 import {Provider} from "mobx-react";
-import StopLostPanel from "./component/ui/StopLostPanel";
 import {RootStore} from "./state/RootStore";
-import StopLostClicker from "./component/jobs/StopLostClicker";
-import BuyPanel from "./component/ui/BuyPanel";
-import BuyClicker from "./component/jobs/BuyClicker";
-import {IndicatorReadState} from "./state/IndicatorReadState";
+import CandleController from "./component/controller/CandleController";
+import IndicatorController from "./component/controller/IndicatorController";
+import TickerController from "./component/controller/TickerController";
+import TradeClicker from "./component/ui/TradeClicker";
+import TickerResaver from "./component/jobs/TickerResaver";
 
 const rootState = new RootStore();
 
 const App = () => {
-
     return (
         <Provider
             rootState={rootState}
-            stopLostState={rootState.stopLostState}
+            sellState={rootState.sellState}
             buyState={rootState.buyState}
-            cfgPanelState={rootState.cfgPanelState}
-            cfgBuyPanelState={rootState.cfgBuyPanelState}
+            sellPanelState={rootState.sellPanelState}
+            buyPanelState={rootState.buyPanelState}
             indicatorReadState={rootState.indicatorReadState}
+            indicatorState={rootState.indicatorState}
+            trailingService={rootState.trailingService}
+            tickerService={rootState.tickerService}
+            candleService={rootState.candleService}
         >
             <div className="App">
-                <StopLostPanel/>
-                <BuyPanel/>
-                <StopLostClicker/>
-                <BuyClicker/>
+                <TickerResaver/>
+                <TickerController/>
+                <CandleController/>
+                <IndicatorController/>
+                <TradeClicker/>
             </div>
         </Provider>
     );

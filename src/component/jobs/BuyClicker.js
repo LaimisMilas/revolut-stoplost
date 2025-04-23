@@ -3,26 +3,20 @@ import {useEffect} from "react";
 import {
     clickBuy,
     convertToNumber,
-    getNowDate, isBuyReached, isRSIDown,
     selectBuySwitch,
     selectSellSum,
     writeQuantity
 } from "../../utils/RevolutUtils";
-import {
-    detectFractalPattern,
-    doParabolicCorrelation,
-    findDivergence,
-    simpleMovingAverage
-} from "../../utils/IndicatorsUtils";
+import {postBuyProcess} from "./buy/PostBuyProcess";
+import {preBuyProcess} from "./buy/PreBuyProcess";
 
-const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
-    observer(({buyState, stopLostState,indicatorReadState}) => {
+const BuyClicker = inject("buyState", "sellState", "indicatorReadState")(
+    observer(({buyState, sellState, indicatorReadState}) => {
 
         useEffect(() => {
             const executeWithInterval = async () => {
                 await run();
-                let intervalTime = buyState.systemCfg.cfg.linkedInLike.rootTimeout;
-                buyState.localInterval = setTimeout(executeWithInterval, intervalTime);
+                buyState.localInterval = setTimeout(executeWithInterval, 5000);
             };
             executeWithInterval().then();
             return () => {
@@ -34,25 +28,41 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
 
         const run = async () => {
             let root = buyState.systemCfg.cfg.linkedInLike.root;
-            if (root.run) {
+            if (root.run ) {
                 await doBuy();
             }
         }
 
         const doBuy = async () => {
-            let tradePare = buyState.currentTradePare;
-           // await isRSIMovesDown();
-            if(indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
+            if (indicatorReadState.lastPriceValue === 0 || indicatorReadState.lastRSIValue === 0) {
                 return;
             }
-            if (await isBuyReached(tradePare, indicatorReadState.lastPriceValue)
-                && await isRSIDown(tradePare, indicatorReadState.lastRSIValue)
-                && await doRSIParabolicCorrelation() > 0.80) {
-                await buyOperation(tradePare);
+            let tradePare = buyState.getCurrentTradePare();
+            let buyStatus = 0;
+            const shouldBy = indicatorReadState.trailingBuyBot.shouldBuy();
+            const correlation = indicatorReadState.parabolicCorrelation;
+            const trendUp = indicatorReadState.trendDynamic === "up";
+
+            if(shouldBy){
+                buyStatus += 100;
+            }
+
+            if(correlation){
+                buyStatus += 100;
+            }
+
+            if(trendUp){
+                buyStatus += 100;
+            }
+
+            if(buyStatus >= 300){
+                await buyOperation(tradePare, correlation);
+            } else {
+                await preBuyProcess(buyState, indicatorReadState);
             }
         }
 
-        const buyOperation = async (tradePare) => {
+        const buyOperation = async (tradePare, correlation) => {
             let result = await selectBuySwitch();
             if (result === 100) {
                 let quantityValue = tradePare.quantity;
@@ -76,39 +86,13 @@ const BuyClicker = inject("buyState", "stopLostState", "indicatorReadState")(
                 }
             }
             if (result === 200) {
-                result += await clickBuy(tradePare.key);
-                    console.log("BuyClicker clickBuy "
-                    + ", lastPriceValue: " + indicatorReadState.lastPriceValue
-                    + ", lastRSIValue: " + indicatorReadState.lastRSIValue
-                    + ", targetPrice: " + tradePare.targetPrice
-                    + ", time: " + getNowDate());
+               //result += await clickBuy(tradePare.key);
+               result += 100;
             }
             if (result === 300) {
-                buyState.systemCfg.cfg.linkedInLike.root.run = false;
-                result += 100;
-                stopLostState.currentTradePare.price = indicatorReadState.lastPriceValue;
-                result += 100;
-                stopLostState.systemCfg.cfg.linkedInLike.root.run = true;
-                result += 100;
+                await postBuyProcess(buyState, sellState, indicatorReadState, tradePare, correlation);
             }
-            console.log("BuyClicker buyOperation " + tradePare.name + " done status: " + result);
             return result;
-        }
-
-        const doRSIParabolicCorrelation = async () => {
-            let last100RSIValue = indicatorReadState.last100RSIValue;
-            return doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3), "Buy RSI");
-        }
-
-        const isRSIMovesDown = async () => {
-                let last100RSIValue = indicatorReadState.last100RSIValue;
-                let last100PriceValue = indicatorReadState.last100PriceValue;
-                if (indicatorReadState.last100RSIValue.length > 99) {
-                    doParabolicCorrelation(simpleMovingAverage(last100RSIValue,3));
-                    console.log(findDivergence(last100PriceValue, last100RSIValue));
-                    console.log(detectFractalPattern(last100RSIValue));
-                    //console.log("findMACDCrossovers: " + JSON.stringify(findMACDCrossovers(last100PriceValue)));
-                }
         }
     }));
 
