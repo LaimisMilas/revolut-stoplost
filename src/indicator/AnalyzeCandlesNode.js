@@ -65,23 +65,70 @@ function detectPattern(candles) {
 
     if (isBullishEngulfing) return "bullish_engulfing";
     if (isBearishEngulfing) return "bearish_engulfing";
-    return null;
+    return "sideways";
+}
+
+function calculateAroonByCandles(candles, period = 25) {
+    if (candles.length < period) {
+        throw new Error("Neužtenka žvakių Aroon skaičiavimui");
+    }
+    const recentCandles = candles.slice(-period);
+    let highestHigh = -Infinity;
+    let lowestLow = Infinity;
+    let daysSinceHigh = 0;
+    let daysSinceLow = 0;
+    for (let i = 0; i < period; i++) {
+        const candle = recentCandles[i];
+        if (candle.high > highestHigh) {
+            highestHigh = candle.high;
+            daysSinceHigh = i;
+        }
+        if (candle.low < lowestLow) {
+            lowestLow = candle.low;
+            daysSinceLow = i;
+        }
+    }
+    const aroonUp = ((period - daysSinceHigh) / period) * 100;
+    const aroonDown = ((period - daysSinceLow) / period) * 100;
+    return {
+        aroonUp: +aroonUp.toFixed(2),
+        aroonDown: +aroonDown.toFixed(2)
+    };
+}
+
+function detectAroonTrend(candles) {
+    const { aroonUp, aroonDown } =  calculateAroonByCandles(candles.slice(-25), 25);
+    if (aroonUp > 70 && aroonDown < 30) {
+        return "up";// console.log("Galimas kilimo trendas");
+    } else if (aroonDown > 70 && aroonUp < 30) {
+        return "down";// console.log("Galimas kritimo trendas");
+    } else {
+        return "sideways"; //console.log("Aiškaus trendo nėra");
+    }
 }
 
 module.exports = function analyzeCandles(candles) {
     const rsi14 = calculateRSI(candles, 14);
     const atr14 = calculateATR(candles, 14);
-
     const ema10 = calculateEMA(candles.slice(-10), 10);
     const ema20 = calculateEMA(candles.slice(-20), 20);
-
-    const trend = ema10 > ema20 ? "up" : "down";
+    const ema50 = calculateEMA(candles.slice(-50), 50);
+    const isPriceRising =
+        candles[candles.length - 1].close > candles[candles.length - 4].close;
+    const trend = ema10 > ema20 ? "up" :
+        ema10 < ema20 ? "down" :
+            isPriceRising ? "up" : "sideways";
     const pattern = detectPattern(candles);
+    const aroonTrend = detectAroonTrend(candles);
 
     return {
+        ema10,
+        ema20,
+        ema50,
         rsi14,
         atr14,
         trend,
-        pattern
+        pattern,
+        aroonTrend
     };
 };
