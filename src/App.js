@@ -4,8 +4,8 @@ import {RootStore} from "./state/RootStore";
 import CandleController from "./component/controller/CandleController";
 import IndicatorController from "./component/controller/IndicatorController";
 import TickerController from "./component/controller/TickerController";
-import TradeClicker from "./component/ui/TradeClicker";
 import TickerResaver from "./component/jobs/TickerResaver";
+import SidewaysReversalClicker from "./component/ui/SidewaysReversalClicker";
 
 const rootState = new RootStore();
 
@@ -28,7 +28,7 @@ const App = () => {
                 <TickerController/>
                 <CandleController/>
                 <IndicatorController/>
-                <TradeClicker/>
+                <SidewaysReversalClicker/>
             </div>
         </Provider>
     );

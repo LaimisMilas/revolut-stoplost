@@ -18,23 +18,8 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
         const [analysis, setAnalysis] = useState(indicatorState.candleAnalyze);
         const prevAnalysisRef = useRef(null);
         const prevCandleRef = useRef(null);
-        const buyConfig1 = {
-            requireTrend: "up",
-            requireAroonTrend: "up",
-            maxRsi: 65,
-            requirePattern: "bullish_engulfing",
-            requirePriceRising: true
-        };
 
-        const buyConfig = {
-            trend: "up",
-            aroonTrend: ["up", "sideways"],
-            maxRsi: 65,
-            allowedPatterns: ["bullish_engulfing", "sideways"],
-            priceMustRise: false
-        };
-
-        const isConfirmationValid = (prevAnalysis, currentCandle, prevCandle, config) => {
+        const isConfirmationBuy = (prevAnalysis, currentCandle, prevCandle) => {
             if (!prevAnalysis || !prevCandle) return false;
             return prevAnalysis &&
                 prevAnalysis.trend === "up" &&
@@ -42,6 +27,16 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                 prevAnalysis.rsi14 < 65 &&
                 ["bullish_engulfing", "sideways"].includes(prevAnalysis.pattern) &&
                 currentCandle.close >= prevCandle.close;
+        };
+
+        const isConfirmationSell = (prevAnalysis, currentCandle, prevCandle) => {
+            if (!prevAnalysis || !prevCandle) return false;
+            return prevAnalysis &&
+                prevAnalysis.trend === "down" &&
+                ["down", "sideways"].includes(prevAnalysis.aroonTrend) &&
+                prevAnalysis.rsi14 > 35 &&
+                ["bearish_engulfing", "sideways"].includes(prevAnalysis.pattern) &&
+                currentCandle.close <= prevCandle.close;
         };
 
         useEffect(() => {
@@ -63,11 +58,11 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
             const prevAnalysis = prevAnalysisRef.current;
             const prevCandle = prevCandleRef.current;
 
-            const confirmationIsValid = isConfirmationValid(
-                prevAnalysis, currentCandle, prevCandle, buyConfig
+            const confirmationBuy = isConfirmationBuy(
+                prevAnalysis, currentCandle, prevCandle
             );
 
-            if (position.entry === 0 && confirmationIsValid) {
+            if (position.entry === 0 && confirmationBuy) {
                 const opResult = 1 //await buyOperation(tradePare);
                 if(opResult > 0){
                     const atr = currentAnalysis.atr14 || 0.5;
@@ -94,11 +89,15 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                 const rsiIsHigh = currentAnalysis.rsi14 > 30;
                 const bearishPattern = currentAnalysis.pattern === "bearish_engulfing";
                 const profitPercent = (price - position.entry) / position.entry * 100;
+                const confirmationSell = isConfirmationSell(
+                    prevAnalysis, currentCandle, prevCandle
+                );
+                const isStopLost = price <= position.stop;
+                const v1 = (reachedTakeProfit // tikslas pasiektas
+                    && (trendIsDown || currentAnalysis.aroonTrend === "down") // trailina iki trendIsDown arba aroonTrend down
+                    && profitPercent >= 0.2) //trailina kol profitas bus bent 0.2%
 
-                const shouldSell =
-                    (reachedTakeProfit && (trendIsDown || currentAnalysis.aroonTrend === "down") && profitPercent >= 0.2) ||
-                    bearishPattern ||
-                    price <= position.stop;
+                const shouldSell = confirmationSell || isStopLost;
 
                 if (position.entry > 0 && shouldSell) {
                     const opResult = 1 //await sellOperation(tradePare);
@@ -190,6 +189,10 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                         <div className="checkbox-row">
                             <label>Orders</label>
                             <span>{sellState.orders.length}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>Profit</label>
+                            <span>{Number(sellState.orders.map(o => o.profit ? (o.profit - o.price) : 0).reduce((a, c) => {return a + c})).toFixed(4)}</span>
                         </div>
                     </div>
                 </div>
