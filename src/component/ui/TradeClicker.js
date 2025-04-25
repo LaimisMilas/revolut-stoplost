@@ -20,23 +20,21 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
         const prevCandleRef = useRef(null);
 
         const isConfirmationBuy = (prevAnalysis, currentCandle, prevCandle) => {
-            if (!prevAnalysis || !prevCandle) return false;
-            return prevAnalysis &&
+            if (!prevAnalysis || !currentCandle || !prevCandle) return false;
+            return  ["up"].includes(prevAnalysis.aroonTrend) &&
                 prevAnalysis.trend === "up" &&
-                ["up", "sideways"].includes(prevAnalysis.aroonTrend) &&
                 prevAnalysis.rsi14 < 65 &&
                 ["bullish_engulfing", "sideways"].includes(prevAnalysis.pattern) &&
-                currentCandle.close >= prevCandle.close;
+                currentCandle.close > prevCandle.close;
         };
 
         const isConfirmationSell = (prevAnalysis, currentCandle, prevCandle) => {
-            if (!prevAnalysis || !prevCandle) return false;
-            return prevAnalysis &&
+            if (!prevAnalysis || !currentCandle || !prevCandle) return false;
+            return ["down"].includes(prevAnalysis.aroonTrend) &&
                 prevAnalysis.trend === "down" &&
-                ["down", "sideways"].includes(prevAnalysis.aroonTrend) &&
                 prevAnalysis.rsi14 > 35 &&
                 ["bearish_engulfing", "sideways"].includes(prevAnalysis.pattern) &&
-                currentCandle.close <= prevCandle.close;
+                currentCandle.close < prevCandle.close;
         };
 
         useEffect(() => {
@@ -81,6 +79,11 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                         trend: currentAnalysis.trend,
                         aroonTrend: currentAnalysis.aroonTrend,
                         pattern: currentAnalysis.pattern,
+                        signalCon: currentAnalysis.signalCon,
+                        signalBal: currentAnalysis.signalBal,
+                        signalAgr: currentAnalysis.signalAgr,
+                        isUpLast3: currentAnalysis.isUpLast3,
+                        isDownLast3: currentAnalysis.isDownLast3
                     });
                 }
             } else if (position.entry !== 0) {
@@ -113,7 +116,12 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                             rsi14: currentAnalysis.rsi14,
                             trend: currentAnalysis.trend,
                             aroonTrend: currentAnalysis.aroonTrend,
-                            pattern: currentAnalysis.pattern
+                            pattern: currentAnalysis.pattern,
+                            signalCon: currentAnalysis.signalCon,
+                            signalBal: currentAnalysis.signalBal,
+                            signalAgr: currentAnalysis.signalAgr,
+                            isUpLast3: currentAnalysis.isUpLast3,
+                            isDownLast3: currentAnalysis.isDownLast3
                         });
                         sellState.setPosition({
                             entry: 0,
@@ -171,6 +179,26 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                             <span>{analysis.pattern}</span>
                         </div>
                         <div className="checkbox-row">
+                            <label>signalCon</label>
+                            <span>{analysis.signalCon}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>signalBal</label>
+                            <span>{analysis.signalBal}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>signalAgr</label>
+                            <span>{analysis.signalAgr}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>isUpLast3</label>
+                            <span>{analysis.isUpLast3 ? "true": "false"}</span>
+                        </div>
+                        <div className="checkbox-row">
+                            <label>isDownLast3</label>
+                            <span>{analysis.isDownLast3 ? "true": "false"}</span>
+                        </div>
+                        <div className="checkbox-row">
                             <label>Entry</label>
                             <span>{sellState.getPosition().entry}</span>
                         </div>
@@ -192,7 +220,9 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                         </div>
                         <div className="checkbox-row">
                             <label>Profit</label>
-                            <span>{Number(sellState.orders.map(o => o.profit ? (o.profit - o.price) : 0).reduce((a, c) => {return a + c})).toFixed(4)}</span>
+                            <span>{Number(sellState.orders.map(o => o.profit ? (o.price - o.entry) : 0).reduce((a, c) => {
+                                return a + c
+                            })).toFixed(2)}</span>
                         </div>
                     </div>
                 </div>

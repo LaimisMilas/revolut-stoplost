@@ -1,20 +1,28 @@
+const fs = require('fs');
+const path = require('path');
+const { getCandlesFromDB, deleteCandle} = require("./database");
 const analyzeCandles = require('../src/indicator/AnalyzeCandlesNode');
 const aggregateToCandles2 = require("../src/utils/AggregateToCandlesNode");
 const {getTickers} = require("./models/tickerModel");
+const {ReversalStrategy} = require("./strategys/ReversalStrategy");
+const {strategyCondition} = require("./strategys/StrategyConditions");
+const {SellState, getPosition, sellState, pushOrder} = require("./SellState");
 
-const isConfirmationBuy = (currentAnalysis, prevAnalysis, currentCandle, prevCandle) => {
-    if (!currentAnalysis || !prevAnalysis || !currentCandle || !prevCandle) return false;
-    return ["up"].includes(currentAnalysis.aroonTrend) &&
-        currentAnalysis.trend === "up" &&
-        currentAnalysis.rsi14 < 65 &&
-        ["bullish_engulfing", "sideways"].includes(currentAnalysis.pattern) &&
-        currentCandle.close > prevCandle.close;
+const isConfirmationBuy = (prevAnalysis, currentCandle, prevCandle) => {
+    if (!prevAnalysis || !prevCandle) return false;
+    return prevAnalysis &&
+        prevAnalysis.trend === "up" &&
+        ["up", "sideways"].includes(prevAnalysis.aroonTrend) &&
+        prevAnalysis.rsi14 < 65 &&
+        ["bullish_engulfing", "sideways"].includes(prevAnalysis.pattern) &&
+        currentCandle.close >= prevCandle.close;
 };
 
 const isConfirmationSell = (prevAnalysis, currentCandle, prevCandle) => {
-    if (!prevAnalysis || !currentCandle || !prevCandle) return false;
-    return ["down"].includes(prevAnalysis.aroonTrend) &&
+    if (!prevAnalysis || !prevCandle) return false;
+    return prevAnalysis &&
         prevAnalysis.trend === "down" &&
+        ["down", "sideways"].includes(prevAnalysis.aroonTrend) &&
         prevAnalysis.rsi14 > 35 &&
         ["bearish_engulfing", "sideways"].includes(prevAnalysis.pattern) &&
         currentCandle.close <= prevCandle.close;
@@ -49,7 +57,7 @@ const runBacktest = async () => {
             const prevCandle = prevCandleRef.current;
 
             const confirmationBuy = isConfirmationBuy(
-                currentAnalysis, prevAnalysis, currentCandle, prevCandle
+                prevAnalysis, currentCandle, prevCandle
             );
 
             if (position.entry === 0 && confirmationBuy) {
@@ -80,7 +88,7 @@ const runBacktest = async () => {
                 const bearishPattern = currentAnalysis.pattern === "bearish_engulfing";
                 const profitPercent = (price - position.entry) / position.entry * 100;
                 const confirmationSell = isConfirmationSell(
-                    prevAnalysis, currentCandle, prevCandle
+                    prevAnalysis, currentCandle, prevCandle, position
                 );
                 const isStopLost = price <= position.stop;
                 const v1 = (reachedTakeProfit // tikslas pasiektas
@@ -103,10 +111,10 @@ const runBacktest = async () => {
                             price: price,
                             profit: Number(price - position.entry).toFixed(2),
                             profitPercent: ((price - position.entry) / position.entry * 100).toFixed(2) + "%",
-                            rsi14: prevAnalysis.rsi14,
-                            trend: prevAnalysis.trend,
-                            aroonTrend: prevAnalysis.aroonTrend,
-                            pattern: prevAnalysis.pattern
+                            rsi14: currentAnalysis.rsi14,
+                            trend: currentAnalysis.trend,
+                            aroonTrend: currentAnalysis.aroonTrend,
+                            pattern: currentAnalysis.pattern
                         });
                         position = {
                             entry: 0,

@@ -2,8 +2,8 @@ import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 import {calculateRSI} from "../../indicator/RSI14";
 
-const IndicatorController = inject("candleService","tickerService", "indicatorState")(
-    observer(({candleService, tickerService, indicatorState}) => {
+const IndicatorController = inject("candleService", "indicatorState")(
+    observer(({candleService, indicatorState}) => {
 
         useEffect(() => {
             const runActions = async () => {
@@ -13,35 +13,28 @@ const IndicatorController = inject("candleService","tickerService", "indicatorSt
         }, [indicatorState.indicatorCounter]);
 
         const doAction = async () => {
-            const tickers = tickerService.getTickers();
-            const prices = convertToPrice(tickers);
-            const rsi = calculateRSI(prices);
             const candles = candleService.getHistoryCandle();
+            const prices = convertToPrice(candles);
             if(prices){
-                indicatorState.calculateDynamicTrend(prices);
-                indicatorState.calculateAroon(prices, 900);
                 indicatorState.calcRSITableValues(prices);
-            }
-            if(rsi){
-                indicatorState.calcBearishLineCorrelation(rsi);
-                indicatorState.calcBullishLineCorrelation(rsi);
-                indicatorState.calcLeftLineCorrelation(rsi);
-                indicatorState.calcParabolicCorrelation(rsi)
-                indicatorState.calcSinusoidCorrelation(rsi);
-            }
-            if(candles){
-                indicatorState.updateATR(candles);
-                indicatorState.updateCandleAnalyzer(candles.slice(-51));
-            }
-            if(prices && rsi){
-                indicatorState.calculateDivergence(prices, rsi);
+                indicatorState.calculateAroon(prices);
+                indicatorState.calculateDynamicTrend(prices);
+                indicatorState.calcParabolicCorrelation(prices)
+                indicatorState.calcSinusoidCorrelation(prices);
+                indicatorState.calcLeftLineCorrelation(prices);
+                indicatorState.calcBullishLineCorrelation(prices);
+                indicatorState.calcBearishLineCorrelation(prices);
+                indicatorState.updateATR(prices);
+                indicatorState.updateCandleAnalyzer(candles);
+                indicatorState.calculateDivergence(prices);
+                indicatorState.calcRSI14(prices);
             }
             indicatorState.updateTrailingBuyBot();
         }
 
-        const convertToPrice = (tickers) => {
-            if(tickers.length > 0){
-                return tickers.map(item => parseFloat(item.indexPrice));
+        const convertToPrice = (candles) => {
+            if(candles.length > 0){
+                return candles.map(item => parseFloat(item.close));
             }
             return null;
         }

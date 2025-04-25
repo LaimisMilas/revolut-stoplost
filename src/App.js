@@ -6,6 +6,7 @@ import IndicatorController from "./component/controller/IndicatorController";
 import TickerController from "./component/controller/TickerController";
 import TickerResaver from "./component/jobs/TickerResaver";
 import TradeClicker from "./component/ui/TradeClicker";
+import IndicatorsPanel from "../web/component/ui/IndicatorsPanel";
 
 const rootState = new RootStore();
 
@@ -29,6 +30,7 @@ const App = () => {
                 <CandleController/>
                 <IndicatorController/>
                 <TradeClicker/>
+                <IndicatorsPanel/>
             </div>
         </Provider>
     );

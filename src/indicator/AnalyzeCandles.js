@@ -1,3 +1,5 @@
+import {calculateAroonByCandles, detectAroonTrend} from "./Aroon";
+
 function calculateEMA(candles, period) {
     const k = 2 / (period + 1);
     let ema = candles[0].close;
@@ -68,43 +70,71 @@ function detectPattern(candles) {
     return "sideways";
 }
 
-export function calculateAroonByCandles(candles, period = 25) {
-    if (candles.length < period) {
-        throw new Error("Neužtenka žvakių Aroon skaičiavimui");
+function isConservative(candles, rsi14, pattern) {
+    const period = 25;
+    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
+    if (
+        aroonUp > 70 &&
+        aroonDown < 30 &&
+        rsi14 < 35 &&
+        pattern === "bullish_engulfing"
+    ) {
+        return "up";
     }
-    const recentCandles = candles.slice(-period);
-    let highestHigh = -Infinity;
-    let lowestLow = Infinity;
-    let daysSinceHigh = 0;
-    let daysSinceLow = 0;
-    for (let i = 0; i < period; i++) {
-        const candle = recentCandles[i];
-        if (candle.high > highestHigh) {
-            highestHigh = candle.high;
-            daysSinceHigh = i;
-        }
-        if (candle.low < lowestLow) {
-            lowestLow = candle.low;
-            daysSinceLow = i;
-        }
+    if (
+        aroonDown > 70 &&
+        aroonUp < 30 &&
+        rsi14 > 65 &&
+        pattern === "bearish_engulfing"
+    ) {
+        return "down";
     }
-    const aroonUp = ((period - daysSinceHigh) / period) * 100;
-    const aroonDown = ((period - daysSinceLow) / period) * 100;
-    return {
-        aroonUp: +aroonUp.toFixed(2),
-        aroonDown: +aroonDown.toFixed(2)
-    };
+    return "none"
 }
 
-function detectAroonTrend(candles) {
-    const { aroonUp, aroonDown } =  calculateAroonByCandles(candles.slice(-25), 25);
-    if (aroonUp > 70 && aroonDown < 30) {
-       return "up";// console.log("Galimas kilimo trendas");
-    } else if (aroonDown > 70 && aroonUp < 30) {
-        return "down";// console.log("Galimas kritimo trendas");
-    } else {
-        return "sideways"; //console.log("Aiškaus trendo nėra");
+function isBalanced(candles, rsi14, pattern) {
+    const period = 14;
+    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
+
+    if (
+        aroonUp > 60 &&
+        aroonDown < 40 &&
+        rsi14 < 40 &&
+        pattern === "bullish_engulfing"
+    ) {
+        return "up";
     }
+    if (
+        aroonDown > 60 &&
+        aroonUp < 40 &&
+        rsi14 > 60 &&
+        pattern === "bearish_engulfing"
+    ) {
+        return "down";
+    }
+    return "none"
+}
+
+function isAggressive(candles, rsi14, pattern) {
+    const period = 10;
+    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
+    if (
+        aroonUp > 55 &&
+        aroonDown < 45 &&
+        rsi14 < 45 &&
+        pattern === "bullish_engulfing"
+    ) {
+        return "up";
+    }
+    if (
+        aroonDown > 55 &&
+        aroonUp < 45 &&
+        rsi14 > 55 &&
+        pattern === "bearish_engulfing"
+    ) {
+        return "down";
+    }
+    return "none"
 }
 
 export function analyzeCandles(candles) {
@@ -123,7 +153,12 @@ export function analyzeCandles(candles) {
             isPriceRising ? "up" : "sideways";
 
     const pattern = detectPattern(candles);
-    const aroonTrend = detectAroonTrend(candles);
+    const aroonTrend = detectAroonTrend(candles, 14, [60,40]);
+    const signalCon = isConservative(candles, rsi14, pattern);
+    const signalBal = isBalanced(candles, rsi14, pattern);
+    const signalAgr = isAggressive(candles, rsi14, pattern);
+    const isUpLast3 = candles.slice(-3).every(c => c.close > c.open);
+    const isDownLast3 = candles.slice(-3).every(c => c.close < c.open);
 
     return {
         ema10,
@@ -133,7 +168,12 @@ export function analyzeCandles(candles) {
         atr14,
         trend,
         pattern,
-        aroonTrend
+        aroonTrend,
+        signalCon,
+        signalBal,
+        signalAgr,
+        isUpLast3,
+        isDownLast3
     };
 }
 

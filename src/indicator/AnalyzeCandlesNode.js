@@ -97,14 +97,16 @@ function calculateAroonByCandles(candles, period = 25) {
 }
 
 function detectAroonTrend(candles) {
-    const { aroonUp, aroonDown } =  calculateAroonByCandles(candles.slice(-25), 25);
-    if (aroonUp > 70 && aroonDown < 30) {
-        return "up";// console.log("Galimas kilimo trendas");
-    } else if (aroonDown > 70 && aroonUp < 30) {
-        return "down";// console.log("Galimas kritimo trendas");
+    const { aroonUp, aroonDown } =  calculateAroonByCandles(candles.slice(-14), 14);
+    let trend = "";
+    if (aroonUp > 60 && aroonDown < 40) {
+        trend = "up";
+    } else if (aroonDown > 60 && aroonUp < 40) {
+        trend = "down";
     } else {
-        return "sideways"; //console.log("Aiškaus trendo nėra");
+        trend = "sideways";
     }
+    return trend;
 }
 
 module.exports = function analyzeCandles(candles) {

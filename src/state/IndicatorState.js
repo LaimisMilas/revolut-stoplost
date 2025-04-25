@@ -1,5 +1,4 @@
-import { makeAutoObservable} from "mobx";
-import {downsampleArray} from "../utils/dataFilter";
+import {makeAutoObservable} from "mobx";
 import {calculateRSI} from "../indicator/RSI14";
 import {checkDivergence} from "../utils/IndicatorsUtils";
 import {
@@ -11,7 +10,6 @@ import {
 } from "../indicator/Correletion";
 import {TrailingBuyBot} from "../indicator/TrailingBuyBot";
 import {getTrendByEMA} from "../indicator/MACD";
-import {calculateAroon} from "../indicator/Aroon";
 import {TrailingSellBot} from "../indicator/TrailingSellBot";
 import {analyzeCandles} from "../indicator/AnalyzeCandles";
 import {calculateATRByCandles} from "../indicator/ATR";
@@ -28,10 +26,11 @@ export class IndicatorState {
     trendByPrice = "";
     trendByPrice1min = "";
     dynamicTrendDataLength = 900;
-    dynamicTrendChunkSize = 4;
-    dynamicTrendChunkSizeDefault = 4;
+    dynamicTrendChunkSize = 1;
+    dynamicTrendChunkSizeDefault = 1;
     aroonTrend = "";
     rsiTable = [];
+    rsi14 = 0;
     minCandles = [];
     atr;
     STOP_LOSS_ATR_MULTIPLIER = 1.5;
@@ -41,7 +40,12 @@ export class IndicatorState {
         rsi14: 0.00,
         atr14: 0.00,
         trend: "",
-        pattern: ""
+        pattern: "",
+        signalCon:"",
+        signalBal:"",
+        signalAgr:"",
+        isUpLast3:"",
+        isDownLast3:""
     };
     trailingBuyBots = [];
     trailingBuyBot;
@@ -55,62 +59,63 @@ export class IndicatorState {
     setup(rootStore) {
         this.rootStore = rootStore;
         this.trailingBuyBots = [
-            new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
-            new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
-            new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
-            new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
-            new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
-            new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 }),
+            new TrailingBuyBot({trailingActivateRSI: 100, trailingPercent: 10}),
+            new TrailingBuyBot({trailingActivateRSI: 100, trailingPercent: 10}),
+            new TrailingBuyBot({trailingActivateRSI: 100, trailingPercent: 10}),
+            new TrailingBuyBot({trailingActivateRSI: 100, trailingPercent: 10}),
+            new TrailingBuyBot({trailingActivateRSI: 100, trailingPercent: 10}),
+            new TrailingBuyBot({trailingActivateRSI: 100, trailingPercent: 10}),
         ];
-        this.trailingBuyBot = new TrailingBuyBot({ trailingActivateRSI: 100, trailingPercent: 10 });
-        this.trailingSellBot = new TrailingSellBot({ trailingActivateRSI: 10, trailingPercent: 10 });
+        this.trailingBuyBot = new TrailingBuyBot({trailingActivateRSI: 100, trailingPercent: 10});
+        this.trailingSellBot = new TrailingSellBot({trailingActivateRSI: 10, trailingPercent: 10});
     }
 
-    calculateDivergence(prices,rsi) {
-       this.divergence = checkDivergence(prices, rsi);
+    calculateDivergence(closePrices) {
+        const rsi = calculateRSI(closePrices);
+        this.divergence = checkDivergence(closePrices, rsi);
     }
 
-    calcSinusoidCorrelation(rsi) {
-       this.sinusoidCorrelation = doSinusoidCorrelation(rsi);
+    calcSinusoidCorrelation(closePrices) {
+        this.sinusoidCorrelation = doSinusoidCorrelation(closePrices);
     }
 
-    calcParabolicCorrelation(rsi) {
-        this.parabolicCorrelation = doParabolicCorrelation(rsi);
+    calcParabolicCorrelation(closePrices) {
+        this.parabolicCorrelation = doParabolicCorrelation(closePrices);
     }
 
-    getRSIParabolicCorrelation() {
-        return this.parabolicCorrelation;
-    }
-
-    getRSI14(prices, size = 300) {
-        if(size <= prices.length){
-            const rsi = calculateRSI(prices);
-            return Number(rsi[rsi.length -1]).toFixed(2);
+    getRSI14(closePrices) {
+        if (closePrices) {
+            const rsi = calculateRSI(closePrices);
+            return Number(rsi[rsi.length - 1]).toFixed(2);
         }
         return null;
     }
 
+    calcRSI14(closePrices) {
+        this.rsi14 = this.getRSI14(closePrices);
+    }
+
     getParabolicCorrelation(prices, size = 300) {
-        if(size <= prices.length){
+        if (size <= prices.length) {
             return doParabolicCorrelation(prices);
         }
         return null;
     }
 
-    calcLeftLineCorrelation(rsi) {
-        this.leftLineCorrelation = doLeftLineCorrelation(rsi);
+    calcLeftLineCorrelation(closePrices) {
+        this.leftLineCorrelation = doLeftLineCorrelation(closePrices);
     }
 
-    calcBullishLineCorrelation(rsi) {
-        this.bullishLineCorrelation = doBullishLineCorrelation(rsi);
+    calcBullishLineCorrelation(closePrices) {
+        this.bullishLineCorrelation = doBullishLineCorrelation(closePrices);
     }
 
-    calcBearishLineCorrelation(rsi) {
-        this.bearishLineCorrelation = doBearishLineCorrelation(rsi);
+    calcBearishLineCorrelation(closePrices) {
+        this.bearishLineCorrelation = doBearishLineCorrelation(closePrices);
     }
 
-    updateTrailingBuyBot(){
-        if(this.rsiTable){
+    updateTrailingBuyBot() {
+        if (this.rsiTable) {
             this.trailingBuyBots[0].updateRSI(Number(this.rsiTable[0]));
             this.trailingBuyBots[1].updateRSI(Number(this.rsiTable[1]));
             this.trailingBuyBots[2].updateRSI(Number(this.rsiTable[2]));
@@ -120,55 +125,40 @@ export class IndicatorState {
         }
     }
 
-    calculateDynamicTrend(prices) {
-        if(prices.length / this.dynamicTrendChunkSize > 26
-            && prices.length > this.dynamicTrendDataLength){
-            prices = prices.slice(-this.dynamicTrendDataLength);
-            prices = downsampleArray(prices, this.dynamicTrendChunkSize);
-            this.trendDynamic = getTrendByEMA(prices);
-        }
+    calculateDynamicTrend(closePrices) {
+            this.trendDynamic = getTrendByEMA(closePrices);
     }
 
-    calculateTrend(prices, dataLength, chunkSize) {
-        if(dataLength / chunkSize > 26
-            && prices > dataLength){
-            prices = prices.slice(-dataLength);
-            prices = downsampleArray(prices, chunkSize);
+    calculateTrend(prices) {
             return getTrendByEMA(prices);
-        }
-        return 0;
     }
 
-    calculateAroon(prices, dataLength){
-        if(prices.length > dataLength){
-            prices = prices.slice(-dataLength);
-            const result = calculateAroon(prices, 15);
-            const aroonUp = result[0];
-            const aroonDown = result[1];
-            const diff = (aroonUp[aroonUp.length - 1] - aroonDown[aroonDown.length - 1]).toFixed(2);
-            this.aroonTrend = aroonUp[aroonUp.length - 1] > aroonDown[aroonDown.length - 1] ? "up:" + diff : "down:" + diff;
-        }
+    calculateAroon(closePrices) {
+        const aroonUp = closePrices[0];
+        const aroonDown = closePrices[1];
+        const diff = (aroonUp[aroonUp.length - 1] - aroonDown[aroonDown.length - 1]).toFixed(2);
+        this.aroonTrend = aroonUp[aroonUp.length - 1] > aroonDown[aroonDown.length - 1] ? "up:" + diff : "down:" + diff;
     }
 
-    calcRSITableValues(prices) {
-        this.rsiTable[0] = this.getRSI14(prices.slice(-300), 21);
-        this.rsiTable[1] = this.getRSI14(prices.slice(-900), 64);
-        this.rsiTable[2] = this.getRSI14(prices.slice(-1800), 128);
-        this.rsiTable[3] = this.getRSI14(prices.slice(-2700), 192);
-        this.rsiTable[4] = this.getRSI14(prices.slice(-3600), 250);
-        this.rsiTable[5] = this.getRSI14(prices.slice(-11249), 803);
+    calcRSITableValues(closePrices) {
+        this.rsiTable[0] = this.getRSI14(closePrices.slice(-300), 21);
+        this.rsiTable[1] = this.getRSI14(closePrices.slice(-900), 64);
+        this.rsiTable[2] = this.getRSI14(closePrices.slice(-1800), 128);
+        this.rsiTable[3] = this.getRSI14(closePrices.slice(-2700), 192);
+        this.rsiTable[4] = this.getRSI14(closePrices.slice(-3600), 250);
+        this.rsiTable[5] = this.getRSI14(closePrices.slice(-11249), 803);
     }
 
-    updateATR(candles){
+    updateATR(candles) {
         const period = 14;
-        if(candles.length > period) {
+        if (candles.length > period) {
             this.atr = calculateATRByCandles(candles, period);
         }
     }
 
-    updateCandleAnalyzer(candles){
+    updateCandleAnalyzer(candles) {
         const minCandle = 50;
-        if(candles.length > minCandle){
+        if (candles.length > minCandle) {
             this.candleAnalyze = analyzeCandles(candles);
         }
     }
