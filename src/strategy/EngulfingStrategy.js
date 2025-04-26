@@ -43,7 +43,7 @@ export const engulfig = {
         if (isBearishEngulfing) return "bearish_engulfing";
         return "sideways";
     },
-    "cons": (candles) => {
+    "con": (candles) => {
         if (candles.length < 2) return null;
 
         const prev = candles[candles.length - 2];

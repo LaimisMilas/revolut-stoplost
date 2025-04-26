@@ -1,7 +1,7 @@
-import {calculateAroonByCandles} from "../../indicator/Aroon";
+import {calculateAroonByCandles} from "../indicator/Aroon";
 
 export const aroonRSIpattern = {
-    "cons": (candles, rsi14, pattern) => {
+    "con": (candles, rsi14, pattern) => {
         const period = 25;
         const {aroonUp, aroonDown} = calculateAroonByCandles(candles.slice(-period), period);
         if (

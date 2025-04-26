@@ -1,4 +1,4 @@
-import {makeAutoObservable} from 'mobx';
+import {configure, makeAutoObservable} from 'mobx';
 import {trade_pares} from "../static/lc_sell_cfg";
 import {lc_system_cfg} from "../static/lc_system_cfg";
 
@@ -33,6 +33,9 @@ export class SellState {
 
     constructor() {
         makeAutoObservable(this);
+        configure({
+            enforceActions: "never",
+        });
     }
 
     setup(rootStore, sellPanelState) {

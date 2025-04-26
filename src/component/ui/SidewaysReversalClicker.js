@@ -2,8 +2,8 @@ import {inject, observer} from "mobx-react";
 import React, {useEffect, useRef, useState} from "react";
 import './css/CfgPanel.css';
 import Draggable from "react-draggable";
-import { ReversalStrategy } from "../strategys/ReversalStrategy";
-import {strategyCondition} from "../strategys/StrategyConditions";
+import { ReversalStrategy } from "../../strategy/ReversalStrategy";
+import {strategyCondition} from "../../strategy/StrategyConditions";
 
 const SidewaysReversalClicker = inject("sellState", "candleService", "indicatorState")(
     observer(({sellState, candleService, indicatorState}) => {

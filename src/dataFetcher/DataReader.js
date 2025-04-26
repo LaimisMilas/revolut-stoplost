@@ -1,7 +1,6 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
 
-
 const DataReader = inject("indicatorReadState","tickerService")(
     observer(({indicatorReadState,tickerService}) => {
 

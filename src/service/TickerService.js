@@ -43,10 +43,10 @@ export class TickerService {
                 body: JSON.stringify(ticker),
             }).then(response => response.json())
                 .then(data => {
-                    console.log('Atsakymas:', data);
+                   // console.log('Atsakymas:', data);
                 })
                 .catch((error) => {
-                    console.error('Klaida:', error);
+                   // console.error('Klaida:', error);
                 });
         }
     }

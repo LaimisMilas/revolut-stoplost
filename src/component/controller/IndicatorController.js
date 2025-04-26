@@ -24,13 +24,7 @@ const IndicatorController = inject("candleService", "indicatorState")(
                 indicatorState.calcBullishLineCorrelation(prices);
                 indicatorState.calcBearishLineCorrelation(prices);
                 indicatorState.updateATR(prices);
-                if(indicatorState.currentPattern === "balPattern"){
-                    indicatorState.updateCandleAnalyzer(candles, "bal");
-                } else if(indicatorState.currentPattern === "agrPattern"){
-                    indicatorState.updateCandleAnalyzer(candles, "agr");
-                }  else if(indicatorState.currentPattern === "conPattern"){
-                    indicatorState.updateCandleAnalyzer(candles, "con");
-                }
+                indicatorState.updateCandleAnalyzer(candles);
                 indicatorState.calculateDivergence(prices);
                 indicatorState.calcRSI14(prices);
             }

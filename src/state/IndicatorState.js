@@ -51,8 +51,8 @@ export class IndicatorState {
     trailingBuyBot;
     trailingSellBot;
     indicatorCounter = 0;
-    currentSignal = "balSignal";
-    currentPattern = "balPattern";
+    currentSignal = "agrSignal";
+    currentPattern = "agrPattern";
 
     constructor() {
         makeAutoObservable(this);
@@ -158,10 +158,16 @@ export class IndicatorState {
         }
     }
 
-    updateCandleAnalyzer(candles, engulfingType) {
+    updateCandleAnalyzer(candles) {
         const minCandle = 50;
         if (candles.length > minCandle) {
-            this.candleAnalyze = analyzeCandles(candles, engulfingType);
+            if(this.currentPattern === "balPattern"){
+                this.candleAnalyze = analyzeCandles(candles, "bal");
+            } else if(this.currentPattern === "agrPattern"){
+                this.candleAnalyze = analyzeCandles(candles, "agr");
+            }  else if(this.currentPattern === "conPattern"){
+                this.candleAnalyze = analyzeCandles(candles, "con");
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-import {buyOperation, sellOperation} from "../../utils/RevolutUtils";
+import {buyOperation, sellOperation} from "../utils/RevolutUtils";
 import {shouldBuy, shouldSell} from "./StrategyConditions";
 
 /**

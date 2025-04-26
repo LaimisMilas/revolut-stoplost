@@ -1,6 +1,6 @@
 import {detectAroonTrend} from "./Aroon";
-import {engulfig} from "../component/strategys/EngulfingStrategy";
-import {aroonRSIpattern} from "../component/strategys/AroonStategy";
+import {engulfig} from "../strategy/EngulfingStrategy";
+import {aroonRSIpattern} from "../strategy/AroonStategy";
 
 function calculateEMA(candles, period) {
     const k = 2 / (period + 1);
@@ -104,13 +104,13 @@ export function analyzeCandles(candles, engulfingType = "def") {
     } else if(engulfingType === "bal"){
         pattern = engulfig.bal(candles);
     } else if(engulfingType === "con"){
-        pattern = engulfig.cons(candles);
+        pattern = engulfig.con(candles);
     } else {
         pattern = detectPattern(candles);
     }
 
     const aroonTrend = detectAroonTrend(candles, 14, [60,40]);
-    const signalCon = aroonRSIpattern.cons(candles, rsi14, pattern);
+    const signalCon = aroonRSIpattern.con(candles, rsi14, pattern);
     const signalBal = aroonRSIpattern.bal(candles, rsi14, pattern);
     const signalAgr = aroonRSIpattern.agr(candles, rsi14, pattern);
     const isUpLast3 = candles.slice(-3).every(c => c.close > c.open);
