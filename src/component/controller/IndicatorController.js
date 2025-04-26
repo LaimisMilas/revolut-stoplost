@@ -1,6 +1,5 @@
 import {inject, observer} from "mobx-react";
 import {useEffect} from "react";
-import {calculateRSI} from "../../indicator/RSI14";
 
 const IndicatorController = inject("candleService", "indicatorState")(
     observer(({candleService, indicatorState}) => {
@@ -25,7 +24,13 @@ const IndicatorController = inject("candleService", "indicatorState")(
                 indicatorState.calcBullishLineCorrelation(prices);
                 indicatorState.calcBearishLineCorrelation(prices);
                 indicatorState.updateATR(prices);
-                indicatorState.updateCandleAnalyzer(candles);
+                if(indicatorState.currentPattern === "balPattern"){
+                    indicatorState.updateCandleAnalyzer(candles, "bal");
+                } else if(indicatorState.currentPattern === "agrPattern"){
+                    indicatorState.updateCandleAnalyzer(candles, "agr");
+                }  else if(indicatorState.currentPattern === "conPattern"){
+                    indicatorState.updateCandleAnalyzer(candles, "con");
+                }
                 indicatorState.calculateDivergence(prices);
                 indicatorState.calcRSI14(prices);
             }

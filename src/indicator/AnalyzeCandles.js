@@ -1,4 +1,6 @@
-import {calculateAroonByCandles, detectAroonTrend} from "./Aroon";
+import {detectAroonTrend} from "./Aroon";
+import {engulfig} from "../component/strategys/EngulfingStrategy";
+import {aroonRSIpattern} from "../component/strategys/AroonStategy";
 
 function calculateEMA(candles, period) {
     const k = 2 / (period + 1);
@@ -70,74 +72,23 @@ function detectPattern(candles) {
     return "sideways";
 }
 
-function isConservative(candles, rsi14, pattern) {
-    const period = 25;
-    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
-    if (
-        aroonUp > 70 &&
-        aroonDown < 30 &&
-        rsi14 < 35 &&
-        pattern === "bullish_engulfing"
-    ) {
-        return "up";
+export function getSignal(currentAnalysis, signal){
+    let buySignal = currentAnalysis.signalBal === "up"
+    let sellSignal = currentAnalysis.signalBal === "down";
+    if(signal === "agrSignal"){
+        buySignal = currentAnalysis.signalAgr === "up";
+        sellSignal = currentAnalysis.signalAgr === "down";
+    } else if(signal === "conSignal"){
+        buySignal = currentAnalysis.signalCon === "up";
+        sellSignal = currentAnalysis.signalCon === "down";
+    }else if(signal === "allSignal"){
+        buySignal = currentAnalysis.signalBal === "up" || currentAnalysis.signalAgr === "up" || currentAnalysis.signalCon === "up";
+        sellSignal = currentAnalysis.signalBal === "down" || currentAnalysis.signalAgr === "down" || currentAnalysis.signalCon === "down";
     }
-    if (
-        aroonDown > 70 &&
-        aroonUp < 30 &&
-        rsi14 > 65 &&
-        pattern === "bearish_engulfing"
-    ) {
-        return "down";
-    }
-    return "none"
+    return [buySignal, sellSignal];
 }
 
-function isBalanced(candles, rsi14, pattern) {
-    const period = 14;
-    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
-
-    if (
-        aroonUp > 60 &&
-        aroonDown < 40 &&
-        rsi14 < 40 &&
-        pattern === "bullish_engulfing"
-    ) {
-        return "up";
-    }
-    if (
-        aroonDown > 60 &&
-        aroonUp < 40 &&
-        rsi14 > 60 &&
-        pattern === "bearish_engulfing"
-    ) {
-        return "down";
-    }
-    return "none"
-}
-
-function isAggressive(candles, rsi14, pattern) {
-    const period = 10;
-    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
-    if (
-        aroonUp > 55 &&
-        aroonDown < 45 &&
-        rsi14 < 45 &&
-        pattern === "bullish_engulfing"
-    ) {
-        return "up";
-    }
-    if (
-        aroonDown > 55 &&
-        aroonUp < 45 &&
-        rsi14 > 55 &&
-        pattern === "bearish_engulfing"
-    ) {
-        return "down";
-    }
-    return "none"
-}
-
-export function analyzeCandles(candles) {
+export function analyzeCandles(candles, engulfingType = "def") {
     const rsi14 = calculateRSI(candles, 14);
     const atr14 = calculateATR(candles, 14);
 
@@ -145,18 +96,23 @@ export function analyzeCandles(candles) {
     const ema20 = calculateEMA(candles.slice(-20), 20);
     const ema50 = calculateEMA(candles.slice(-50), 50);
 
-    const isPriceRising =
-        candles[candles.length - 1].close > candles[candles.length - 4].close;
+    const emaTrend = ema10 > ema20 ? "up" : "down";
 
-    const trend = ema10 > ema20 ? "up" :
-        ema10 < ema20 ? "down" :
-            isPriceRising ? "up" : "sideways";
+    let pattern;
+    if(engulfingType === "agr"){
+        pattern = engulfig.agr(candles);
+    } else if(engulfingType === "bal"){
+        pattern = engulfig.bal(candles);
+    } else if(engulfingType === "con"){
+        pattern = engulfig.cons(candles);
+    } else {
+        pattern = detectPattern(candles);
+    }
 
-    const pattern = detectPattern(candles);
     const aroonTrend = detectAroonTrend(candles, 14, [60,40]);
-    const signalCon = isConservative(candles, rsi14, pattern);
-    const signalBal = isBalanced(candles, rsi14, pattern);
-    const signalAgr = isAggressive(candles, rsi14, pattern);
+    const signalCon = aroonRSIpattern.cons(candles, rsi14, pattern);
+    const signalBal = aroonRSIpattern.bal(candles, rsi14, pattern);
+    const signalAgr = aroonRSIpattern.agr(candles, rsi14, pattern);
     const isUpLast3 = candles.slice(-3).every(c => c.close > c.open);
     const isDownLast3 = candles.slice(-3).every(c => c.close < c.open);
 
@@ -166,7 +122,7 @@ export function analyzeCandles(candles) {
         ema50,
         rsi14,
         atr14,
-        trend,
+        emaTrend,
         pattern,
         aroonTrend,
         signalCon,

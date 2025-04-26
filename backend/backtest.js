@@ -23,7 +23,7 @@ const isConfirmationSell = (prevAnalysis, currentCandle, prevCandle) => {
 const runBacktest = async () => {
     try {
 
-        const tickers = await getTickers(11250*1.5);
+        const tickers = await getTickers(11250*70);
         let candles = await aggregateToCandles2(tickers, 60*1);
         let balance = 3000; // SOL
         let results = [];
@@ -41,7 +41,7 @@ const runBacktest = async () => {
             }
 
             const currentCandle = candles[i];
-            const currentAnalysis = analyzeCandles(history);
+            const currentAnalysis = analyzeCandles(history, "cons");
 
             const price = currentCandle.close;
 
@@ -52,7 +52,17 @@ const runBacktest = async () => {
                 currentAnalysis, prevAnalysis, currentCandle, prevCandle
             );
 
-            if (position.entry === 0 && confirmationBuy) {
+            //const buySignal = currentAnalysis.signalBal === "up";
+            //  const buySignal = currentAnalysis.signalAgr === "up";
+              const buySignal = currentAnalysis.signalCon === "up";
+            //const buySignal = currentAnalysis.signalBal === "up" || currentAnalysis.signalAgr === "up" || currentAnalysis.signalCon === "up";
+
+            //const sellSignal = currentAnalysis.signalBal === "down";
+             //const sellSignal = currentAnalysis.signalAgr === "down";
+              const sellSignal = currentAnalysis.signalCon === "down";
+            //const sellSignal = currentAnalysis.signalBal === "down" || currentAnalysis.signalAgr === "down" || currentAnalysis.signalCon === "down";
+
+            if (position.entry === 0 && buySignal) {
                 const opResult = 1 //await buyOperation(tradePare);
                 if (opResult > 0) {
                     const atr = currentAnalysis.atr14 || 0.5;
@@ -71,6 +81,11 @@ const runBacktest = async () => {
                         trend: currentAnalysis.trend,
                         aroonTrend: currentAnalysis.aroonTrend,
                         pattern: currentAnalysis.pattern,
+                        signalCon: currentAnalysis.signalCon,
+                        signalBal: currentAnalysis.signalBal,
+                        signalAgr: currentAnalysis.signalAgr,
+                        isUpLast3: currentAnalysis.isUpLast3,
+                        isDownLast3: currentAnalysis.isDownLast3
                     });
                 }
             } else if (position.entry !== 0) {
@@ -89,7 +104,7 @@ const runBacktest = async () => {
 
                 const shouldSell = confirmationSell || isStopLost;
 
-                if (position.entry > 0 && shouldSell) {
+                if (position.entry > 0 && sellSignal) {
                     const sellPrice = price <= position.stop ? position.stop : price;
                     const profit = ((sellPrice - position.entry) / position.entry) * balance;
                     balance += profit;
@@ -106,7 +121,12 @@ const runBacktest = async () => {
                             rsi14: prevAnalysis.rsi14,
                             trend: prevAnalysis.trend,
                             aroonTrend: prevAnalysis.aroonTrend,
-                            pattern: prevAnalysis.pattern
+                            pattern: prevAnalysis.pattern,
+                            signalCon: currentAnalysis.signalCon,
+                            signalBal: currentAnalysis.signalBal,
+                            signalAgr: currentAnalysis.signalAgr,
+                            isUpLast3: currentAnalysis.isUpLast3,
+                            isDownLast3: currentAnalysis.isDownLast3
                         });
                         position = {
                             entry: 0,

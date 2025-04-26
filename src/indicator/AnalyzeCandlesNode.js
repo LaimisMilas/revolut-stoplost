@@ -1,3 +1,5 @@
+const engulfig = require("./EngulfingNode");
+
 function calculateEMA(candles, period) {
     const k = 2 / (period + 1);
     let ema = candles[0].close;
@@ -54,14 +56,14 @@ function detectPattern(candles) {
     const isBullishEngulfing =
         prev.close < prev.open &&
         curr.close > curr.open &&
-        curr.open < prev.close &&
+       // curr.open < prev.close &&
         curr.close > prev.open;
 
     const isBearishEngulfing =
-        prev.close > prev.open &&
-        curr.close < curr.open &&
-        curr.open > prev.close &&
-        curr.close < prev.open;
+        prev.close > prev.open &&  // faktas kad zale buvo
+        curr.close < curr.open //&&  // faktas kad raudona yra
+     //   curr.open > prev.close &&  // raudona atsidare kai zale uzsidare, reiskiasi yra auksciau zalios
+       // curr.close < prev.open;    // raudona uzsidare zemiau zalios uzsidarimo
 
     if (isBullishEngulfing) return "bullish_engulfing";
     if (isBearishEngulfing) return "bearish_engulfing";
@@ -108,8 +110,74 @@ function detectAroonTrend(candles) {
     }
     return trend;
 }
+function isConservative(candles, rsi14, pattern) {
+    const period = 25;
+    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
+    if (
+        aroonUp > 70 &&
+        aroonDown < 30 &&
+        rsi14 < 35 &&
+        pattern === "bullish_engulfing"
+    ) {
+        return "up";
+    }
+    if (
+        aroonDown > 70 &&
+        aroonUp < 30 &&
+        rsi14 > 65 &&
+        pattern === "bearish_engulfing"
+    ) {
+        return "down";
+    }
+    return "none"
+}
 
-module.exports = function analyzeCandles(candles) {
+function isBalanced(candles, rsi14, pattern) {
+    const period = 14;
+    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
+
+    if (
+        aroonUp > 60 &&
+        aroonDown < 40 &&
+        rsi14 < 40 &&
+        pattern === "bullish_engulfing"
+    ) {
+        return "up";
+    }
+    if (
+        aroonDown > 60 &&
+        aroonUp < 40 &&
+        rsi14 > 60 &&
+        pattern === "bearish_engulfing"
+    ) {
+        return "down";
+    }
+    return "none"
+}
+
+function isAggressive(candles, rsi14, pattern) {
+    const period = 10;
+    const { aroonUp, aroonDown } = calculateAroonByCandles(candles.slice(-period), period);
+    if (
+        aroonUp > 55 &&
+        aroonDown < 45 &&
+        rsi14 < 45 &&
+        pattern === "bullish_engulfing"
+    ) {
+        return "up";
+    }
+    if (
+        aroonDown > 55 &&
+        aroonUp < 45 &&
+        rsi14 > 55 &&
+        pattern === "bearish_engulfing"
+    ) {
+        return "down";
+    }
+    return "none"
+}
+
+module.exports = function analyzeCandles(candles, engulfingType) {
     const rsi14 = calculateRSI(candles, 14);
     const atr14 = calculateATR(candles, 14);
     const ema10 = calculateEMA(candles.slice(-10), 10);
@@ -120,8 +188,24 @@ module.exports = function analyzeCandles(candles) {
     const trend = ema10 > ema20 ? "up" :
         ema10 < ema20 ? "down" :
             isPriceRising ? "up" : "sideways";
-    const pattern = detectPattern(candles);
+
+    let pattern;
+    if(engulfingType === "agr"){
+        pattern = engulfig.agr(candles);
+    } else if(engulfingType === "bal"){
+        pattern = engulfig.bal(candles);
+    } else if(engulfingType === "cons"){
+        pattern = engulfig.cons(candles);
+    } else {
+        pattern = detectPattern(candles);
+    }
+
     const aroonTrend = detectAroonTrend(candles);
+    const signalCon = isConservative(candles, rsi14, pattern);
+    const signalBal = isBalanced(candles, rsi14, pattern);
+    const signalAgr = isAggressive(candles, rsi14, pattern);
+    const isUpLast3 = candles.slice(-3).every(c => c.close > c.open);
+    const isDownLast3 = candles.slice(-3).every(c => c.close < c.open);
 
     return {
         ema10,
@@ -131,6 +215,11 @@ module.exports = function analyzeCandles(candles) {
         atr14,
         trend,
         pattern,
-        aroonTrend
+        aroonTrend,
+        signalCon,
+        signalBal,
+        signalAgr,
+        isUpLast3,
+        isDownLast3
     };
 };

@@ -51,6 +51,8 @@ export class IndicatorState {
     trailingBuyBot;
     trailingSellBot;
     indicatorCounter = 0;
+    currentSignal = "balSignal";
+    currentPattern = "balPattern";
 
     constructor() {
         makeAutoObservable(this);
@@ -156,10 +158,10 @@ export class IndicatorState {
         }
     }
 
-    updateCandleAnalyzer(candles) {
+    updateCandleAnalyzer(candles, engulfingType) {
         const minCandle = 50;
         if (candles.length > minCandle) {
-            this.candleAnalyze = analyzeCandles(candles);
+            this.candleAnalyze = analyzeCandles(candles, engulfingType);
         }
     }
 }
