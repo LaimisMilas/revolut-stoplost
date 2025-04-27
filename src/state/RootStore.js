@@ -94,7 +94,7 @@ export class RootStore {
        //     { key: "min_candles", ref: () => this.indicatorReadState.minCandles, merge: "concat", defaultValue: []},
             { key: "candle_service_candles", ref: () => this.candleService.historyCandle, merge: "concat", defaultValue: []},
             { key: "sellState_position", ref: { parent: () => this.sellState, field: "position" }, merge: "assign", defaultValue: this.sellState.position},
-            { key: "sellState_orders_book", ref: () => this.sellState.orders, merge: "concat", defaultValue: []},
+        //    { key: "sellState_orders_book", ref: () => this.sellState.orders, merge: "concat", defaultValue: []},
         //    { key: "indicatorState_current_signal", ref: { parent: () => this.indicatorState, field: "currentSignal" }, merge: "replace", defaultValue: "balSignal"},
         //    { key: "indicatorState_current_pattern", ref: { parent: () => this.indicatorState, field: "currentPattern" }, merge: "replace", defaultValue: "balPattern"},
 

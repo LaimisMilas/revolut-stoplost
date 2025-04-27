@@ -196,10 +196,6 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                             <span>&nbsp;s:{indicatorState.currentSignal}</span>
                         </div>
                         <div className="checkbox-row">
-                            <label>Orders</label>
-                            <span>{sellState.orders.length}</span>
-                        </div>
-                        <div className="checkbox-row">
                             <label>Profit</label>
                             <span>{sellState.orders.length > 0 ? Number(sellState.orders.map(o => o.profit ? (o.price - o.entry) : 0).reduce((a, c) => {
                                 return a + c
