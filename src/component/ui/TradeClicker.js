@@ -46,7 +46,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                         target: price + atr * 2.0,
                         timestamp: currentCandle.timestamp
                     });
-                    sellState.pushOrder({
+                    storeOrders({
                         action: "BUY",
                         date: new Date(currentCandle.timestamp).toLocaleDateString("eu-LT"),
                         time: new Date(currentCandle.timestamp).toLocaleTimeString("eu-LT"),
@@ -67,7 +67,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                 if (position.entry > 0 && sellSignal || isStopLost) {
                     const opResult = 1 //await sellOperation(tradePare);
                     if(opResult > 0) {
-                        sellState.pushOrder({
+                        storeOrders({
                             action: price <= position.stop ? "STOP_LOSS" : "SELL",
                             date: new Date(currentCandle.timestamp).toLocaleDateString("eu-LT"),
                             time: new Date(currentCandle.timestamp).toLocaleTimeString("eu-LT"),
@@ -95,6 +95,24 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                 }
             }
         };
+
+        const storeOrders = (order) =>{
+            if(order){
+                fetch("http://localhost:3000/api/orders", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(order),
+                }).then(response => response.json())
+                    .then(data => {
+                        // console.log('Atsakymas:', data);
+                    })
+                    .catch((error) => {
+                        // console.error('Klaida:', error);
+                    });
+            }
+        }
 
         return (
             <Draggable>

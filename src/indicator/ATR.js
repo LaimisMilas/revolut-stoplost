@@ -76,7 +76,7 @@ function calculateTP_SL(currentPrice, atrValue, trend = 'up') {
     }
 }
 
-function returnPercent(currentPrice, newPrice, trend){
+function returnPercent(currentPrice, newPrice){
     let diff = newPrice - currentPrice;
     return  (diff * 100) / currentPrice;
 }
