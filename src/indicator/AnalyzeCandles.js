@@ -108,13 +108,31 @@ export function analyzeCandles(candles, engulfingType = "def") {
     } else {
         pattern = detectPattern(candles);
     }
-
-    const aroonTrend = detectAroonTrend(candles, 14, [60,40]);
+    const aroonCfg = {period:14, exp:[60,40]}
+    const aroonTrend = detectAroonTrend(candles, aroonCfg.period, aroonCfg.exp);
     const signalCon = aroonRSIpattern.con(candles, rsi14, pattern);
     const signalBal = aroonRSIpattern.bal(candles, rsi14, pattern);
     const signalAgr = aroonRSIpattern.agr(candles, rsi14, pattern);
     const isUpLast3 = candles.slice(-3).every(c => c.close > c.open);
     const isDownLast3 = candles.slice(-3).every(c => c.close < c.open);
+    const logs = {
+        engulfingType,
+        candlesLength: candles.length,
+        rsi14: Number(rsi14).toFixed(2),
+        atr14: Number(atr14).toFixed(2),
+        ema10: Number(ema10).toFixed(2),
+        ema20: Number(ema20).toFixed(2),
+        ema50: Number(ema50).toFixed(2),
+        emaTrend,
+        pattern,
+        aroonTrend,
+        aroonCfg: JSON.stringify(aroonCfg),
+        signalCon,
+        signalBal,
+        signalAgr,
+        isUpLast3,
+        isDownLast3
+    };
 
     return {
         ema10,
@@ -129,7 +147,8 @@ export function analyzeCandles(candles, engulfingType = "def") {
         signalBal,
         signalAgr,
         isUpLast3,
-        isDownLast3
+        isDownLast3,
+        logs
     };
 }
 

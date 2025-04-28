@@ -40,12 +40,13 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                 const opResult = 1 //await buyOperation(tradePare);
                 if(opResult > 0){
                     const atr = currentAnalysis.atr14 || 0.5;
-                    sellState.setPosition({
+                    const position = {
                         entry: price,
                         stop: price - atr * 1.5,
                         target: price + atr * 2.0,
                         timestamp: currentCandle.timestamp
-                    });
+                    };
+                    sellState.setPosition(position);
                     storeOrders({
                         action: "BUY",
                         date: new Date(currentCandle.timestamp).toLocaleDateString("eu-LT"),
@@ -59,7 +60,9 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                         signalBal: currentAnalysis.signalBal,
                         signalAgr: currentAnalysis.signalAgr,
                         isUpLast3: currentAnalysis.isUpLast3,
-                        isDownLast3: currentAnalysis.isDownLast3
+                        isDownLast3: currentAnalysis.isDownLast3,
+                        position: JSON.stringify(position),
+                        analysisLogs:JSON.stringify(currentAnalysis.logs)
                     });
                 }
             } else if (position.entry !== 0) {
@@ -68,14 +71,14 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                     const opResult = 1 //await sellOperation(tradePare);
                     if(opResult > 0) {
                         storeOrders({
-                            action: price <= position.stop ? "STOP_LOSS" : "SELL",
+                            action: price <= isStopLost ? "STOP_LOSS" : "SELL",
                             date: new Date(currentCandle.timestamp).toLocaleDateString("eu-LT"),
                             time: new Date(currentCandle.timestamp).toLocaleTimeString("eu-LT"),
                             entry: position.entry,
                             price: price,
                             profit: Number(price - position.entry).toFixed(2),
                             profitPercent: ((price - position.entry) / position.entry * 100).toFixed(2) + "%",
-                            rsi14: currentAnalysis.rsi14,
+                            rsi14: currentAnalysis.rsi14.toFixed(2),
                             emaTrend: currentAnalysis.emaTrend,
                             aroonTrend: currentAnalysis.aroonTrend,
                             pattern: currentAnalysis.pattern,
@@ -83,7 +86,9 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                             signalBal: currentAnalysis.signalBal,
                             signalAgr: currentAnalysis.signalAgr,
                             isUpLast3: currentAnalysis.isUpLast3,
-                            isDownLast3: currentAnalysis.isDownLast3
+                            isDownLast3: currentAnalysis.isDownLast3,
+                            position: JSON.stringify(position),
+                            analysisLogs:JSON.stringify(currentAnalysis.logs)
                         });
                         sellState.setPosition({
                             entry: 0,

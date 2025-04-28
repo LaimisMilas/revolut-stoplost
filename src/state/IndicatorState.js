@@ -168,6 +168,25 @@ export class IndicatorState {
             }  else if(this.currentPattern === "conPattern"){
                 this.candleAnalyze = analyzeCandles(candles, "con");
             }
+            this.storeAnalysis(this.candleAnalyze);
+        }
+    }
+
+    storeAnalysis(analysis) {
+        if(analysis){
+            fetch("http://localhost:3000/api/analyses/logs", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(analysis.logs),
+            }).then(response => response.json())
+                .then(data => {
+                    // console.log('Atsakymas:', data);
+                })
+                .catch((error) => {
+                    // console.error('Klaida:', error);
+                });
         }
     }
 }

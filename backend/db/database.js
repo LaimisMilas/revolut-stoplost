@@ -4,7 +4,33 @@ const dbPath = path.resolve(__dirname, "../data/candles.db");
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
-//  action: "BUY",
+
+
+ //engulfingType,
+    //         candlesLength: candles.length,rsi14,atr14,ema10,ema20,ema50,emaTrend,pattern,aroonTrend,aroonCfg,signalCon,signalBal
+    //         ,signalAgr,isUpLast3,isDownLast3
+    db.run(`CREATE TABLE IF NOT EXISTS analysesLogs (
+                                                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                  engulfingType TEXT,
+                                                  candlesLength TEXT,
+                                                  rsi14 TEXT,
+                                                  atr14 TEXT,
+                                                  ema10 TEXT,
+                                                  ema20 TEXT,
+                                                  ema50 TEXT,
+                                                  emaTrend TEXT,
+                                                  pattern TEXT,
+                                                  aroonTrend TEXT,
+                                                  aroonCfg TEXT,
+                                                  signalBal TEXT,
+                                                  signalCon TEXT,
+                                                  signalAgr TEXT,
+                                                  isUpLast3 TEXT,
+                                                  isDownLast3 TEXT
+            )`);
+
+
+    //  action: "BUY",
 //                         date: new Date(currentCandle.timestamp).toLocaleDateString("eu-LT"),
 //                         time: new Date(currentCandle.timestamp).toLocaleTimeString("eu-LT"),
 //                         price:  Number(price).toFixed(2),
@@ -17,8 +43,6 @@ db.serialize(() => {
 //                         signalAgr: currentAnalysis.signalAgr,
 //                         isUpLast3: currentAnalysis.isUpLast3,
 //                         isDownLast3: currentAnalysis.isDownLast3
-
-
     db.run(`CREATE TABLE IF NOT EXISTS orders (
           id integer,
           date TEXT,

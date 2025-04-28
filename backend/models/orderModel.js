@@ -2,13 +2,13 @@ const db = require("../db/database");
 
 const insertOrder = (order) => {
     const {action, date, time, price, profit, profitPercent, rsi14, emaTrend, aroonTrend, pattern, signalCon, signalBal, signalAgr,
-        isUpLast3, isDownLast3} = order;
+        isUpLast3, isDownLast3, position, analysisLogs} = order;
     db.run(
         `INSERT OR REPLACE INTO orders (action, "date", "time", price, profit, profitPercent, rsi14, emaTrend, aroonTrend, pattern, signalCon, signalBal, signalAgr,
-                    isUpLast3, isDownLast3)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    isUpLast3, isDownLast3, position, analysisLogs)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [action, date, time, price, profit, profitPercent, rsi14, emaTrend, aroonTrend, pattern, signalCon, signalBal, signalAgr,
-            isUpLast3, isDownLast3]
+            isUpLast3, isDownLast3, position, analysisLogs]
     )
 };
 
