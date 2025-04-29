@@ -10,7 +10,8 @@ import {
     writeQuantity
 } from "../../utils/RevolutUtils";
 import {postSellProcess} from "./sell/PostSellProcess";
-import {isStopLostReached, isTakeProfReached, preSellProcess} from "./sell/PreSellProcess";
+import {isStopLostReached, preSellProcess} from "./sell/PreSellProcess";
+import {strategyCondition} from "../../strategy/StrategyConditions";
 
 const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
     observer(({sellState, buyState, indicatorReadState}) => {
@@ -46,11 +47,8 @@ const SellClicker = inject("sellState", "buyState", "indicatorReadState")(
             if(isStopLostReached(tradePare, indicatorReadState)){
                 await sellOperation(tradePare, indicatorReadState.parabolicCorrelation, "stopLost");
             } else {
-                if(isTakeProfReached(tradePare, indicatorReadState) && indicatorReadState.trendDynamic === "down"){
-                    const correlation = Number(indicatorReadState.parabolicCorrelation);
-                    if(correlation < Number(tradePare.aspectCorrelation)){
-                        await sellOperation(tradePare, correlation, "takeProf");
-                    }
+                if(strategyCondition.sell2(tradePare, indicatorReadState)){
+                    await sellOperation(tradePare, 0, "takeProf");
                 }
             }
             await preSellProcess(buyState, sellState, indicatorReadState, tradePare);

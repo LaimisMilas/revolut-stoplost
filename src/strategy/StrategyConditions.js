@@ -1,28 +1,4 @@
-export function shouldBuy({currentAnalysis, previousAnalysis, currentCandle}) {
-    const {rsi14, trend, pattern, aroonTrend} = currentAnalysis;
-
-    const rsiCondition = rsi14 < 40;
-    const trendCondition = trend === "up";
-    const patternCondition = pattern === "bullish_engulfing";
-    const aroonCondition = aroonTrend === "up";
-
-    return rsiCondition && trendCondition && patternCondition && aroonCondition;
-}
-
-export function shouldSell({price, position, currentAnalysis, currentCandle}) {
-    const {rsi14, trend, pattern, aroonTrend} = currentAnalysis;
-
-    const reachedTakeProfit = price >= position.target;
-    const trendIsDown = trend === "down";
-    const rsiIsHigh = rsi14 > 30;
-    const bearishPattern = pattern === "bearish_engulfing";
-    const profitPercent = (price - position.entry) / position.entry * 100;
-
-    const takeProfitSell = reachedTakeProfit && trendIsDown && rsiIsHigh && bearishPattern && profitPercent >= 0.2;
-    const stopLossSell = price <= position.stop;
-
-    return takeProfitSell || stopLossSell;
-}
+import {isTakeProfReached} from "../component/jobs/sell/PreSellProcess";
 
 export const strategyCondition = {
     "buy": (prevAnalysis, currentCandle, prevCandle) => {
@@ -41,5 +17,27 @@ export const strategyCondition = {
             prevAnalysis.rsi14 > 35 &&
             ["bearish_engulfing", "sideways"].includes(prevAnalysis.pattern) &&
             currentCandle.close <= prevCandle.close;
+    }, "sell2": (tradePare, indicatorReadState) => {
+        if(isTakeProfReached(tradePare, indicatorReadState) && indicatorReadState.trendDynamic === "down"){
+            const correlation = Number(indicatorReadState.parabolicCorrelation);
+            return correlation < Number(tradePare.aspectCorrelation);
+        }
+    }, "shouldBuy": ({currentAnalysis}) => {
+        const {rsi14, trend, pattern, aroonTrend} = currentAnalysis;
+        const rsiCondition = rsi14 < 40;
+        const trendCondition = trend === "up";
+        const patternCondition = pattern === "bullish_engulfing";
+        const aroonCondition = aroonTrend === "up";
+        return rsiCondition && trendCondition && patternCondition && aroonCondition;
+    }, "shouldSell": ({price, position, currentAnalysis}) => {
+        const {rsi14, trend, pattern} = currentAnalysis;
+        const reachedTakeProfit = price >= position.target;
+        const trendIsDown = trend === "down";
+        const rsiIsHigh = rsi14 > 30;
+        const bearishPattern = pattern === "bearish_engulfing";
+        const profitPercent = (price - position.entry) / position.entry * 100;
+        const takeProfitSell = reachedTakeProfit && trendIsDown && rsiIsHigh && bearishPattern && profitPercent >= 0.2;
+        const stopLossSell = price <= position.stop;
+        return takeProfitSell || stopLossSell;
     }
 };

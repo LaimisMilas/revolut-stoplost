@@ -1,6 +1,7 @@
 import {detectAroonTrend} from "./Aroon";
 import {engulfig} from "../strategy/EngulfingStrategy";
 import {aroonRSIpattern} from "../strategy/AroonStategy";
+import {doParabolicCorrelation} from "./Correletion";
 
 function calculateEMA(candles, period) {
     const k = 2 / (period + 1);
@@ -88,6 +89,13 @@ export function getSignal(currentAnalysis, signal){
     return [buySignal, sellSignal];
 }
 
+const convertToPrice = (candles) => {
+    if(candles.length > 0){
+        return candles.map(item => parseFloat(item.close));
+    }
+    return null;
+}
+
 export function analyzeCandles(candles, engulfingType = "def") {
     const rsi14 = calculateRSI(candles, 14);
     const atr14 = calculateATR(candles, 14);
@@ -115,6 +123,9 @@ export function analyzeCandles(candles, engulfingType = "def") {
     const signalAgr = aroonRSIpattern.agr(candles, rsi14, pattern);
     const isUpLast3 = candles.slice(-3).every(c => c.close > c.open);
     const isDownLast3 = candles.slice(-3).every(c => c.close < c.open);
+
+    const correlateParabolic = doParabolicCorrelation(convertToPrice(candles.slice(-10)));
+
     const logs = {
         engulfingType,
         candlesLength: candles.length,
@@ -131,7 +142,8 @@ export function analyzeCandles(candles, engulfingType = "def") {
         signalBal,
         signalAgr,
         isUpLast3,
-        isDownLast3
+        isDownLast3,
+        correlateParabolic:Number(correlateParabolic).toFixed(2)
     };
 
     return {

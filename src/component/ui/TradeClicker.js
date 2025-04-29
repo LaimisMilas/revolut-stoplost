@@ -71,7 +71,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
                     const opResult = 1 //await sellOperation(tradePare);
                     if(opResult > 0) {
                         storeOrders({
-                            action: price <= isStopLost ? "STOP_LOSS" : "SELL",
+                            action: price <= position.stop ? "STOP_LOSS" : "SELL",
                             date: new Date(currentCandle.timestamp).toLocaleDateString("eu-LT"),
                             time: new Date(currentCandle.timestamp).toLocaleTimeString("eu-LT"),
                             entry: position.entry,

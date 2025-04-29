@@ -13,7 +13,7 @@ const CandleController = inject("candleService","tickerService", "indicatorState
         }, [candleService.candleCounter]);
 
         const doAction = async () => {
-            const candles = aggregateToCandles2(tickerService.tickers, 60);
+            const candles = aggregateToCandles2(tickerService.tickers, 60 * 5);
             candleService.setHistoryCandles(candles);
             candleService.updateCurrentCandle();
             indicatorState.indicatorCounter++;

@@ -17,8 +17,11 @@ const insertAnalysisLogs = (analysesLogs) => {
         signalBal,
         signalAgr,
         isUpLast3,
-        isDownLast3
+        isDownLast3,
+        correlateParabolic
     } = analysesLogs;
+
+    const dateTime = new Date();
 
     db.run(
         `INSERT OR REPLACE INTO analysesLogs (
@@ -37,9 +40,11 @@ const insertAnalysisLogs = (analysesLogs) => {
         signalBal,
         signalAgr,
         isUpLast3,
-        isDownLast3
+        isDownLast3,
+        correlateParabolic,
+        dateTime
        )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             engulfingType,
             candlesLength,
@@ -56,7 +61,9 @@ const insertAnalysisLogs = (analysesLogs) => {
             signalBal,
             signalAgr,
             isUpLast3,
-            isDownLast3
+            isDownLast3,
+            correlateParabolic,
+            dateTime
         ]
     )
 };
