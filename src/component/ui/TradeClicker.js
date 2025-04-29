@@ -1,8 +1,8 @@
 import {inject, observer} from "mobx-react";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import './css/CfgPanel.css';
 import Draggable from "react-draggable";
-import {getSignal} from "../../indicator/AnalyzeCandles";
+import {strategyCondition} from "../../strategy/StrategyConditions";
 
 const TradeClicker = inject("sellState", "candleService", "indicatorState")(
     observer(({sellState, candleService, indicatorState}) => {
@@ -34,7 +34,7 @@ const TradeClicker = inject("sellState", "candleService", "indicatorState")(
             const price = currentCandle.close;
             const position = sellState.getPosition();
 
-            let [buySignal,sellSignal] = getSignal(currentAnalysis, indicatorState.currentSignal);
+            let [buySignal,sellSignal] = strategyCondition.getSignal(currentAnalysis, indicatorState.currentSignal);
 
             if (position.entry === 0 && buySignal) {
                 const opResult = 1 //await buyOperation(tradePare);

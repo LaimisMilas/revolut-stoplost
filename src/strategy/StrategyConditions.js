@@ -39,5 +39,19 @@ export const strategyCondition = {
         const takeProfitSell = reachedTakeProfit && trendIsDown && rsiIsHigh && bearishPattern && profitPercent >= 0.2;
         const stopLossSell = price <= position.stop;
         return takeProfitSell || stopLossSell;
+    }, "getSignal": (currentAnalysis, signal) => {
+        let buySignal = currentAnalysis.signalBal === "up"
+        let sellSignal = currentAnalysis.signalBal === "down";
+        if(signal === "agrSignal"){
+            buySignal = currentAnalysis.signalAgr === "up";
+            sellSignal = currentAnalysis.signalAgr === "down";
+        } else if(signal === "conSignal"){
+            buySignal = currentAnalysis.signalCon === "up";
+            sellSignal = currentAnalysis.signalCon === "down";
+        }else if(signal === "allSignal"){
+            buySignal = currentAnalysis.signalBal === "up" || currentAnalysis.signalAgr === "up" || currentAnalysis.signalCon === "up";
+            sellSignal = currentAnalysis.signalBal === "down" || currentAnalysis.signalAgr === "down" || currentAnalysis.signalCon === "down";
+        }
+        return [buySignal, sellSignal];
     }
 };

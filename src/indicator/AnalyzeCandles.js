@@ -73,22 +73,6 @@ function detectPattern(candles) {
     return "sideways";
 }
 
-export function getSignal(currentAnalysis, signal){
-    let buySignal = currentAnalysis.signalBal === "up"
-    let sellSignal = currentAnalysis.signalBal === "down";
-    if(signal === "agrSignal"){
-        buySignal = currentAnalysis.signalAgr === "up";
-        sellSignal = currentAnalysis.signalAgr === "down";
-    } else if(signal === "conSignal"){
-        buySignal = currentAnalysis.signalCon === "up";
-        sellSignal = currentAnalysis.signalCon === "down";
-    }else if(signal === "allSignal"){
-        buySignal = currentAnalysis.signalBal === "up" || currentAnalysis.signalAgr === "up" || currentAnalysis.signalCon === "up";
-        sellSignal = currentAnalysis.signalBal === "down" || currentAnalysis.signalAgr === "down" || currentAnalysis.signalCon === "down";
-    }
-    return [buySignal, sellSignal];
-}
-
 const convertToPrice = (candles) => {
     if(candles.length > 0){
         return candles.map(item => parseFloat(item.close));
